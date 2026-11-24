@@ -1,0 +1,43 @@
+feature,area,priority,original,clone,notes
+Quiz mobile une question par écran avec barre de progression et retour,quiz,must,yes,no,S09-S23
+Choix unique qui passe tout seul à l'écran suivant,quiz,must,yes,no,S13-S15
+Choix multiples avec bouton Continuer,quiz,must,yes,no,S09 S10 S17 S23
+Blocage des moins de 18 ans sans rien demander,quiz,must,yes,no,S03b
+Écrans de message personnalisés selon les réponses,quiz,must,yes,no,S11 S20
+Écran de consentement biométrique avant la caméra avec refus possible,scan,must,yes,no,S06 RGPD art. 9
+Prise de 2 photos (face et profil) avec guide de cadrage,scan,must,yes,no,S07 non vu
+Analyse IA du visage sur 15 critères avec note actuelle et note max,scan,must,yes,no,how-it-works
+Photos jamais enregistrées sur nos serveurs,scan,must,yes,no,politique biométrique
+Plan tiré des réponses seules si le scan est refusé,scan,must,yes,no,F02
+E-mail obligatoire avant le résultat avec consentement marketing séparé,funnel,must,yes,no,S25 en France la case marketing doit être décochée par défaut
+Paywall avec offres et prix de renouvellement affiché au-dessus du bouton,payments,must,yes,no,S26 non vu
+Paiement Stripe carte Apple Pay Google Pay,payments,must,yes,no,S27
+Abonnement avec prix d'appel puis renouvellement automatique,payments,must,yes,no,conditions 4.3
+Rapport : notes points forts points faibles classés,report,must,yes,no,S28
+Plan jour par jour par domaine (peau cheveux corps style confiance),plan,must,yes,no,S29
+Connexion sans mot de passe par lien ou code e-mail,account,must,yes,no,S30
+Annuler l'abonnement en ligne,account,must,yes,no,S34 résiliation en 3 clics en France
+Variantes A/B de l'accueil du tunnel,funnel,should,yes,no,S01 S01b
+Suivi des sources de pub (utm et pixel Meta),funnel,should,yes,no,URL d'entrée
+Le pari : deviner sa note puis révélation dans le rapport,quiz,should,yes,no,S12
+Écran récap « ton plan jusqu'ici »,quiz,should,yes,no,S20
+Trackers quotidiens dans l'espace membre,plan,should,yes,no,non vu
+Rappel quotidien par e-mail,notifications,should,yes,no,S24 micro-question
+E-mails de relance après l'e-mail sans achat,notifications,should,yes,no,mention S25
+Supprimer son compte,account,should,yes,no,S34
+Droit de rétractation UE affiché au paiement,payments,should,yes,no,livraison
+Bibliothèque d'articles avec sources,content,should,yes,no,S35 à écrire nous-mêmes
+Coach IA en chat avec quota mensuel (option payante),addons,could,yes,no,S32
+Rapport âge de peau sur photo (option),addons,could,yes,no,S33
+Rapport tenue sur photo (option),addons,could,yes,no,S33
+Pack de leçons (option),addons,could,yes,no,
+Achat d'option en 1 tap sur la carte enregistrée,payments,could,yes,no,S31 Stripe hors session
+Retake du scan pour mesurer les progrès,scan,could,yes,no,how-it-works « baseline you can retake »
+Plusieurs langues,i18n,could,yes,no,/en/ dans l'URL
+Témoignages et photos avant/après de l'original,marketing,skip,yes,skip,ne pas copier et rien ne prouve qu'ils sont réels
+Chiffres de preuve sociale (4.8 et 73000 scans),marketing,skip,yes,skip,on n'affiche que nos vrais chiffres
+Sosies célèbres dans le rapport,report,skip,yes,skip,droit à l'image des personnalités
+Chargement simulé qui fait croire à un calcul,quiz,skip,yes,skip,trompeur
+Prix d'appel 0.99 puis 19.99 par semaine,payments,skip,yes,skip,très risqué en droit français de la consommation
+Articles science de l'original,content,skip,yes,skip,leurs textes : on écrit les nôtres
+Marque GODMODE police et visuels,brand,skip,yes,skip,leur identité
