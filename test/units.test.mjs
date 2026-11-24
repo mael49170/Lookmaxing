@@ -70,3 +70,24 @@ test("textes : aucun faux chiffre de preuve sociale", () => {
   assert.ok(!/\b\d{2,3}[ ,.]?\d{3}\+? (scans|utilisateurs|clients)/i.test(files));
   assert.ok(!/le plus choisi|tendance|★/i.test(files));
 });
+
+test("appel à Claude : format de la requête, refus géré, aucune photo dans les journaux", async () => {
+  const { runScan } = await import("../lib/scan.js");
+  const img = { media_type: "image/jpeg", data: "SECRETPHOTO".repeat(10) };
+  let sent;
+  const reply = (status, body) => async (url, init) => { sent = JSON.parse(init.body); return new Response(JSON.stringify(body), { status }); };
+  const crit = FACTORS.map((f) => ({ id: f.id, note: 60, phrase: "ok" }));
+  const r = await runScan({ ANTHROPIC_API_KEY: "k" }, [img, img], { fetchImpl: reply(200, { model: "claude-opus-5-5", stop_reason: "end_turn", usage: { input_tokens: 4600, output_tokens: 2300 }, content: [{ type: "text", text: JSON.stringify({ probleme: "aucun", criteres: crit }) }] }) });
+  assert.equal(sent.model, "claude-opus-5-5");
+  assert.equal(sent.output_config.format.type, "json_schema");
+  assert.equal(sent.fallbacks, "default");
+  assert.equal(sent.messages[0].content.filter((c) => c.type === "image").length, 2);
+  assert.equal(sent.thinking, undefined, "pas de réglage de réflexion interdit sur ce modèle");
+  assert.ok(r.ok); assert.equal(r.now, 60); assert.equal(r.cost, 64400);
+  const refused = await runScan({ ANTHROPIC_API_KEY: "k" }, [img, img], { fetchImpl: reply(200, { stop_reason: "refusal", usage: {}, content: [] }) });
+  assert.equal(refused.ok, false);
+  const logs = []; const orig = console.error; console.error = (...a) => logs.push(a.join(" "));
+  await assert.rejects(runScan({ ANTHROPIC_API_KEY: "k" }, [img, img], { fetchImpl: reply(500, { error: { type: "api_error", message: "panne" } }) }));
+  console.error = orig;
+  assert.ok(logs.length && !logs.join(" ").includes("SECRETPHOTO"));
+});

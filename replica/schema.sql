@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS leads (
   marketing_optin INTEGER NOT NULL DEFAULT 0 CHECK (marketing_optin IN (0,1)), -- case décochée par défaut
   unsubscribed_at INTEGER,
   last_nudge_at INTEGER,
+  nudges INTEGER NOT NULL DEFAULT 0,                 -- relances déjà envoyées (2 au plus)
   created_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS leads_email ON leads(email_key);
@@ -55,6 +56,8 @@ CREATE TABLE IF NOT EXISTS customers (
   quiz_id TEXT REFERENCES quizzes(id) ON DELETE SET NULL, -- le quiz qui a mené à l'achat
   stripe_customer TEXT NOT NULL DEFAULT '',
   reminder_optin INTEGER NOT NULL DEFAULT 0 CHECK (reminder_optin IN (0,1)), -- rappel quotidien (S24)
+  last_reminder_day TEXT NOT NULL DEFAULT '',         -- dernier rappel envoyé (jour de Paris), un par jour au plus
+  unsubscribed_at INTEGER,                            -- désinscrit de tous les e-mails non indispensables
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );

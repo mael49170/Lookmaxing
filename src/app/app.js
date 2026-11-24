@@ -53,7 +53,10 @@ function accountView(m) {
     : s.status === "active" ? `Abonnement actif : ${euros(s.renew_cents)} ${s.interval === "quarter" ? "tous les 3 mois" : "par mois"}, prochain prélèvement le ${new Date(s.current_period_end).toLocaleDateString("fr-FR")}.` : "Paiement en attente.";
   return `<div class="account"><span>${esc(m.email)}</span><span>${esc(status)}</span>
     ${s && !s.cancel_at_period_end ? '<button data-cancel>Résilier mon abonnement</button>' : ""}
-    <button data-logout>Me déconnecter</button></div>`;
+    ${s && m.hasCard ? '<button data-portal>Ma carte et mes factures</button>' : ""}
+    <button data-logout>Me déconnecter</button>
+    <button data-logout-all>Me déconnecter de tous mes appareils</button>
+    <button data-delete>Supprimer mon compte et mes données</button></div>`;
 }
 
 function render() {
@@ -70,7 +73,12 @@ app.addEventListener("click", async (e) => {
   const b = e.target.closest("button");
   if (!b) return;
   if (b.dataset.tab) { tab = b.dataset.tab; render(); return; }
-  if (b.hasAttribute("data-logout")) { await api("logout", {}).catch(() => {}); location.href = "/connexion/"; }
+  if (b.hasAttribute("data-logout") || b.hasAttribute("data-logout-all")) { await api("logout", { partout: b.hasAttribute("data-logout-all") }).catch(() => {}); location.href = "/connexion/"; }
+  if (b.hasAttribute("data-portal")) { try { location.href = (await api("portal", {})).url; } catch (err) { alert(err.message); } }
+  if (b.hasAttribute("data-delete")) {
+    if (!confirm("Supprimer ton compte ? Ton rapport, ton plan et ton suivi seront effacés pour de bon.")) return;
+    try { await api("account-delete", { confirme: true }); location.href = "/q/"; } catch (err) { alert(err.message); }
+  }
   if (b.hasAttribute("data-cancel")) {
     if (!confirm("Résilier ? Tu gardes l'accès jusqu'à la fin de la période payée, et rien ne sera plus prélevé.")) return;
     try { await api("subscription-cancel", {}); me = await api("me"); render(); } catch (err) { alert(err.message); }

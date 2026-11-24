@@ -11,20 +11,20 @@ Photos jamais enregistrées sur nos serveurs,scan,must,yes,yes,politique biomét
 Plan tiré des réponses seules si le scan est refusé,scan,must,yes,yes,F02 · testé
 E-mail obligatoire avant le résultat avec consentement marketing séparé,funnel,must,yes,yes,S25 en France la case marketing doit être décochée par défaut · case décochée
 Paywall avec offres et prix de renouvellement affiché au-dessus du bouton,payments,must,yes,yes,S26 non vu · prix provisoires
-Paiement Stripe carte Apple Pay Google Pay,payments,must,yes,no,S27 · paiement d'essai seulement : /replica-backend
-Abonnement avec prix d'appel puis renouvellement automatique,payments,must,yes,no,conditions 4.3 · /replica-backend
+Paiement Stripe carte Apple Pay Google Pay,payments,must,yes,partial,S27 · Stripe Checkout codé et testé (simulé) ; à essayer avec une clé test
+Abonnement avec prix d'appel puis renouvellement automatique,payments,must,yes,partial,"conditions 4.3 · réduction 1re période + webhooks, testés (simulé) ; à essayer avec une clé test"
 Rapport : notes points forts points faibles classés,report,must,yes,yes,S28
 Plan jour par jour par domaine (peau cheveux corps style confiance),plan,must,yes,yes,S29 · bibliothèque de 29 tâches
-Connexion sans mot de passe par lien ou code e-mail,account,must,yes,no,S30 · /replica-backend
-Annuler l'abonnement en ligne,account,must,yes,partial,S34 résiliation en 3 clics en France · bouton fait ; route à brancher (/replica-backend)
+Connexion sans mot de passe par lien ou code e-mail,account,must,yes,yes,S30 · testé
+Annuler l'abonnement en ligne,account,must,yes,yes,"S34 résiliation en 1 clic, testé"
 Variantes A/B de l'accueil du tunnel,funnel,should,yes,yes,S01 S01b
 Suivi des sources de pub (utm et pixel Meta),funnel,should,yes,partial,"URL d'entrée · utm et compteur par écran faits ; pixel Meta plus tard, après bandeau cookies"
 Le pari : deviner sa note puis révélation dans le rapport,quiz,should,yes,yes,S12
 Écran récap « ton plan jusqu'ici »,quiz,should,yes,yes,S20
 Trackers quotidiens dans l'espace membre,plan,should,yes,yes,non vu · cases cochées par jour
-Rappel quotidien par e-mail,notifications,should,yes,no,S24 micro-question · réponse enregistrée ; envoi à faire (/replica-backend)
-E-mails de relance après l'e-mail sans achat,notifications,should,yes,no,mention S25 · /replica-backend
-Supprimer son compte,account,should,yes,no,S34 · /replica-backend
+Rappel quotidien par e-mail,notifications,should,yes,yes,"S24 micro-question · envoyé par les tâches du jour, testé"
+E-mails de relance après l'e-mail sans achat,notifications,should,yes,yes,"mention S25 · 2 au plus, case cochée seulement, testé"
+Supprimer son compte,account,should,yes,yes,"S34 · tout est effacé, testé"
 Droit de rétractation UE affiché au paiement,payments,should,yes,yes,"livraison · case obligatoire, testé"
 Bibliothèque d'articles avec sources,content,should,yes,no,S35 à écrire nous-mêmes
 Coach IA en chat avec quota mensuel (option payante),addons,could,yes,no,S32

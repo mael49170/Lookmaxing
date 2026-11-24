@@ -1,0 +1,31 @@
+# Copier ce fichier en .dev.vars (jamais commité) et remplir. En ligne : Cloudflare -> projet -> Settings -> Variables and secrets.
+# Sans aucune clé, le site marche en mode essai en local (analyse et paiement simulés).
+
+# Analyse du visage (console.anthropic.com)
+ANTHROPIC_API_KEY=
+# SCAN_MODEL=claude-sonnet-5-5   # moitié moins cher ; à décider après le test sur 20 photos
+# SCAN_EFFORT=low
+
+# Paiement (dashboard.stripe.com, mode TEST : sk_test_...)
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+# E-mails (resend.com, avec le domaine du site vérifié)
+RESEND_API_KEY=
+MAIL_FROM=Lookmaxing <bonjour@ton-domaine.fr>
+MAIL_REPLY_TO=
+
+# Anti-robot (Cloudflare Turnstile)
+TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET=
+
+# Secrets maison : de longues suites de caractères au hasard
+CRON_SECRET=
+UNSUB_SECRET=
+IP_SALT=
+
+# Local seulement
+# DEV_FAKE_SCAN=1
+# DEV_FAKE_PAY=1
+# DEV_SHOW_CODE=1
+# LOCAL_DB_FILE=dev/local.sqlite
