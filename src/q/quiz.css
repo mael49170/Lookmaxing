@@ -1,0 +1,50 @@
+/* Mise en page propre au quiz. Seulement des variables de tokens.css. */
+.brand { font-family: var(--font-display); font-weight: var(--fw-xl); font-size: var(--fs-lg); letter-spacing: -0.02em; text-align: center; padding: var(--sp-2) 0; }
+.screen { animation: enter var(--motion-screen) var(--motion-ease); }
+@keyframes enter { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+.stack { display: flex; flex-direction: column; gap: var(--sp-3); }
+.center { text-align: center; }
+.spacer { flex: 1; }
+
+/* Accueil */
+.sample-card { border: 1px solid var(--c-border); border-radius: var(--r-xl); padding: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-4); }
+.sample-card .scores { margin-top: var(--sp-1); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.chip { padding: var(--sp-1) var(--sp-3); border-radius: var(--r-pill); background: var(--c-surface-alt); font-size: var(--fs-xs); font-weight: 600; }
+.chip b { color: var(--c-success); font-variant-numeric: tabular-nums; }
+.points { display: flex; justify-content: center; gap: var(--sp-4); color: var(--c-text-muted); font-size: var(--fs-xs); flex-wrap: wrap; }
+
+/* Étapes (S04) */
+.steps-list { display: flex; flex-direction: column; gap: var(--sp-3); margin: 0; padding: 0; list-style: none; }
+.steps-list li { display: flex; gap: var(--sp-3); align-items: flex-start; padding: var(--sp-4); border: 1px solid var(--c-border); border-radius: var(--r-md); }
+.steps-list b { display: block; font-size: var(--fs-base); }
+.steps-list span { color: var(--c-text-muted); }
+.source { color: var(--c-text-muted); font-size: var(--fs-xs); text-align: center; }
+
+/* Photos (S07) */
+.shots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.shot { position: relative; aspect-ratio: 3 / 4; border: 2px dashed var(--c-accent-line); border-radius: var(--r-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-2); text-align: center; padding: var(--sp-3); cursor: pointer; background: var(--c-surface-alt); overflow: hidden; }
+.shot input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.shot:focus-within { outline: 2px solid var(--c-accent); outline-offset: 2px; }
+.shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.shot--done { border-style: solid; border-color: var(--c-accent); }
+.shot__label { font-weight: 600; }
+.shot__hint { color: var(--c-text-muted); font-size: var(--fs-xs); }
+.tips { margin: 0; padding-left: var(--sp-5); color: var(--c-text-muted); display: flex; flex-direction: column; gap: var(--sp-1); }
+
+/* Offres (S26) */
+.offer { position: relative; display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--c-accent-line); border-radius: var(--r-md); cursor: pointer; }
+.offer input { position: absolute; opacity: 0; }
+.offer:has(input:checked) { border: 2px solid var(--c-accent); padding: calc(var(--sp-4) - 1px); background: var(--c-accent-soft); }
+.offer:has(input:focus-visible) { outline: 2px solid var(--c-accent); outline-offset: 2px; }
+.offer__main { flex: 1; display: flex; flex-direction: column; }
+.offer__name { font-weight: 700; font-size: var(--fs-base); }
+.offer__renew { color: var(--c-text-muted); font-size: var(--fs-xs); }
+.offer__price { text-align: right; font-weight: 800; font-size: var(--fs-lg); font-variant-numeric: tabular-nums; }
+.offer__day { display: block; color: var(--c-text-muted); font-size: var(--fs-xs); font-weight: 500; }
+.offer__tag { position: absolute; top: -10px; left: var(--sp-4); background: var(--c-accent); color: var(--c-on-accent); font-size: var(--fs-eyebrow); font-weight: 700; letter-spacing: .06em; padding: 2px var(--sp-2); border-radius: var(--r-pill); text-transform: uppercase; }
+.includes { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-2); }
+.includes li::before { content: "✓"; color: var(--c-success); font-weight: 800; margin-right: var(--sp-2); }
+.legal { color: var(--c-text-muted); font-size: var(--fs-xs); text-align: center; }
+.legal a { color: inherit; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

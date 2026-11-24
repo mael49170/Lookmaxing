@@ -7,6 +7,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 :focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; }
+[tabindex="-1"]:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
 /* Écran : une colonne, 16 px de marge, bouton collé en bas */
@@ -89,7 +90,7 @@ body {
 .bar__row b { color: var(--c-accent); font-variant-numeric: tabular-nums; }
 
 /* Fenêtre du bas (question rapide) */
-.scrim { position: fixed; inset: 0; background: color-mix(in srgb, var(--c-scrim) 45%, transparent); display: flex; align-items: flex-end; }
+.scrim { position: fixed; inset: 0; z-index: 10; background: color-mix(in srgb, var(--c-scrim) 45%, transparent); display: flex; align-items: flex-end; }
 .sheet { width: 100%; max-width: var(--size-content-max); margin: 0 auto; background: var(--c-surface); border-radius: var(--r-xl) var(--r-xl) 0 0; padding: var(--sp-5) var(--size-gutter) calc(var(--sp-5) + env(safe-area-inset-bottom)); box-shadow: var(--shadow-sheet); display: flex; flex-direction: column; gap: var(--sp-3); text-align: center; }
 
 /* Champs */
