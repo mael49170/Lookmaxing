@@ -8,6 +8,7 @@ body {
 }
 :focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; }
 [tabindex="-1"]:focus { outline: none; }
+[hidden] { display: none !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
 /* Écran : une colonne, 16 px de marge, bouton collé en bas */

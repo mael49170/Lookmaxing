@@ -353,15 +353,11 @@ app.addEventListener("change", async (e) => {
     return;
   }
   if (input.name === "offer") { S.offer = input.value; save(); return render(); }
-  if (input.type === "radio" && s.type === "single" || (s.type === "landing" && S.variant === "b")) {
-    const scr = s.type === "landing" ? SCREENS[1] : s;
-    S.answers[scr.id] = input.value; save();
-    if (scr.id === "age" && input.value === "-18") { await api("quiz", { answers: { age: "-18" } }).catch(() => {}); try { sessionStorage.removeItem(KEY); } catch {} return render(); }
-    if (scr.confirm) { app.querySelector("[data-confirm]").disabled = false; return; }
-    syncQuiz();
-    // variante B : la question du genre est sur l'accueil, on saute l'écran genre
-    setTimeout(() => (s.type === "landing" ? go(2) : next()), 250);
-    return;
+  if (input.type === "radio" && (s.type === "single" || (s.type === "landing" && S.variant === "b"))) {
+    // au clavier, les flèches déplacent seulement le choix ; Entrée ou Espace valide (BUG-001)
+    const advance = !arrowNav;
+    arrowNav = false;
+    return chooseSingle(input, advance);
   }
   if (input.type === "checkbox" && s.type === "multi") {
     const solo = ["rien", "jamais"]; // « Rien encore » / « Jamais » excluent les autres réponses
@@ -372,6 +368,31 @@ app.addEventListener("change", async (e) => {
     app.querySelector("[data-multi]").disabled = !S.answers[s.id].length;
     save();
   }
+});
+
+// Choix unique : enregistre la réponse, puis passe à l'écran suivant (sauf si on se déplace aux flèches)
+let arrowNav = false;
+async function chooseSingle(input, advance) {
+  const s = SCREENS[S.i];
+  const scr = s.type === "landing" ? SCREENS[1] : s;
+  S.answers[scr.id] = input.value; save();
+  if (scr.id === "age" && input.value === "-18") {
+    if (!advance) return;
+    await api("quiz", { answers: { age: "-18" } }).catch(() => {});
+    try { sessionStorage.removeItem(KEY); } catch {}
+    return render();
+  }
+  if (scr.confirm) { app.querySelector("[data-confirm]").disabled = false; return; }
+  if (!advance) return;
+  syncQuiz();
+  // variante B : la question du genre est sur l'accueil, on saute l'écran genre
+  setTimeout(() => (s.type === "landing" ? go(2) : next()), 250);
+}
+app.addEventListener("keydown", (e) => {
+  const t = e.target;
+  if (t.type !== "radio" || !t.name || t.name === "offer") return;
+  if (e.key.startsWith("Arrow")) arrowNav = true;
+  else if ((e.key === "Enter" || e.key === " ") && t.checked) { e.preventDefault(); arrowNav = false; chooseSingle(t, true); }
 });
 
 app.addEventListener("submit", async (e) => {

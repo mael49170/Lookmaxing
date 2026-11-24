@@ -3,7 +3,9 @@ import { now, uuid, hit, track, DAY } from "../../lib/db.js";
 import { currentQuiz, checkTurnstile, clientIp } from "../../lib/identity.js";
 import { parseImage, runScan } from "../../lib/scan.js";
 
-const SCANS_PER_IP_PER_DAY = 3;
+// En 4G, beaucoup de gens partagent la même adresse IP (BUG-002) : limite large, réglable.
+// Ce sont l'anti-robot et « 1 scan par quiz » qui protègent vraiment le budget.
+const scansPerIp = (env) => Math.max(1, parseInt(env.SCANS_PER_IP || "10", 10) || 10);
 
 // POST { face, profil, turnstile } (photos en data URL) -> analyse. Les photos ne sont gardées nulle part.
 // La réponse ne contient pas les notes : elles s'affichent après le paiement.
@@ -19,7 +21,7 @@ export const onRequestPost = handle(async ({ request, env }) => {
   const images = [parseImage(body.face), parseImage(body.profil)];
   const ip = clientIp(request);
   if (await checkTurnstile(env, body.turnstile, ip) !== "ok") throw new HttpError(403, "Vérification anti-robot à refaire.");
-  if (!(await hit(d, "scan-ip:" + quiz.ip_hash, SCANS_PER_IP_PER_DAY, DAY))) throw new HttpError(429, "Trop d'analyses depuis cette connexion aujourd'hui. Continue sans scan ou réessaie demain.");
+  if (!(await hit(d, "scan-ip:" + quiz.ip_hash, scansPerIp(env), DAY))) throw new HttpError(429, "Trop d'analyses depuis cette connexion aujourd'hui. Continue sans scan ou réessaie demain.");
   const r = await runScan(env, images);
   if (!r.ok) {
     await track(d, "scan_" + r.problem, { variant: quiz.variant, source: quiz.utm_source });

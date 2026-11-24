@@ -3,3 +3,4 @@ node_modules/
 .wrangler/
 .DS_Store
 dev/local.sqlite*
+e2e/echec-*.png

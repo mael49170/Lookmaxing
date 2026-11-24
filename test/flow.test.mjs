@@ -102,15 +102,32 @@ test("refus du scan : plan sans note, et les notes déjà faites sont effacées"
   assert.ok(r.data.plan.tasks.length >= 2);
 });
 
-test("3 scans par connexion et par jour au plus", async () => {
-  const env = { DB: localD1(), DEV_FAKE_SCAN: "1" };
-  for (let n = 0; n < 4; n++) {
+// BUG-002 : en 4G, beaucoup de gens partagent la même adresse IP. La limite par IP est large (10 par défaut),
+// réglable (SCANS_PER_IP), et c'est l'anti-robot + 1 scan par quiz qui protègent le budget.
+async function scansUntilBlocked(env, max) {
+  for (let n = 0; n < max; n++) {
     const call = client(env);
     await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" } } });
     await call(consent, "scan-consent", { body: { agree: true } });
     const r = await call(scan, "scan", { body: { face: IMG, profil: IMG } });
-    assert.equal(r.status, n < 3 ? 200 : 429);
+    if (r.status === 429) return n;
   }
+  return max;
+}
+test("limite de scans par connexion : 10 par défaut, réglable", async () => {
+  assert.equal(await scansUntilBlocked({ DB: localD1(), DEV_FAKE_SCAN: "1" }, 12), 10);
+  assert.equal(await scansUntilBlocked({ DB: localD1(), DEV_FAKE_SCAN: "1", SCANS_PER_IP: "2" }, 5), 2);
+});
+
+test("un seul scan payant par quiz", async () => {
+  const env = { DB: localD1(), DEV_FAKE_SCAN: "1" };
+  const call = client(env);
+  await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" } } });
+  await call(consent, "scan-consent", { body: { agree: true } });
+  await call(scan, "scan", { body: { face: IMG, profil: IMG } });
+  const r = await call(scan, "scan", { body: { face: IMG, profil: IMG } });
+  assert.equal(r.data.already, true);
+  assert.equal((await env.DB.prepare("SELECT COUNT(*) AS n FROM scans").first()).n, 1);
 });
 
 test("sans paiement d'essai ni Stripe, le paiement est fermé", async () => {
