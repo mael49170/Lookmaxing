@@ -1,0 +1,76 @@
+/* Fichier fabriqué par dev/tokens.mjs depuis replica/design/tokens.json : ne pas modifier à la main. */
+@font-face { font-family: "Inter"; src: url("/fonts/inter.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url("/fonts/plus-jakarta-sans.woff2") format("woff2"); font-weight: 200 800; font-display: swap; }
+
+:root {
+  --c-bg: #ffffff;
+  --c-surface: #ffffff;
+  --c-surface-alt: #f5f5f6;
+  --c-border: #e7e7ea;
+  --c-border-input: #8a8a93;
+  --c-text: #0d0d0f;
+  --c-text-muted: #5f5f68;
+  --c-accent: #3346d3;
+  --c-accent-strong: #2533a8;
+  --c-accent-soft: #eef0fd;
+  --c-accent-line: #b9c0f2;
+  --c-on-accent: #ffffff;
+  --c-track: #ebebee;
+  --c-danger: #c62f2f;
+  --c-success: #1f7a4d;
+  --c-warning: #9a5b00;
+  --c-score-low: #c62f2f;
+  --c-score-mid: #a85a00;
+  --c-score-high: #1f7a4d;
+  --c-scrim: #000000;
+  --font-display: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+  --font-sans: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --fs-eyebrow: 12px;
+  --lh-eyebrow: 16px;
+  --fw-eyebrow: 700;
+  --fs-xs: 13px;
+  --lh-xs: 18px;
+  --fw-xs: 500;
+  --fs-sm: 14px;
+  --lh-sm: 20px;
+  --fw-sm: 400;
+  --fs-base: 16px;
+  --lh-base: 22px;
+  --fw-base: 600;
+  --fs-lg: 18px;
+  --lh-lg: 24px;
+  --fw-lg: 600;
+  --fs-xl: 28px;
+  --lh-xl: 32px;
+  --fw-xl: 800;
+  --fs-score: 40px;
+  --lh-score: 44px;
+  --fw-score: 800;
+  --sp-0: 0px;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 14px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+  --size-tap: 48px;
+  --size-option: 56px;
+  --size-cta: 56px;
+  --size-progress: 6px;
+  --size-content-max: 480px;
+  --size-gutter: 16px;
+  --shadow-card: 0 1px 2px rgba(13,13,15,.06);
+  --shadow-sheet: 0 -8px 32px rgba(13,13,15,.18);
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+  --motion-screen: 260ms;
+  --motion-ease: cubic-bezier(.2,.8,.2,1);
+}
