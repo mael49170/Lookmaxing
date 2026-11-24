@@ -41,3 +41,8 @@ Chargement simulé qui fait croire à un calcul,quiz,skip,yes,skip,trompeur
 Prix d'appel 0.99 puis 19.99 par semaine,payments,skip,yes,skip,très risqué en droit français de la consommation
 Articles science de l'original,content,skip,yes,skip,leurs textes : on écrit les nôtres
 Marque GODMODE police et visuels,brand,skip,yes,skip,leur identité
+"Aperçu du vrai résultat avant paiement (point fort, gain, critères qui freinent)",funnel,should,no,yes,"S24b ajouté : vrai résultat, jamais la note"
+Analyse en direct sur sa photo (maillage thermique),scan,should,no,yes,"S07b ajouté : animation dans le téléphone, photo jamais envoyée ailleurs que pour l'analyse"
+Phrases qui reprennent ses réponses,quiz,should,no,yes,S13 S16 S17 S21 S23
+Révélation de la note après paiement,report,should,no,yes,compteur + jauge thermique
+Lien de connexion direct dans l'e-mail de bienvenue,account,should,no,yes,"compte créé au paiement, rien à créer"

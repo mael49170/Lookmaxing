@@ -1,6 +1,8 @@
 // Le quiz : un écran à la fois, décrit dans /shared/questions.js.
 import { SCREENS, S11_TEXT } from "/shared/questions.js";
 import { OFFERS, DEFAULT_OFFER, euros, renewText, perDay } from "/shared/plans.js";
+import { FACTORS } from "/shared/factors.js";
+import { faceMesh } from "/q/mesh.js";
 
 const app = document.getElementById("app");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -33,7 +35,7 @@ const syncQuiz = () => api("quiz", { answers: S.answers, variant: S.variant, utm
 const trackStep = (step) => api("track", { step, variant: S.variant, source: S.utm.source }).catch(() => {});
 
 // ---------- Navigation ----------
-const visible = (s) => !(s.skipIf && s.skipIf({ consent: S.consent }));
+const visible = (s) => !(s.skipIf && s.skipIf({ consent: S.consent, scan: S.scan }));
 function go(index, { push = true } = {}) {
   if (push) S.history.push(S.i);
   S.i = index;
@@ -58,26 +60,25 @@ function topbar(withProgress = true) {
     ${withProgress ? `<div class="progress" role="progressbar" aria-label="Avancement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress()}"><span style="width:${progress()}%"></span></div>` : '<div class="brand" style="flex:1">Lookmaxing</div><span style="width:48px"></span>'}</div>`;
 }
 const footer = (html) => `<div class="screen__footer"><div class="stack">${html}</div></div>`;
+// Une phrase qui reprend ses propres réponses : il voit qu'on l'écoute
+const echoHtml = (s) => { const t = s.echo ? s.echo(S.answers) : ""; return t ? `<p class="echo">${esc(t)}</p>` : ""; };
+const fr = (n) => String(n).replace(".", ",");
 
 // ---------- Écrans ----------
 const VIEWS = {
   landing() {
     // Variante B : on passe directement à la première question, avec le titre de l'accueil
-    if (S.variant === "b") return VIEWS.single(SCREENS[1], { title: "Ta vraie note de visage, et comment la monter", lead: "Commence par nous dire qui tu es." });
+    if (S.variant === "b") return VIEWS.single(SCREENS[1], { title: "Ce que les autres voient de toi en 3 secondes.", lead: "Une analyse franche de ton visage, et un plan pour faire monter ta note. On commence : tu es…" });
     return `<main class="screen">
       <div class="brand">Lookmaxing</div>
-      <div class="sample-card" aria-label="Exemple de résultat">
-        <span class="sample">Exemple</span>
-        <div class="scores">
-          <div class="score"><div class="score__label">Aujourd'hui</div><div class="score__value">6.4</div></div>
-          <div class="score"><div class="score__label">Après 12 semaines</div><div class="score__value score__value--high">7.6</div></div>
-        </div>
-        <div class="gauge" role="img" aria-label="Exemple : de 64 à 76 sur 100"><i style="left:64%"></i></div>
-        <div class="chips"><span class="chip">Peau <b>+9</b></span><span class="chip">Coupe <b>+12</b></span><span class="chip">Posture <b>+8</b></span><span class="chip">Tenue <b>+10</b></span></div>
+      <div class="landing-art">${faceMesh({ className: "mesh mesh--idle" })}
+        <span class="tag" style="left:-6%;top:44%">Mâchoire</span>
+        <span class="tag" style="right:-8%;top:30%">Peau</span>
+        <span class="tag" style="right:-4%;top:66%">Posture</span>
       </div>
-      <h1 class="title" tabindex="-1">Ta note de visage. <em>Et le plan pour la monter.</em></h1>
-      <p class="lead">Découvre ce qui te tire vers le bas, et ce que tu peux changer dès cette semaine.</p>
-      ${footer(`<button class="btn btn--primary" data-next>Commencer</button><div class="points"><span>3 minutes</span><span>Photos jamais enregistrées</span><span>Dès 18 ans</span></div>`)}
+      <h1 class="title title--hero" tabindex="-1">Ce que les autres voient de toi en 3 secondes. Et comment le changer.</h1>
+      <p class="lead">15 critères passés au crible, une note sans filtre, et un plan de 28 jours pour la faire monter.</p>
+      ${footer(`<button class="btn btn--primary" data-next>Lancer mon analyse</button><div class="reassure"><span>3 minutes, dès 18 ans.</span><span>Tes photos ne sont jamais enregistrées.</span></div>`)}
     </main>`;
   },
 
@@ -88,6 +89,7 @@ const VIEWS = {
       ${s.eyebrow ? `<span class="eyebrow">${esc(s.eyebrow)}</span>` : ""}
       <h1 class="title" tabindex="-1">${esc(override.title || s.title)}</h1>
       ${override.lead || s.lead ? `<p class="lead">${esc(override.lead || s.lead)}</p>` : ""}
+      ${echoHtml(s)}
       <fieldset class="options"><legend class="sr-only">${esc(s.title)}</legend>
         ${s.options.map((x) => `<label class="option option--radio"><input type="radio" name="${s.id}" value="${x.id}" ${val === x.id ? "checked" : ""}>
           ${x.emoji ? `<span class="option__emoji" aria-hidden="true">${x.emoji}</span>` : ""}
@@ -102,6 +104,7 @@ const VIEWS = {
     return `<main class="screen">${topbar()}
       <h1 class="title" tabindex="-1">${esc(s.title)}</h1>
       ${s.lead ? `<p class="lead">${esc(s.lead)}</p>` : ""}
+      ${echoHtml(s)}
       <fieldset class="options"><legend class="sr-only">${esc(s.title)}</legend>
         ${s.options.map((x) => `<label class="option"><input type="checkbox" name="${s.id}" value="${x.id}" ${val.includes(x.id) ? "checked" : ""}>
           <span class="option__emoji" aria-hidden="true">${x.emoji}</span>
@@ -116,15 +119,16 @@ const VIEWS = {
       ${s.eyebrow ? `<span class="eyebrow">${esc(s.eyebrow)}</span>` : ""}
       <h1 class="title" tabindex="-1">${esc(s.title)}</h1>
       ${s.lead ? `<p class="lead">${esc(s.lead)}</p>` : ""}
-      ${s.steps ? `<ol class="steps-list">${s.steps.map(([e, b, t]) => `<li><span class="option__emoji" aria-hidden="true">${e}</span><span><b>${esc(b)}</b><span>${esc(t)}</span></span></li>`).join("")}</ol>` : ""}
+      ${s.steps ? `<ol class="steps-list">${s.steps.map(([e, b, t]) => `<li><span><b>${esc(b)}</b><span>${esc(t)}</span></span></li>`).join("")}</ol>` : ""}
       ${s.source ? `<p class="source">Source : ${esc(s.source)}</p>` : ""}
+      ${echoHtml(s)}
       ${footer(`<button class="btn btn--primary" data-next>${esc(s.cta || "Continuer")}</button>`)}
     </main>`;
   },
 
   consent() {
     return `<main class="screen">${topbar()}
-      <h1 class="title" tabindex="-1">Avant les photos, ton accord</h1>
+      <h1 class="title" tabindex="-1">Avant les photos, ton accord.</h1>
       <p class="lead">L'analyse lit la forme et les proportions de ton visage : ce sont des données biométriques. On a besoin de ton accord écrit.</p>
       <div class="consent">
         <h3>Ce qu'on en fait</h3><p>On mesure ton visage sur 2 photos pour calculer ta note et régler ton plan. Rien d'autre : pas d'identification, pas de comparaison avec d'autres personnes, pas d'entraînement d'IA.</p>
@@ -138,7 +142,7 @@ const VIEWS = {
 
   photos() {
     return `<main class="screen">${topbar()}
-      <h1 class="title" tabindex="-1">Deux photos, en pleine lumière</h1>
+      <h1 class="title" tabindex="-1">Deux photos. Pleine lumière, sans filtre.</h1>
       <p class="lead">Face à une fenêtre, téléphone à hauteur des yeux, sans lunettes ni casquette.</p>
       <div class="shots">
         ${["face", "profil"].map((k) => `<label class="shot ${shots[k] ? "shot--done" : ""}">
@@ -156,11 +160,11 @@ const VIEWS = {
   plan_intro() {
     return `<main class="screen">${topbar()}
       <div class="scores" aria-label="Notes encore cachées">
-        <div class="score"><div class="score__label">Aujourd'hui</div><div class="score__value">?.?</div></div>
-        <div class="score"><div class="score__label">Ton max</div><div class="score__value">?.?</div></div>
+        <div class="score"><div class="score__label">Aujourd'hui</div><div class="score__value">?,?</div></div>
+        <div class="score score--hot"><div class="score__label">Ton max</div><div class="score__value score__value--high">?,?</div></div>
       </div>
-      <h1 class="title" tabindex="-1">${S.scan === "running" ? "Ton analyse tourne. Pendant ce temps, ton plan." : "Maintenant, ton plan"}</h1>
-      <p class="lead">Tes réponses décident de l'ordre de ton plan. Encore 2 minutes.</p>
+      <h1 class="title" tabindex="-1">${S.scan === "running" || S.scan === "done" ? "Pendant que l'analyse finit, on construit ton plan." : "Maintenant, ton plan."}</h1>
+      <p class="lead">Tes réponses décident de ce qu'on attaque en premier. Encore 2 minutes.</p>
       ${footer(`<button class="btn btn--primary" data-next>Continuer</button>`)}
     </main>`;
   },
@@ -169,7 +173,7 @@ const VIEWS = {
     const first = (S.answers.difficultes || [])[0] || "progresser";
     const [title, lead] = S11_TEXT[first] || S11_TEXT.progresser;
     return `<main class="screen"><div class="hero">${topbar()}
-        <span class="eyebrow">D'après tes réponses</span>
+        <p class="eyebrow">D'après tes réponses</p>
         <h1 class="title" tabindex="-1">${esc(title)}</h1>
       </div>
       <p class="lead">${esc(lead)}</p>
@@ -182,8 +186,8 @@ const VIEWS = {
     const step = (emoji, label, hint, done) => `<div class="step ${done ? "" : "step--next"}">${done ? `<span class="step__done" aria-hidden="true">${ICON_CHECK}</span>` : `<span class="option__emoji" aria-hidden="true">${emoji}</span>`}
       <span class="option__text"><span class="option__label">${label}</span><span class="option__hint">${esc(hint)}</span></span>${done ? '<span class="sr-only">fait</span>' : '<span class="step__tag">ENSUITE</span>'}</div>`;
     return `<main class="screen"><div class="hero">${topbar()}
-        <span class="eyebrow">Ton plan prend forme</span>
-        <h1 class="title" tabindex="-1">Reste ce qu'une photo ne montre pas.</h1>
+        <p class="eyebrow">Ton plan prend forme</p>
+        <h1 class="title" tabindex="-1">Il reste ce qu'une photo ne montre pas.</h1>
       </div>
       <div class="stack">
         ${step("📸", "Visage", S.scan === "done" || S.scan === "running" ? "D'après ton scan" : "D'après tes réponses", true)}
@@ -198,7 +202,7 @@ const VIEWS = {
   building(s) {
     return `<main class="screen">
       <div class="brand">Lookmaxing</div>
-      <h1 class="title" tabindex="-1">On prépare ton plan</h1>
+      <h1 class="title" tabindex="-1">On assemble ton plan.</h1>
       <p class="lead">${S.consent ? "On termine l'analyse de tes photos et on range tes 28 jours." : "On range tes 28 jours d'après tes réponses."}</p>
       <div class="bars">
         ${[["🧴", "Peau et soins"], ["💪", "Corps et style"], ["🧠", "Assurance"]].map(([e, l], k) => `<div><div class="bar__row"><span><span aria-hidden="true">${e}</span> ${l}</span><b data-pct="${k}">0 %</b></div><div class="progress"><span data-bar="${k}" style="width:0%"></span></div></div>`).join("")}
@@ -212,12 +216,8 @@ const VIEWS = {
   email() {
     return `<main class="screen">
       <div class="brand">Lookmaxing</div>
-      <h1 class="title" tabindex="-1">Ton plan est prêt. Où on te l'envoie ?</h1>
-      <p class="lead">Ta note, ton max et ton plan, rattachés à ton adresse.</p>
-      ${S.scan === "done" ? `<div class="scores" aria-label="Notes encore cachées">
-        <div class="score"><div class="score__label">Aujourd'hui</div><div class="score__value">?.?</div></div>
-        <div class="score"><div class="score__label">Ton max</div><div class="score__value">?.?</div></div>
-      </div>` : ""}
+      <h1 class="title" tabindex="-1">${S.scan === "done" ? "Ton résultat t'attend." : "Ton plan est prêt."}</h1>
+      <p class="lead">Où on te l'envoie ? Il reste attaché à ton adresse, sans mot de passe.</p>
       <form id="mail-form" class="stack" novalidate>
         <div class="field"><label for="email">Ton e-mail</label>
           <input id="email" class="input" type="email" inputmode="email" autocomplete="email" placeholder="prenom@exemple.fr" required>
@@ -232,13 +232,13 @@ const VIEWS = {
   paywall() {
     const offers = S.offers || OFFERS;
     const chosen = offers[S.offer] || offers[DEFAULT_OFFER];
+    const gain = S.teaser?.scanned && Number(S.teaser.gain) > 0 ? S.teaser.gain : null;
     return `<main class="screen">
       <div class="brand">Lookmaxing</div>
-      <h1 class="title" tabindex="-1">Débloque ta note et ton plan</h1>
-      ${S.scanned ? `<div class="scores" aria-label="Notes encore cachées">
-        <div class="score"><div class="score__label">Aujourd'hui</div><div class="score__value">?.?</div></div>
-        <div class="score"><div class="score__label">Ton max</div><div class="score__value">?.?</div></div>
-      </div>` : ""}
+      ${gain ? `<p class="eyebrow">Ton potentiel, d'après ton analyse</p><div class="big-gain" aria-label="plus ${fr(gain)} point">+${fr(gain)}</div>
+        <h1 class="title" tabindex="-1">Ces points, on va les chercher ensemble.</h1>`
+        : `<h1 class="title" tabindex="-1">Ton plan de 28 jours est prêt.</h1>`}
+      <p class="lead">${S.scanned ? "Ta note, le détail de tes 15 critères, et le plan jour par jour pour progresser." : "Ton bilan et ton plan jour par jour, faits d'après tes réponses."}</p>
       <fieldset class="options"><legend class="sr-only">Choisis ton offre</legend>
         ${Object.entries(offers).map(([k, o]) => `<label class="offer">${o.best ? '<span class="offer__tag">Le moins cher par jour</span>' : ""}
           <input type="radio" name="offer" value="${k}" ${k === S.offer ? "checked" : ""}>
@@ -246,15 +246,42 @@ const VIEWS = {
           <span class="offer__price">${esc(euros(o.intro))}<span class="offer__day">soit ${esc(perDay(o))} par jour</span></span></label>`).join("")}
       </fieldset>
       <ul class="includes">
-        ${S.lead && S.scanned ? "<li>Ta note sur 15 critères, tes points forts et tes points à travailler</li>" : "<li>Ton bilan d'après tes réponses</li>"}
-        <li>Ton plan de 28 jours, 5 à 10 minutes par jour</li>
-        <li>Le suivi jour par jour dans ton espace</li>
-        <li>Résiliable en ligne à tout moment, en 2 clics</li>
+        ${S.scanned ? "<li>Ta note et ton potentiel, critère par critère</li>" : "<li>Ton bilan d'après tes réponses</li>"}
+        <li>Un plan de 28 jours, 5 à 10 minutes par jour</li>
+        <li>Ton suivi jour par jour, et un rappel chaque matin si tu veux</li>
+        <li>Résiliable en ligne en un clic</li>
       </ul>
-      <label class="check"><input type="checkbox" id="waiver"><span>Je veux accéder à mon rapport tout de suite. Je reconnais perdre mon droit de rétractation de 14 jours une fois le rapport ouvert.</span></label>
+      ${S.waiverOnSite ? `<label class="check"><input type="checkbox" id="waiver"><span>Je veux accéder à mon résultat tout de suite. Je reconnais perdre mon droit de rétractation de 14 jours une fois le résultat ouvert.</span></label>` : ""}
       <div id="pay-error"></div>
-      <p class="legal">Aujourd'hui : ${esc(euros(chosen.intro))}. Ensuite : ${esc(euros(chosen.renew))} ${chosen.count === 1 ? "chaque mois" : `tous les ${chosen.count} mois`}, jusqu'à résiliation. Paiement sécurisé par Stripe. <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
-      ${footer(`<button class="btn btn--primary" data-pay>Payer ${esc(euros(chosen.intro))}</button>`)}
+      <p class="legal">Aujourd'hui : ${esc(euros(chosen.intro))}. Ensuite : ${esc(euros(chosen.renew))} ${chosen.count === 1 ? "chaque mois" : `tous les ${chosen.count} mois`}, jusqu'à résiliation. Carte, Apple Pay ou Google Pay, paiement sécurisé par Stripe. <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
+      ${footer(`<button class="btn btn--primary" data-pay>Débloquer mon résultat, ${esc(euros(chosen.intro))}</button>`)}
+    </main>`;
+  },
+
+  scanning() {
+    const shown = scanPreview ? `<img src="${scanPreview}" alt="">` : "";
+    return `<main class="screen">${topbar()}
+      <h1 class="title" tabindex="-1">On lit ton visage.</h1>
+      <div class="scanner">${shown}${faceMesh({ animated: true, className: "mesh mesh--live" })}</div>
+      <p class="reading" id="reading" aria-live="polite">Calage du visage…</p>
+      <p class="lead">L'analyse se termine pendant que tu réponds aux questions suivantes.</p>
+      ${footer(`<button class="btn btn--primary" data-next>Continuer</button>`)}
+    </main>`;
+  },
+
+  teaser() {
+    const t = S.teaser || {};
+    return `<main class="screen">
+      <div class="brand">Lookmaxing</div>
+      <p class="eyebrow">Aperçu de ton analyse</p>
+      <h1 class="title" tabindex="-1">Tu as plus de marge que tu ne crois.</h1>
+      <div class="teaser">
+        <div class="teaser__row"><span>Ton point fort</span><b>${esc(t.strength?.label || "")}</b></div>
+        <div class="teaser__row teaser__row--hot"><span>Points que tu peux gagner</span><b>+${fr(t.gain || "0.0")}</b></div>
+        <div class="teaser__row"><span>Critères qui te freinent</span><b>${t.holding ?? "?"}</b></div>
+        ${(t.holdingLabels || []).length ? `<div class="teaser__row"><span class="blurred" aria-hidden="true">${esc(t.holdingLabels.join(", "))}</span><span class="sr-only">Le détail s'affiche avec ton résultat</span></div>` : ""}
+      </div>
+      ${footer(`<button class="btn btn--primary" data-next>Voir ma note</button>`)}
     </main>`;
   },
 
@@ -293,6 +320,19 @@ async function mountTurnstile() {
 
 // L'analyse part en arrière-plan : le quiz continue pendant qu'elle tourne
 let scanPromise = null;
+let scanPreview = null; // la photo de face, en mémoire seulement, pour l'écran d'analyse
+async function loadTeaser() { S.teaser = await api("teaser", null, { method: "GET" }).catch(() => null); save(); }
+// Écran d'analyse : on montre les critères que l'analyse lit vraiment
+function runScanning() {
+  const el = document.getElementById("reading");
+  const labels = FACTORS.map((f) => f.label);
+  let k = 0;
+  const tick = setInterval(() => {
+    if (!document.getElementById("reading")) return clearInterval(tick);
+    el.textContent = `Lecture : ${labels[k % labels.length]}…`;
+    if (++k > labels.length) { clearInterval(tick); el.textContent = "C'est noté. Le reste se calcule pendant tes réponses."; }
+  }, 260);
+}
 function startScan() {
   S.scan = "running"; S.scanError = ""; save();
   scanPromise = api("scan", { face: shots.face, profil: shots.profil, turnstile: tsToken })
@@ -313,6 +353,8 @@ function render() {
   trackStep(s.id === "accueil" && S.variant === "b" ? "genre" : s.id);
   if (s.type === "photos") mountTurnstile();
   if (s.type === "building") runBuilding();
+  if (s.type === "scanning") runScanning();
+  if (s.type === "paywall" && S.waiverOnSite === undefined) api("config", null, { method: "GET" }).then((c) => { S.waiverOnSite = !c.waiverInStripe; save(); render(); }).catch(() => {});
 }
 
 app.addEventListener("click", async (e) => {
@@ -335,8 +377,8 @@ app.addEventListener("click", async (e) => {
     S.consent = false; api("scan-consent", { agree: false }).catch(() => {});
     return next();
   }
-  if (t.hasAttribute("data-scan")) { startScan(); return next(); }
-  if (t.hasAttribute("data-tomail")) return goTo("email");
+  if (t.hasAttribute("data-scan")) { scanPreview = shots.face; startScan(); return next(); }
+  if (t.hasAttribute("data-tomail")) { if (S.scan === "done") await loadTeaser(); return next(); }
   if (t.dataset.sheet) return answerSheet(t.dataset.sheet, t.dataset.v === "1");
   if (t.hasAttribute("data-retake")) { S.consent = true; return goTo("photos"); }
   if (t.hasAttribute("data-pay")) return pay(t);
@@ -454,9 +496,9 @@ async function runBuilding() {
 
 async function pay(btn) {
   const box = document.getElementById("pay-error");
-  if (!document.getElementById("waiver").checked) { box.innerHTML = '<div class="alert" role="alert">Coche la case juste au-dessus pour recevoir ton rapport tout de suite.</div>'; document.getElementById("waiver").focus(); box.scrollIntoView({ block: "center" }); return; }
+  if (document.getElementById("waiver") && !document.getElementById("waiver").checked) { box.innerHTML = '<div class="alert" role="alert">Coche la case juste au-dessus pour recevoir ton rapport tout de suite.</div>'; document.getElementById("waiver").focus(); box.scrollIntoView({ block: "center" }); return; }
   btn.setAttribute("aria-busy", "true");
-  try { const { url } = await api("checkout", { offer: S.offer, waiver: true }); location.href = url; }
+  try { const { url } = await api("checkout", { offer: S.offer, waiver: Boolean(document.getElementById("waiver")?.checked) }); location.href = url; }
   catch (e) { btn.removeAttribute("aria-busy"); box.innerHTML = `<div class="alert" role="alert">${esc(e.message)}</div>`; box.scrollIntoView({ block: "center" }); }
 }
 

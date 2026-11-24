@@ -3,6 +3,7 @@ import { now, track, DAY } from "../../lib/db.js";
 import { currentQuiz, createSession, sessionCookie } from "../../lib/identity.js";
 import { createMember, offerSnapshot } from "../../lib/members.js";
 import { sendMail, welcomeMail } from "../../lib/mail.js";
+import { welcomeLink } from "../../lib/auth.js";
 
 const redirect = (to, cookie) => new Response(null, { status: 303, headers: { location: to, ...(cookie ? { "set-cookie": cookie } : {}) } });
 
@@ -27,7 +28,7 @@ export const onRequestGet = handle(async ({ request, env }) => {
   }
   if (customer._created) {
     await track(d, "paye", { variant: quiz.variant, source: quiz.utm_source });
-    await sendMail(env, { to: customer.email, ...welcomeMail(url.origin + "/app/") }).catch((e) => console.error("E-mail de bienvenue", e.message));
+    await sendMail(env, { to: customer.email, ...welcomeMail(await welcomeLink(d, request, customer.email_key)) }).catch((e) => console.error("E-mail de bienvenue", e.message));
   }
   return redirect("/app/?bienvenue=1", sessionCookie(await createSession(d, customer.id), request));
 });

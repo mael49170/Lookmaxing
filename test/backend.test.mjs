@@ -128,6 +128,8 @@ test("page de paiement Stripe : prix, réduction de 1re période, texte de renou
   assert.equal(co.mode, "subscription"); assert.equal(co.client_reference_id, "q1"); assert.equal(co.customer_email, "f@example.com");
   assert.equal(co["discounts[0][coupon]"], "lm_intro_mois_1000");
   assert.match(co["custom_text[submit][message]"], /puis 19,99 € chaque mois/);
+  assert.equal(co["consent_collection[terms_of_service]"], "required", "la renonciation aux 14 jours est sur la page Stripe");
+  assert.match(co["custom_text[terms_of_service_acceptance][message]"], /rétractation/);
   assert.equal(calls.find((c) => c.path === "/v1/coupons").body.duration, "once");
 });
 

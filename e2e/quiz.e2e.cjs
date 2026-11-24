@@ -73,12 +73,12 @@ async function runTo(page, target, opts) {
     if ((await page.getByLabel("Ton e-mail").count()) && target !== "email") {
       await page.getByLabel("Ton e-mail").fill(opts?.email || `test${Date.now()}@example.com`);
       await page.getByRole("button", { name: "Voir mon résultat" }).click();
-      await page.getByRole("heading", { name: /Débloque/ }).waitFor({ timeout: 10000 });
+      await page.getByRole("button", { name: /Débloquer mon résultat/ }).waitFor({ timeout: 10000 });
       continue;
     }
     const t = await h1(page).catch(() => "");
     if (target === "email" && await page.getByLabel("Ton e-mail").count()) return;
-    if (target === "offre" && /Débloque/.test(t)) return;
+    if (target === "offre" && await page.getByRole("button", { name: /Débloquer mon résultat/ }).count()) return;
     if (typeof target === "number" && (await screenId(page)) === target) return;
     if (opts?.axe) await axe(page, "S" + String((await screenId(page)) + 1).padStart(2, "0"));
     await step(page, opts);
@@ -88,8 +88,11 @@ async function runTo(page, target, opts) {
 
 async function pay(page) {
   await page.getByRole("checkbox", { name: /rétractation/ }).check();
-  await page.getByRole("button", { name: /^Payer/ }).click();
+  await page.getByRole("button", { name: /Débloquer mon résultat/ }).click();
   await page.waitForURL(/\/app\//, { timeout: 15000 });
+  if (await page.getByRole("button", { name: "Voir mon détail" }).count() || await page.waitForSelector(".tabs, .reveal", { timeout: 10000 }).then(() => page.locator(".reveal").count())) {
+    await page.waitForTimeout(1800); await axe(page, "révélation"); await page.getByRole("button", { name: "Voir mon détail" }).click();
+  }
   await page.getByRole("tablist").waitFor();
 }
 
@@ -117,7 +120,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     await axe(p, "S25-S26");
     await pay(p);
     await axe(p, "S28");
-    expect(await p.getByRole("heading", { name: "Ton résultat" }).count(), "pas de rapport");
+    expect(await p.getByRole("heading", { name: /Ton détail/ }).count(), "pas de rapport");
     await p.getByRole("tab", { name: "Mon plan" }).click();
     const tasks = p.getByRole("checkbox");
     expect((await tasks.count()) >= 3, "moins de 3 tâches");
@@ -128,15 +131,15 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   }, browser);
 
   await test("F01-E1", "rechargement en plein quiz : on reprend au même écran", async (p) => {
-    await runTo(p, 11);
+    await runTo(p, 12);
     await p.reload({ waitUntil: "networkidle" });
-    expect((await screenId(p)) === 11 && /pronostic|note/.test(await h1(p)), "pas revenu au S12");
+    expect((await screenId(p)) === 12 && /pronostic|note/.test(await h1(p)), "pas revenu au S12");
   }, browser);
 
   await test("F01-E2", "retour arrière du navigateur : écran précédent, réponses gardées", async (p) => {
-    await runTo(p, 9);
+    await runTo(p, 10);
     await p.goBack(); await p.waitForTimeout(300);
-    expect((await screenId(p)) === 8, "pas revenu au S09 (écran " + (await screenId(p)) + ")");
+    expect((await screenId(p)) === 9, "pas revenu au S09 (écran " + (await screenId(p)) + ")");
     expect(await p.getByRole("checkbox", { checked: true }).count() >= 1, "réponse perdue");
   }, browser);
 
@@ -144,13 +147,13 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     await runTo(p, "offre");
     let n = 0; p.on("request", (r) => r.url().includes("/api/checkout") && !r.url().includes("done") && n++);
     await p.getByRole("checkbox", { name: /rétractation/ }).check();
-    await p.getByRole("button", { name: /^Payer/ }).dblclick();
+    await p.getByRole("button", { name: /Débloquer mon résultat/ }).dblclick();
     await p.waitForURL(/\/app\//, { timeout: 15000 });
     expect(n === 1, n + " demandes de paiement");
   }, browser);
 
   await test("F01-E4", "au clavier seulement : les flèches choisissent sans valider, Espace valide (BUG-001)", async (p) => {
-    await p.keyboard.press("Tab"); await p.keyboard.press("Enter"); // Commencer
+    await p.keyboard.press("Tab"); await p.keyboard.press("Enter"); // Lancer mon analyse
     await p.waitForTimeout(400);
     await p.keyboard.press("Tab"); // première réponse
     await p.keyboard.press("ArrowDown"); await p.waitForTimeout(600);
@@ -161,7 +164,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
 
   await test("F01-E5", "l'analyse échoue : message clair, reprendre les photos ou continuer sans", async (p) => {
     await p.route("**/api/scan", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: false, problem: "pas_de_visage", message: "On ne trouve pas de visage sur une des photos." }) }));
-    await runTo(p, 23);
+    await runTo(p, 24);
     for (let k = 0; k < 2; k++) { await p.getByRole("dialog").waitFor({ timeout: 15000 }); await p.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
     await p.getByRole("button", { name: "Continuer sans scan" }).waitFor({ timeout: 30000 });
     expect(await p.getByRole("alert").filter({ hasText: "pas de visage" }).count(), "pas de message");
@@ -179,7 +182,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     await runTo(p, "email");
     await p.getByLabel("Ton e-mail").fill("élodie.martin+" + "x".repeat(60) + "@exemple-tres-long-pour-voir.fr");
     await p.getByRole("button", { name: "Voir mon résultat" }).click();
-    await p.getByRole("heading", { name: /Débloque/ }).waitFor({ timeout: 5000 });
+    await p.getByRole("button", { name: /Débloquer mon résultat/ }).waitFor({ timeout: 5000 });
   }, browser);
 
   await test("F01-N1", "e-mail invalide : message sous le champ", async (p) => {
@@ -191,7 +194,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
 
   await test("F01-N2", "payer sans cocher la renonciation : refusé avec un message", async (p) => {
     await runTo(p, "offre");
-    await p.getByRole("button", { name: /^Payer/ }).click();
+    await p.getByRole("button", { name: /Débloquer mon résultat/ }).click();
     expect(await p.getByRole("alert").filter({ hasText: "Coche la case" }).isVisible(), "pas de message");
     expect(!/\/app\//.test(p.url()), "paiement parti quand même");
   }, browser);
@@ -199,14 +202,14 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   await test("F02-H1", "sans photo (variante B) : plan d'après les réponses, pas de note", async (p) => {
     await p.goto(BASE + "/q/?v=b", { waitUntil: "networkidle" });
     await runTo(p, "offre", { photos: false });
-    expect(!(await p.getByText("?.?").count()), "notes affichées sans scan");
+    expect(!(await p.getByText("?,?").count()), "notes affichées sans scan");
     await pay(p);
     await p.getByRole("tab", { name: "Mon rapport" }).click();
     expect(await p.getByText(/Pas de scan pour ce compte/).count(), "rapport vide mal expliqué");
   }, browser);
 
   await test("F03-H1", "moins de 18 ans : arrêt, rien de gardé", async (p) => {
-    await p.getByRole("button", { name: "Commencer" }).click();
+    await p.getByRole("button", { name: "Lancer mon analyse" }).click();
     await p.getByRole("radio", { name: /homme/ }).check({ force: true });
     await p.waitForTimeout(500);
     await p.getByRole("radio", { name: /Moins de 18/ }).check({ force: true });

@@ -1,29 +1,32 @@
 /* Fichier fabriqué par dev/tokens.mjs depuis replica/design/tokens.json : ne pas modifier à la main. */
 @font-face { font-family: "Inter"; src: url("/fonts/inter.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: "Plus Jakarta Sans"; src: url("/fonts/plus-jakarta-sans.woff2") format("woff2"); font-weight: 200 800; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url("/fonts/archivo.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; }
 
 :root {
-  --c-bg: #ffffff;
-  --c-surface: #ffffff;
-  --c-surface-alt: #f5f5f6;
-  --c-border: #e7e7ea;
-  --c-border-input: #8a8a93;
-  --c-text: #0d0d0f;
-  --c-text-muted: #5f5f68;
-  --c-accent: #3346d3;
-  --c-accent-strong: #2533a8;
-  --c-accent-soft: #eef0fd;
-  --c-accent-line: #b9c0f2;
-  --c-on-accent: #ffffff;
-  --c-track: #ebebee;
-  --c-danger: #c62f2f;
-  --c-success: #1f7a4d;
-  --c-warning: #9a5b00;
-  --c-score-low: #c62f2f;
-  --c-score-mid: #a85a00;
-  --c-score-high: #1f7a4d;
+  --c-bg: #09090a;
+  --c-surface: #131315;
+  --c-surface-alt: #1b1b1e;
+  --c-border: #29292d;
+  --c-border-input: #6f6f7a;
+  --c-text: #f6f3ef;
+  --c-text-muted: #a5a3ab;
+  --c-accent: #ff5a1f;
+  --c-accent-strong: #ff7a45;
+  --c-accent-soft: #2a1309;
+  --c-accent-line: #5c2a14;
+  --c-on-accent: #0b0705;
+  --c-track: #26262a;
+  --c-danger: #ff6b5e;
+  --c-success: #3ddc84;
+  --c-warning: #ffb020;
+  --c-score-low: #ff6b5e;
+  --c-score-mid: #ffb020;
+  --c-score-high: #3ddc84;
   --c-scrim: #000000;
-  --font-display: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+  --c-glow: #ff3d00;
+  --c-gold: #ffc46b;
+  --c-heat-deep: #5a0d06;
+  --font-display: Archivo, 'Arial Narrow', system-ui, sans-serif;
   --font-sans: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --fs-eyebrow: 12px;
@@ -41,12 +44,15 @@
   --fs-lg: 18px;
   --lh-lg: 24px;
   --fw-lg: 600;
-  --fs-xl: 28px;
-  --lh-xl: 32px;
+  --fs-xl: 30px;
+  --lh-xl: 34px;
   --fw-xl: 800;
-  --fs-score: 40px;
-  --lh-score: 44px;
+  --fs-score: 48px;
+  --lh-score: 50px;
   --fw-score: 800;
+  --fs-hero: 40px;
+  --lh-hero: 42px;
+  --fw-hero: 800;
   --sp-0: 0px;
   --sp-1: 4px;
   --sp-2: 8px;
@@ -67,10 +73,12 @@
   --size-progress: 6px;
   --size-content-max: 480px;
   --size-gutter: 16px;
-  --shadow-card: 0 1px 2px rgba(13,13,15,.06);
-  --shadow-sheet: 0 -8px 32px rgba(13,13,15,.18);
+  --shadow-card: 0 1px 0 rgba(255,255,255,.04) inset;
+  --shadow-sheet: 0 -12px 40px rgba(0,0,0,.6);
+  --shadow-glow: 0 10px 40px -8px rgba(255,90,31,.55);
   --motion-fast: 120ms;
   --motion-base: 220ms;
   --motion-screen: 260ms;
   --motion-ease: cubic-bezier(.2,.8,.2,1);
+  --heat: linear-gradient(90deg, #5a0d06 0%, #ff6b5e 25%, #ff5a1f 55%, #ffb020 80%, #ffc46b 100%);
 }

@@ -8,16 +8,22 @@
 <link rel="stylesheet" href="/styles/tokens.css">
 <link rel="stylesheet" href="/styles/components.css">
 <link rel="stylesheet" href="/q/quiz.css">
+<meta name="theme-color" content="#09090a">
 <style>
-  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-1); background: var(--c-surface-alt); border-radius: var(--r-pill); padding: var(--sp-1); }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-1); background: var(--c-surface); border-radius: var(--r-pill); padding: var(--sp-1); }
   .tabs button { appearance: none; border: 0; min-height: 40px; border-radius: var(--r-pill); background: transparent; font: inherit; font-weight: 600; color: var(--c-text-muted); cursor: pointer; }
-  .tabs button[aria-selected="true"] { background: var(--c-bg); color: var(--c-text); box-shadow: var(--shadow-card); }
-  .section-title { font-family: var(--font-display); font-size: var(--fs-lg); line-height: var(--lh-lg); font-weight: 800; margin: var(--sp-4) 0 0; }
+  .tabs button[aria-selected="true"] { background: var(--c-surface-alt); color: var(--c-text); box-shadow: inset 0 0 0 1px var(--c-border); }
+  .section-title { font-family: var(--font-display); font-stretch: 80%; font-size: var(--fs-lg); line-height: var(--lh-lg); font-weight: 800; margin: var(--sp-4) 0 0; }
   .factor small { display: block; color: var(--c-text-muted); font-weight: 400; font-size: var(--fs-sm); margin-top: 2px; }
   .factor > span { flex: 1; padding-right: var(--sp-3); }
   .verdict { padding: var(--sp-4); border-radius: var(--r-md); background: var(--c-accent-soft); }
   .skeleton { height: 56px; border-radius: var(--r-md); background: var(--c-surface-alt); }
   .account { display: flex; flex-direction: column; gap: var(--sp-2); color: var(--c-text-muted); font-size: var(--fs-sm); border-top: 1px solid var(--c-border); padding-top: var(--sp-4); margin-top: var(--sp-5); }
+  .reveal { min-height: 80dvh; display: flex; flex-direction: column; justify-content: center; gap: var(--sp-5); }
+  .reveal__num { font-family: var(--font-display); font-stretch: 72%; font-weight: 800; font-size: 120px; line-height: .9; font-variant-numeric: tabular-nums; }
+  .reveal__max { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: var(--fs-xl); color: var(--c-gold); opacity: 0; transition: opacity var(--motion-screen); }
+  .reveal__max.on { opacity: 1; }
+  .reveal .gauge > i { transition: left 1.6s var(--motion-ease); }
   .account a, .account button { color: var(--c-text); font: inherit; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; text-decoration: underline; min-height: 32px; }
 </style>
 </head>

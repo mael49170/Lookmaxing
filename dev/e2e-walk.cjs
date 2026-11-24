@@ -13,15 +13,16 @@ const path = require("path");
   await p.goto(`http://localhost:8788/q/?v=${variant}&utm_source=test`, { waitUntil: "networkidle" });
   const shot = async (name) => p.screenshot({ path: path.join("replica/clone-screens", `${name}.png`) });
   const sid = async () => p.evaluate(() => JSON.parse(sessionStorage.getItem("lm_quiz_v1") || "{}").i);
-  const ids = ["S01","S02","S03","S04","S05","S06","S07","S08","S09","S10","S11","S12","S13","S14","S15","S16","S17","S18","S19","S20","S21","S22","S23","S24","S25","S26"];
   for (let n = 0; n < 40; n++) {
     await p.waitForTimeout(400);
     const i = (await sid()) ?? 0;
     const h1 = (await p.locator("h1").first().textContent().catch(() => "")).trim();
-    const name = ids[i] + (variant === "b" && i === 0 ? "b" : "");
+    const sidOf = await p.evaluate(async (i) => (await import("/shared/questions.js")).SCREENS[i].sid, i);
+    const name = sidOf + (variant === "b" && i === 0 ? "b" : "");
     await shot(name);
     console.log(name, "|", h1);
-    if (ids[i] === "S26") break;
+    if (sidOf === "S26") break;
+    if (sidOf === "S07b") await p.waitForTimeout(3500);
     if (await p.locator("input[data-shot]").count()) {
       if (photo) {
         await p.locator('input[data-shot="face"]').setInputFiles(photo);
@@ -59,6 +60,9 @@ const path = require("path");
   await p.click("[data-pay]"); await p.waitForTimeout(300); await shot("S26-error");
   await p.check("#waiver"); await p.click("[data-pay]");
   await p.waitForURL(/\/app\//, { timeout: 10000 });
+  await p.waitForTimeout(2200);
+  await p.screenshot({ path: "replica/clone-screens/S28-reveal.png" });
+  if (await p.locator(".reveal").count()) await p.click("text=Voir mon détail");
   await p.waitForSelector(".tabs"); await p.waitForTimeout(300);
   await p.screenshot({ path: "replica/clone-screens/S28.png", fullPage: true });
   await p.click("[data-tab=plan]"); await p.waitForTimeout(200);

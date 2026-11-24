@@ -10,7 +10,8 @@ export const onRequestPost = handle(async ({ request, env }) => {
   const body = await readJson(request, 2_000);
   const offer = OFFERS[body.offer] ? body.offer : null;
   if (!offer) throw new HttpError(400, "Choisis une offre.");
-  if (body.waiver !== true) throw new HttpError(400, "Coche la case pour recevoir ton rapport tout de suite.");
+  // avec Stripe, la case est sur la page de paiement Stripe (une case de moins chez nous) ; sans Stripe, elle est chez nous
+  if (!env.STRIPE_SECRET_KEY && body.waiver !== true) throw new HttpError(400, "Coche la case pour recevoir ton rapport tout de suite.");
   const { d, quiz } = await currentQuiz(request, env);
   const lead = await d.prepare("SELECT * FROM leads WHERE quiz_id = ?").bind(quiz.id).first();
   if (!lead) throw new HttpError(400, "Ajoute ton e-mail d'abord.");

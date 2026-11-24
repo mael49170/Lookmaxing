@@ -1,0 +1,7 @@
+{
+  "name": "Lookmaxing",
+  "name_status": "provisoire : Maël choisit parmi les 5 candidats de brand.md",
+  "avoid": ["GodModeLooks", "GodMode Looks", "GodMode", "GODMODE", "HealthyLooks", "Healthy Looks"],
+  "domains": ["godmodelooks.com"],
+  "colors": ["#d70000", "#ee9898", "#fdf0f0", "#f1a6a6"]
+}

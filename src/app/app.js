@@ -22,7 +22,7 @@ function reportView(r) {
   const groups = Object.entries(GROUPS).map(([g, label]) => `<h2 class="section-title">${esc(label)}</h2>
     ${r.factors.filter((f) => f.group === g).map((f) => `<div class="factor"><span>${esc(f.label)}<small>${esc(f.phrase)}</small></span><b>${f.note}</b></div>`).join("")}`).join("");
   return `
-    <h1 class="title" tabindex="-1">Ton résultat</h1>
+    <h1 class="title" tabindex="-1">Ton détail, critère par critère.</h1>
     <div class="scores">
       <div class="score"><div class="score__label">Aujourd'hui</div><div class="score__value">${esc(r.now)}</div></div>
       <div class="score"><div class="score__label">Ton max</div><div class="score__value score__value--high">${esc(r.max)}</div></div>
@@ -57,6 +57,27 @@ function accountView(m) {
     <button data-logout>Me déconnecter</button>
     <button data-logout-all>Me déconnecter de tous mes appareils</button>
     <button data-delete>Supprimer mon compte et mes données</button></div>`;
+}
+
+// Après le paiement : la note se révèle (compteur + jauge), puis le détail
+const fr = (n) => String(n).replace(".", ",");
+function reveal(r) {
+  app.innerHTML = `<div class="brand">Lookmaxing</div>
+    <section class="reveal" aria-live="polite">
+      <p class="eyebrow">Ta note</p>
+      <div class="reveal__num" id="num">0,0</div>
+      <div class="gauge" role="img" aria-label="${r.nowRaw} sur 100"><i id="mark" style="left:0%"></i></div>
+      <p class="reveal__max" id="max">Ton max : ${esc(fr(r.max))}, soit +${esc(fr((Number(r.max) - Number(r.now)).toFixed(1)))} à aller chercher.</p>
+      <button class="btn btn--primary" data-tab="rapport">Voir mon détail</button>
+    </section>`;
+  const target = Number(r.now), t0 = performance.now(), ms = matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 1600;
+  requestAnimationFrame(() => { document.getElementById("mark").style.left = r.nowRaw + "%"; });
+  const step = (t) => {
+    const p = Math.min(1, (t - t0) / ms), v = target * (1 - Math.pow(1 - p, 3));
+    document.getElementById("num").textContent = fr(v.toFixed(1));
+    if (p < 1) requestAnimationFrame(step); else document.getElementById("max").classList.add("on");
+  };
+  requestAnimationFrame(step);
 }
 
 function render() {
@@ -95,7 +116,8 @@ app.addEventListener("change", async (e) => {
 
 try {
   me = await api("me");
-  render();
+  if (new URLSearchParams(location.search).get("bienvenue") && me.report) { history.replaceState(null, "", "/app/"); reveal(me.report); }
+  else render();
 } catch (err) {
   if (err.status === 401) location.href = "/connexion/";
   else app.innerHTML = `<div class="brand">Lookmaxing</div><div class="alert" role="alert">${esc(err.message)}</div>`;
