@@ -1,0 +1,104 @@
+{
+  "mode": "layout",
+  "original": {
+    "width": 390,
+    "height": 844
+  },
+  "clone": {
+    "width": 390,
+    "height": 844
+  },
+  "compared_at": {
+    "width": 390,
+    "height": 844
+  },
+  "height_delta_pct": 0.0,
+  "score": 48.2,
+  "verdict": "different",
+  "regions": [
+    {
+      "x": 0,
+      "y": 128,
+      "w": 384,
+      "h": 320,
+      "cells": 56,
+      "where": "top centre"
+    },
+    {
+      "x": 0,
+      "y": 384,
+      "w": 384,
+      "h": 192,
+      "cells": 37,
+      "where": "middle centre"
+    },
+    {
+      "x": 64,
+      "y": 32,
+      "w": 256,
+      "h": 96,
+      "cells": 13,
+      "where": "top centre"
+    },
+    {
+      "x": 32,
+      "y": 32,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "top left"
+    },
+    {
+      "x": 32,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "top left"
+    },
+    {
+      "x": 96,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "top left"
+    },
+    {
+      "x": 256,
+      "y": 128,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "top right"
+    },
+    {
+      "x": 64,
+      "y": 160,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "top left"
+    },
+    {
+      "x": 224,
+      "y": 352,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "middle centre"
+    },
+    {
+      "x": 32,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "middle left"
+    }
+  ],
+  "files": {
+    "original": "replica/screens/s13.png",
+    "clone": "replica/clone-screens/S13.png"
+  }
+}

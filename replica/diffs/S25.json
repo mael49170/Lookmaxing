@@ -1,0 +1,56 @@
+{
+  "mode": "layout",
+  "original": {
+    "width": 390,
+    "height": 844
+  },
+  "clone": {
+    "width": 390,
+    "height": 844
+  },
+  "compared_at": {
+    "width": 390,
+    "height": 844
+  },
+  "height_delta_pct": 0.0,
+  "score": 22.2,
+  "verdict": "different",
+  "regions": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 384,
+      "h": 480,
+      "cells": 113,
+      "where": "top centre"
+    },
+    {
+      "x": 0,
+      "y": 672,
+      "w": 384,
+      "h": 160,
+      "cells": 42,
+      "where": "bottom centre"
+    },
+    {
+      "x": 0,
+      "y": 416,
+      "w": 64,
+      "h": 64,
+      "cells": 3,
+      "where": "middle left"
+    },
+    {
+      "x": 32,
+      "y": 192,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "top left"
+    }
+  ],
+  "files": {
+    "original": "replica/screens/s27.png",
+    "clone": "replica/clone-screens/S25.png"
+  }
+}
