@@ -7,6 +7,12 @@ import { faceMesh } from "/q/mesh.js";
 const app = document.getElementById("app");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const ICON_BACK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
+const ICON_GO = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+// Cheveux posés derrière le visage maillé des cartes de l'accueil (même repère que faceMesh)
+const HAIR = {
+  homme: '<svg class="gcard__hair" viewBox="-4 6 108 128" aria-hidden="true"><path d="M11 56C8 22 28 8 50 8s42 14 39 48c-4-16-18-28-39-28S15 40 11 56z"/></svg>',
+  femme: '<svg class="gcard__hair" viewBox="-4 6 108 128" aria-hidden="true"><path d="M9 126C0 84 4 12 50 9c46 3 50 75 41 117-7-24-3-50-7-70-5-18-17-28-34-28S21 38 16 56c-4 20 0 46-7 70z"/></svg>',
+};
 const ICON_CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
 // ---------- Dessins maison (aucune photo de vraie personne) ----------
 const ICON_CAM = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
@@ -42,7 +48,7 @@ function fresh() {
   const p = new URLSearchParams(location.search);
   return {
     i: 0, history: [], answers: {}, consent: null, scan: "idle", scanError: "", lead: false,
-    variant: p.get("v") === "a" || p.get("v") === "b" ? p.get("v") : Math.random() < 0.5 ? "a" : "b",
+    variant: p.get("v") === "b" ? "b" : "a",
     utm: { source: p.get("utm_source") || "", campaign: p.get("utm_campaign") || "", content: p.get("utm_content") || "" },
     offers: null, offer: DEFAULT_OFFER,
   };
@@ -93,19 +99,18 @@ const fr = (n) => String(n).replace(".", ",");
 // ---------- Écrans ----------
 const VIEWS = {
   landing() {
-    // Variante B : on passe directement à la première question, avec le titre de l'accueil
-    if (S.variant === "b") return VIEWS.single(SCREENS[1], { title: "Ce que les autres voient de toi en 3 secondes.", lead: "Une analyse franche de ton visage, et un plan pour faire monter ta note. On commence : tu es…" });
-    return `<main class="screen">
+    // Accueil le plus court possible : un titre, puis on choisit Homme ou Femme (c'est déjà la 1re réponse du quiz)
+    return `<main class="screen landing">
       <div class="brand">MOGX</div>
       <p class="proof-bar"><span><span aria-hidden="true">🇫🇷</span> MOGX, top en France</span></p>
-      <div class="landing-art">${faceMesh({ className: "mesh mesh--idle" })}
-        <span class="tag" style="left:-6%;top:44%">Mâchoire</span>
-        <span class="tag" style="right:-8%;top:30%">Peau</span>
-        <span class="tag" style="right:-4%;top:66%">Posture</span>
-      </div>
-      <h1 class="title title--hero" tabindex="-1">Ce que les autres voient de toi en 3 secondes. Et comment le changer.</h1>
-      <p class="lead">15 critères passés au crible, une note sans filtre, et un plan de 28 jours pour la faire monter.</p>
-      ${footer(`<button class="btn btn--primary" data-next>Lancer mon analyse</button><div class="reassure"><span>3 minutes, dès 18 ans.</span><span>Tes photos ne sont jamais enregistrées.</span></div><nav class="mini-legal" aria-label="Informations légales"><a href="/cgv/">CGV</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a></nav>`)}
+      <h1 class="title title--hero landing__title" tabindex="-1">Ce que les autres voient de toi <span class="hot">en 3 secondes.</span></h1>
+      <p class="lead landing__lead">Ta note sur 15 critères, et exactement quoi changer pour la faire monter.</p>
+      <fieldset class="gcards"><legend class="sr-only">Tu es…</legend>
+        ${[["homme", "Homme"], ["femme", "Femme"]].map(([id, label]) => `<label class="gcard"><input class="gcard__input" type="radio" name="genre" value="${id}" ${S.answers.genre === id ? "checked" : ""}>
+          <span class="gcard__art">${HAIR[id]}${faceMesh({ className: "mesh mesh--idle" })}<span class="gcard__frame" aria-hidden="true"></span></span>
+          <span class="gcard__foot"><span class="gcard__label">${label}</span><span class="gcard__go" aria-hidden="true">${ICON_GO}</span></span></label>`).join("")}
+      </fieldset>
+      <nav class="mini-legal" aria-label="Informations"><a href="/infos/">Prix et infos</a><a href="/connexion/">Mon espace</a><a href="/cgv/">CGV</a><a href="/mentions-legales/">Mentions légales</a></nav>
     </main>`;
   },
 
@@ -570,7 +575,7 @@ function render() {
   if (S.history.length) history.pushState({ i: S.i }, "");
   app.querySelector("h1")?.focus({ preventScroll: true });
   window.scrollTo(0, 0);
-  trackStep(s.id === "accueil" && S.variant === "b" ? "genre" : s.id);
+  trackStep(s.id);
   if (s.type !== "photos") stopCam();
   if (s.type === "photos") { mountTurnstile(); if (cam.phase === "live") startCam(); }
   if (s.type === "projection") runProjection();
@@ -625,7 +630,7 @@ app.addEventListener("change", async (e) => {
     return;
   }
   if (input.name === "offer") { S.offer = input.value; save(); return render(); }
-  if (input.type === "radio" && (s.type === "single" || (s.type === "landing" && S.variant === "b"))) {
+  if (input.type === "radio" && (s.type === "single" || s.type === "landing")) {
     // au clavier, les flèches déplacent seulement le choix ; Entrée ou Espace valide (BUG-001)
     const advance = !arrowNav;
     arrowNav = false;
@@ -657,7 +662,7 @@ async function chooseSingle(input, advance) {
   if (scr.confirm) { app.querySelector("[data-confirm]").disabled = false; return; }
   if (!advance) return;
   syncQuiz();
-  // variante B : la question du genre est sur l'accueil, on saute l'écran genre
+  // la question du genre est sur l'accueil : on saute l'écran genre
   setTimeout(() => (s.type === "landing" ? go(2) : next()), 250);
 }
 app.addEventListener("keydown", (e) => {

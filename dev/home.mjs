@@ -1,9 +1,11 @@
-// Fabrique la page d'accueil du site (src/index.html), à partir des vrais prix (src/shared/plans.js).
-// Les pubs mènent directement au quiz (/q/) ; cette page sert aux visiteurs qui tapent l'adresse,
-// à la confiance (qui on est, combien ça coûte, comment arrêter) et à la vérification du compte Stripe.
+// Fabrique les 2 pages d'entrée du site :
+// - src/index.html (mogx.fr) : directement l'accueil du quiz (titre + cartes Homme / Femme), le moins de friction possible
+//   (décidé par Maël le 25/11/2026) ;
+// - src/infos/index.html (mogx.fr/infos/) : qui on est, combien ça coûte, comment arrêter, questions fréquentes,
+//   à partir des vrais prix (src/shared/plans.js). Liée en bas de l'accueil ; sert aussi à la vérification du compte Stripe.
 // Règle : aucune fausse preuve (pas d'avis, pas de nombre d'utilisateurs, pas de note sur 5, pas de logos de presse).
 // Lancer : node dev/home.mjs
-import { writeFileSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { OFFERS, DEFAULT_OFFER, RESERVATION_MIN, GUARANTEE, euros, minimumCents } from "../src/shared/plans.js";
 import { faceMesh } from "../src/q/mesh.js";
 
@@ -27,10 +29,10 @@ const html = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#09090a">
-<title>MOGX · Ta note de visage et le plan pour la monter</title>
+<title>MOGX · Prix, fonctionnement et questions</title>
 <meta name="description" content="Une analyse franche de ton visage sur 15 critères, et un plan de 28 jours pour progresser : peau, coupe, style, posture, assurance. Photos jamais enregistrées.">
-<link rel="canonical" href="https://mogx.fr/">
-<meta property="og:url" content="https://mogx.fr/">
+<link rel="canonical" href="https://mogx.fr/infos/">
+<meta property="og:url" content="https://mogx.fr/infos/">
 <meta property="og:title" content="MOGX · Ce que les autres voient de toi en 3 secondes">
 <meta property="og:description" content="15 critères, une note sans filtre, un plan de 28 jours pour la faire monter.">
 <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
@@ -50,7 +52,7 @@ const html = `<!doctype html>
       <span class="tag" style="left:-4%;top:42%">Mâchoire</span><span class="tag" style="right:-6%;top:28%">Peau</span><span class="tag" style="right:-2%;top:66%">Posture</span></div>
     <h1 class="title title--hero">Ce que les autres voient de toi en 3 secondes. Et comment le changer.</h1>
     <p class="lead">Une analyse franche de ton visage sur 15 critères, et un plan de 28 jours pour faire monter ta note. 3 minutes, dès 18 ans.</p>
-    <a class="btn btn--primary" href="/q/">Lancer mon analyse</a>
+    <a class="btn btn--primary" href="/">Lancer mon analyse</a>
     <p class="home-note">Tes photos ne sont jamais enregistrées.</p>
   </section>
 
@@ -97,7 +99,7 @@ const html = `<!doctype html>
 
   <section class="home-block home-final">
     <h2 class="title">Prêt à voir ta note ?</h2>
-    <a class="btn btn--primary" href="/q/">Lancer mon analyse</a>
+    <a class="btn btn--primary" href="/">Lancer mon analyse</a>
   </section>
 
   <nav class="legal-links" aria-label="Informations légales">
@@ -107,5 +109,34 @@ const html = `<!doctype html>
 </body>
 </html>
 `;
-writeFileSync(new URL("../src/index.html", import.meta.url), html);
-console.log("accueil : src/index.html");
+mkdirSync(new URL("../src/infos/", import.meta.url), { recursive: true });
+writeFileSync(new URL("../src/infos/index.html", import.meta.url), html);
+
+// mogx.fr : la même application que /q/, ouverte directement sur l'accueil du quiz
+const entry = `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#09090a">
+<title>MOGX · Ce que les autres voient de toi en 3 secondes</title>
+<meta name="description" content="Ta note de visage sur 15 critères, et un plan de 28 jours pour la faire monter : peau, coupe, style, posture, assurance. Photos jamais enregistrées. Dès 18 ans.">
+<link rel="canonical" href="https://mogx.fr/">
+<meta property="og:url" content="https://mogx.fr/">
+<meta property="og:title" content="MOGX · Ce que les autres voient de toi en 3 secondes">
+<meta property="og:description" content="15 critères, une note sans filtre, un plan de 28 jours pour la faire monter.">
+<link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/components.css">
+<link rel="stylesheet" href="/q/quiz.css">
+</head>
+<body>
+<!-- Page fabriquée par dev/home.mjs : modifier ce fichier-là, pas celui-ci. -->
+<div id="app" aria-live="polite"></div>
+<noscript><p class="lead" style="padding:24px">Le quiz a besoin de JavaScript pour fonctionner. <a href="/infos/">Prix et infos</a></p></noscript>
+<script type="module" src="/q/app.js"></script>
+</body>
+</html>
+`;
+writeFileSync(new URL("../src/index.html", import.meta.url), entry);
+console.log("accueil : src/index.html (quiz) et src/infos/index.html (prix et infos)");

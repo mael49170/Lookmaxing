@@ -118,7 +118,7 @@ app.addEventListener("click", async (e) => {
   }
   if (b.hasAttribute("data-delete")) {
     if (!confirm("Supprimer ton compte ? Ton rapport, ton plan et ton suivi seront effacés pour de bon.")) return;
-    try { await api("account-delete", { confirme: true }); location.href = "/q/"; } catch (err) { alert(err.message); }
+    try { await api("account-delete", { confirme: true }); location.href = "/"; } catch (err) { alert(err.message); }
   }
   if (b.hasAttribute("data-cancel")) {
     const s = me.subscription;

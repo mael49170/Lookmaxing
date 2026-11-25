@@ -137,8 +137,12 @@ test("accueil : à jour avec les prix, aucune fausse preuve", async () => {
   const { readFileSync } = await import("node:fs");
   const { OFFERS, DEFAULT_OFFER, euros, minimumCents } = await import("../src/shared/plans.js");
   const o = OFFERS[DEFAULT_OFFER];
-  const home = readFileSync(new URL("../src/index.html", import.meta.url), "utf8").replace(/ /g, " ");
+  const home = readFileSync(new URL("../src/infos/index.html", import.meta.url), "utf8").replace(/ /g, " ");
+  const entry = readFileSync(new URL("../src/index.html", import.meta.url), "utf8");
+  assert.match(entry, /\/q\/app\.js/, "mogx.fr doit ouvrir directement le quiz");
   for (const v of [euros(o.intro), euros(o.renew), euros(minimumCents(o))]) assert.ok(home.includes(v.replace(/ /g, " ")), "accueil : il manque " + v + " (lancer node dev/home.mjs)");
   assert.ok(!/★|\d[\d  ]{2,}\s*(utilisateurs|clients|hommes|scans)|avis clients|Harvard|vu dans/i.test(home), "fausse preuve sur l'accueil");
   assert.match(home, /\/cgv\//); assert.match(home, /\/mentions-legales\//);
+  const quiz = readFileSync(new URL("../src/q/app.js", import.meta.url), "utf8");
+  assert.match(quiz, /href="\/infos\/"/, "l'accueil du quiz doit mener aux prix et infos");
 });

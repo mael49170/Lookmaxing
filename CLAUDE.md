@@ -43,7 +43,7 @@ Maël est cuisinier, pas développeur. **Toujours répondre en français**, dans
 
 ## Lancement (25/11/2026)
 
-- Accueil du site (`/`) fabriqué par `node dev/home.mjs` à partir des vrais prix (un test le vérifie). Les pubs mènent au quiz (`/q/`).
+- Accueil (`/`, décidé par Maël le 25/11/2026) : le moins de friction possible, il ouvre directement le quiz : logo, ligne de confiance, titre, 2 cartes Homme / Femme (un seul geste pour entrer). Les prix, le fonctionnement et les questions sont sur `/infos/`, lié en bas. Les deux sont fabriqués par `node dev/home.mjs` (un test vérifie les prix). Les pubs peuvent mener à `/` ou `/q/` (même écran).
 - Pubs Meta : `replica/launch/ads.md` (ne jamais dire ce que la personne EST, pas d'avant/après, pas de promesse de résultat).
 - Avant toute vraie vente : `node dev/preflight.mjs --env` doit passer (bloque tant qu'il reste des « À REMPLIR », un test en échec ou une clé manquante), puis cocher sa liste « à la main ».
 - Ligne en haut de l'accueil : « 🇫🇷 MOGX, top en France » (slogan choisi par Maël le 25/11/2026). Ne jamais y ajouter de note, d'étoiles, de chiffre ou de « n° 1 » sans preuve (vrais avis vérifiés, vrai classement avec sa source).

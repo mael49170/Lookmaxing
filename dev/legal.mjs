@@ -39,7 +39,7 @@ function page(dir, title, body) {
 <body>
 <!-- Page fabriquée par dev/legal.mjs : modifier ce fichier-là, pas celui-ci. -->
 <main class="legal-page">
-<a class="brand" href="/q/">MOGX</a>
+<a class="brand" href="/">MOGX</a>
 <h1>${title}</h1>
 <p class="updated">Dernière mise à jour : ${MAJ}</p>
 ${body}

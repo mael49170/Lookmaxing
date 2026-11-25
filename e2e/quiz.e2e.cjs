@@ -110,7 +110,7 @@ async function pay(page) {
 async function test(id, name, fn, browser, pageOpts) {
   const page = await newPage(browser, pageOpts);
   try {
-    await page.goto(BASE + "/q/?v=a", { waitUntil: "networkidle" });
+    await page.goto(BASE + "/", { waitUntil: "networkidle" });
     await fn(page);
     if (page.problems.length) throw new Error(page.problems.join(" | "));
     results.push([id, "ok", name]);
@@ -165,11 +165,9 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   }, browser);
 
   await test("F01-E4", "au clavier seulement : les flèches choisissent sans valider, Espace valide (BUG-001)", async (p) => {
-    await p.keyboard.press("Tab"); await p.keyboard.press("Enter"); // Lancer mon analyse
-    await p.waitForTimeout(400);
-    await p.keyboard.press("Tab"); // première réponse
+    await p.keyboard.press("Tab"); // carte « Homme » de l'accueil
     await p.keyboard.press("ArrowDown"); await p.waitForTimeout(600);
-    expect(/tu es/.test(await h1(p)), "la flèche a validé toute seule");
+    expect(/autres voient/.test(await h1(p)), "la flèche a validé toute seule");
     await p.keyboard.press("Space"); await p.waitForTimeout(600);
     expect(/âge/.test(await h1(p)), "Espace ne valide pas (" + await h1(p) + ")");
   }, browser);
@@ -227,8 +225,8 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     expect(await p.locator("#pay").evaluate((el) => el.getBoundingClientRect().top < innerHeight), "le bouton du bas ne mène pas au paiement");
   }, browser);
 
-  await test("F02-H1", "sans photo (variante B) : plan d'après les réponses, pas de note", async (p) => {
-    await p.goto(BASE + "/q/?v=b", { waitUntil: "networkidle" });
+  await test("F02-H1", "sans photo (entrée par /q/) : plan d'après les réponses, pas de note", async (p) => {
+    await p.goto(BASE + "/q/", { waitUntil: "networkidle" });
     await runTo(p, "offre", { photos: false });
     expect(!(await p.getByText("?,?").count()), "notes affichées sans scan");
     await pay(p);
@@ -237,8 +235,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   }, browser);
 
   await test("F03-H1", "moins de 18 ans : arrêt, rien de gardé", async (p) => {
-    await p.getByRole("button", { name: "Lancer mon analyse" }).click();
-    await p.getByRole("radio", { name: /homme/ }).check({ force: true });
+    await p.getByRole("radio", { name: /Homme/ }).check({ force: true });
     await p.waitForTimeout(500);
     await p.getByRole("radio", { name: /Moins de 18/ }).check({ force: true });
     await p.getByRole("heading", { name: "Réservé aux adultes" }).waitFor();
