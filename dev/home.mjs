@@ -29,6 +29,8 @@ const html = `<!doctype html>
 <meta name="theme-color" content="#09090a">
 <title>MOGX · Ta note de visage et le plan pour la monter</title>
 <meta name="description" content="Une analyse franche de ton visage sur 15 critères, et un plan de 28 jours pour progresser : peau, coupe, style, posture, assurance. Photos jamais enregistrées.">
+<link rel="canonical" href="https://mogx.fr/">
+<meta property="og:url" content="https://mogx.fr/">
 <meta property="og:title" content="MOGX · Ce que les autres voient de toi en 3 secondes">
 <meta property="og:description" content="15 critères, une note sans filtre, un plan de 28 jours pour la faire monter.">
 <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>

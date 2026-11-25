@@ -37,7 +37,7 @@ Maël est cuisinier, pas développeur. **Toujours répondre en français**, dans
 
 ## Nom et pages légales (25/11/2026)
 
-- Nom : **MOGX** (choisi par Maël). Vérifications de marque et de domaine à faire : `replica/brand.md`.
+- Nom : **MOGX** (choisi par Maël). Domaine : **mogx.fr** (acheté le 25/11/2026). Vérifications de marque et de domaine à faire : `replica/brand.md`.
 - Pages légales fabriquées par `node dev/legal.mjs` (CGV, confidentialité, données du visage, mentions légales) : les prix et conditions viennent de `src/shared/plans.js`. Après un changement de prix, relancer le script (un test le vérifie). Les informations de la société sont dans `EDITEUR` en haut du script (« [À REMPLIR] » tant qu'elles manquent : ne pas ouvrir le site avant).
 - Le texte du consentement biométrique a une version (`CONSENT_VERSION` dans `functions/api/scan-consent.js`) : la changer à chaque modification du texte.
 
