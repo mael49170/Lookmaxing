@@ -123,7 +123,6 @@ const _SCREENS = [
   { id: "construction", type: "building",
     sheets: [{ id: "temps", title: "Tu peux donner 5 minutes par jour à ton plan ?" }, { id: "finir", title: "Tu vas au bout de ce que tu commences ?" }, { id: "rappel", title: "Un petit rappel chaque matin pour ne pas lâcher ?" }] },
   { id: "apercu", type: "teaser", skipIf: (a) => a.scan !== "done" },
-  { id: "email", type: "email" },
   { id: "offre", type: "paywall" },
 ];
 // Identifiants d'écran stables pour le compteur et les captures : S01, S02…

@@ -74,6 +74,20 @@ function guaranteeView(g) {
   return `<div class="guarantee"><b>Satisfait ou remboursé</b><span>${esc(g.reason)}</span><div class="progress" role="progressbar" aria-label="Jours suivis pendant ta 1re semaine payée" aria-valuemin="0" aria-valuemax="${g.needed}" aria-valuenow="${Math.min(g.done, g.needed)}"><span style="width:${Math.min(100, (g.done / g.needed) * 100)}%"></span></div></div>`;
 }
 
+// Juste après le paiement : le compte est créé avec l'e-mail donné au paiement (pas de mot de passe)
+function welcome() {
+  app.innerHTML = `<div class="brand">MOGX</div>
+    <section class="welcome">
+      <span class="welcome__ok" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+      <p class="eyebrow">Paiement validé</p>
+      <h1 class="title" tabindex="-1">Ton compte est créé.</h1>
+      <p class="lead">Il est attaché à <b>${esc(me.email)}</b>. Pas de mot de passe : pour revenir, tu entres cette adresse et on t'envoie un code.</p>
+      <p class="note">On vient de t'envoyer un e-mail avec ton lien d'accès direct et le récapitulatif de ton abonnement.</p>
+      <button class="btn btn--primary" data-welcome>${me.report ? "Voir ma note" : "Voir mon plan"}</button>
+    </section>`;
+  app.querySelector("h1").focus();
+}
+
 // Après le paiement : la note se révèle (compteur + jauge), puis le détail
 const fr = (n) => String(n).replace(".", ",");
 function reveal(r) {
@@ -110,6 +124,7 @@ app.addEventListener("click", async (e) => {
   const b = e.target.closest("button");
   if (!b) return;
   if (b.dataset.tab) { tab = b.dataset.tab; render(); return; }
+  if (b.hasAttribute("data-welcome")) { if (me.report) reveal(me.report); else render(); return; }
   if (b.hasAttribute("data-logout") || b.hasAttribute("data-logout-all")) { await api("logout", { partout: b.hasAttribute("data-logout-all") }).catch(() => {}); location.href = "/connexion/"; }
   if (b.hasAttribute("data-portal")) { try { location.href = (await api("portal", {})).url; } catch (err) { alert(err.message); } }
   if (b.hasAttribute("data-guarantee")) {
@@ -138,7 +153,7 @@ app.addEventListener("change", async (e) => {
 
 try {
   me = await api("me");
-  if (new URLSearchParams(location.search).get("bienvenue") && me.report) { history.replaceState(null, "", "/app/"); reveal(me.report); }
+  if (new URLSearchParams(location.search).get("bienvenue")) { history.replaceState(null, "", "/app/"); welcome(); }
   else render();
 } catch (err) {
   if (err.status === 401) location.href = "/connexion/";

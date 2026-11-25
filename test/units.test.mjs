@@ -95,9 +95,10 @@ test("appel à Claude : format de la requête, refus géré, aucune photo dans l
 test("parcours complet : écrans clés présents, dans le bon ordre, consentement AVANT la caméra", async () => {
   const { SCREENS } = await import("../src/shared/questions.js");
   const ids = SCREENS.map((s) => s.id);
-  for (const id of ["genre", "age", "consentement", "selfies", "photos", "analyse", "peau_acne", "cheveux", "sport", "rencontrer", "dire_non", "science", "attentes", "duree", "profil", "construction", "email", "offre"]) assert.ok(ids.includes(id), "manque " + id);
+  for (const id of ["genre", "age", "consentement", "selfies", "photos", "analyse", "peau_acne", "cheveux", "sport", "rencontrer", "dire_non", "science", "attentes", "duree", "profil", "construction", "offre"]) assert.ok(ids.includes(id), "manque " + id);
   assert.ok(ids.indexOf("consentement") < ids.indexOf("photos"), "le consentement doit venir avant la caméra");
   assert.equal(new Set(ids).size, ids.length);
+  assert.ok(!ids.includes("email"), "l'e-mail est demandé au paiement, pas avant (décidé par Maël le 25/11/2026)");
   const all = JSON.stringify(SCREENS);
   assert.ok(!/Harvard|Oxford|Cambridge|360|64 ?%/i.test(all), "pas de caution ni de chiffre inventés");
 });

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#09090a">
+<title>MOGX · Paiement de test</title>
+<link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/components.css">
+<link rel="stylesheet" href="/q/quiz.css">
+</head>
+<body>
+<!-- Faux formulaire de paiement, seulement en mode test (DEV_FAKE_PAY=1, sans Stripe) : il joue le rôle du formulaire
+     Stripe, qui demande l'e-mail au moment de payer. Sans DEV_FAKE_PAY, le serveur refuse ce paiement. -->
+<main class="screen">
+  <div class="brand">MOGX</div>
+  <div class="alert" role="note">Mode test : aucune carte n'est débitée. En vrai, ici s'affiche le paiement Stripe (carte, Apple Pay, Google Pay), qui demande aussi l'e-mail.</div>
+  <h1 class="title" tabindex="-1">Paiement</h1>
+  <p class="lead" id="price"></p>
+  <form id="f" class="stack" action="/api/checkout-done" method="get" novalidate>
+    <input type="hidden" name="essai" value="1"><input type="hidden" name="offre" id="offre"><input type="hidden" name="t" id="t">
+    <div class="field"><label for="email">Ton e-mail</label>
+      <input id="email" name="email" class="input" type="email" inputmode="email" autocomplete="email" placeholder="prenom@exemple.fr" required>
+      <span id="email-err" class="field__error" hidden></span></div>
+    <p class="legal">Ton compte MOGX est créé avec cette adresse : c'est là qu'on envoie ton accès, sans mot de passe.</p>
+    <button class="btn btn--primary" type="submit">Payer (test)</button>
+  </form>
+</main>
+<script type="module">
+import { OFFERS, DEFAULT_OFFER, priceLines } from "/shared/plans.js";
+const p = new URLSearchParams(location.search);
+const offer = OFFERS[p.get("offre")] ? p.get("offre") : DEFAULT_OFFER;
+const trial = p.get("t") !== "0";
+document.getElementById("offre").value = offer;
+document.getElementById("t").value = trial ? "1" : "0";
+document.getElementById("price").textContent = priceLines(OFFERS[offer], trial).full;
+const email = document.getElementById("email"), err = document.getElementById("email-err");
+const bad = () => { email.setAttribute("aria-invalid", "true"); email.setAttribute("aria-describedby", "email-err"); err.textContent = "Cette adresse ne semble pas complète."; err.hidden = false; email.focus(); };
+if (p.get("erreur") === "email") bad();
+document.getElementById("f").addEventListener("submit", (e) => { if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { e.preventDefault(); bad(); } });
+</script>
+</body>
+</html>

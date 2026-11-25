@@ -63,7 +63,7 @@ test("le serveur décide de l'essai au paiement : après 15 minutes, plus d'essa
   assert.equal(r.data.trial, false);
   r = await call(checkout, "checkout", { body: { waiver: true } });
   assert.equal(r.data.trial, false); assert.match(r.data.url, /t=0/);
-  await call(done, "checkout-done", { method: "GET", query: new URL(r.data.url, "http://x").search });
+  await call(done, "checkout-done", { method: "GET", query: new URL(r.data.url, "http://x").search + "&essai=1&email=b%40example.com" });
   r = await call(me, "me", { method: "GET" });
   assert.equal(r.data.subscription.in_trial, false, "sans essai : abonnement à la semaine tout de suite");
 });
@@ -100,6 +100,10 @@ test("paiement dans la page : Stripe en mode intégré, sans essai si la réserv
   assert.equal(co["line_items[1][price]"], undefined, "pas de ligne d'essai");
   assert.equal(co["subscription_data[trial_period_days]"], undefined, "pas de jours d'essai");
   assert.match(co["custom_text[submit][message]"].replace(/\s+/g, " "), /16,99 € pour ta 1re semaine/);
+  // sans e-mail connu (cas normal depuis le 25/11/2026) : Stripe le demande dans son formulaire
+  calls.length = 0;
+  await createCheckout(env, new Request("https://site.fr/api/checkout"), { quiz: { id: "q3" }, lead: null, offer: "semaine", trial: true, embedded: true });
+  assert.equal(calls.find((c) => c.path === "/v1/checkout/sessions").body.customer_email, undefined);
 });
 
 test("garantie : refusée avant 5 jours cochés, remboursée après, une seule fois", async () => {

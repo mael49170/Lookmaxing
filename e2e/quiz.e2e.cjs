@@ -37,6 +37,8 @@ const h1 = async (page) => (await page.getByRole("heading", { level: 1 }).first(
 // Avance d'un écran comme le ferait quelqu'un (première réponse adulte, premier choix multiple)
 async function step(page, { photos = true } = {}) {
   await page.waitForTimeout(350);
+  // page de paiement (ou en train de charger) : rien à cliquer ici, runTo s'arrête dessus
+  if (/On prépare ta page/.test(await h1(page).catch(() => "")) || await page.locator("[data-pay]").count()) return page.getByRole("button", { name: /Débloquer mon résultat, / }).waitFor({ timeout: 10000 });
   // caméra dans la page (fausse caméra de Chromium) : face puis profil
   if (await page.getByRole("button", { name: /^Prendre la photo/ }).count()) {
     if (!photos) return page.getByRole("button", { name: "Continuer sans photo" }).click();
@@ -81,15 +83,8 @@ async function step(page, { photos = true } = {}) {
 
 async function runTo(page, target, opts) {
   for (let n = 0; n < 90; n++) {
-    if ((await page.getByLabel("Ton e-mail").count()) && target !== "email") {
-      await page.getByLabel("Ton e-mail").fill(opts?.email || `test${Date.now()}@example.com`);
-      await page.getByRole("button", { name: "Voir mon résultat" }).click();
-      await page.getByRole("button", { name: /Débloquer mon résultat, / }).waitFor({ timeout: 10000 });
-      continue;
-    }
-    const t = await h1(page).catch(() => "");
-    if (target === "email" && await page.getByLabel("Ton e-mail").count()) return;
     if (target === "offre" && await page.getByRole("button", { name: /Débloquer mon résultat, / }).count()) return;
+    if (/On prépare ta page/.test(await h1(page).catch(() => ""))) { await page.getByRole("button", { name: /Débloquer mon résultat, / }).waitFor({ timeout: 10000 }); continue; }
     if (typeof target === "string" && target.startsWith("id:") && (await screenName(page)) === target.slice(3)) return;
     if (opts?.axe) await axe(page, await screenName(page));
     await step(page, opts);
@@ -97,13 +92,23 @@ async function runTo(page, target, opts) {
   throw new Error("écran cible jamais atteint : " + target);
 }
 
-async function pay(page) {
+// Paiement : la page de paiement, puis le formulaire de paiement (ici le faux, en mode test) qui demande l'e-mail
+async function toPayForm(page) {
   await page.getByRole("checkbox", { name: /rétractation/ }).check();
   await page.getByRole("button", { name: /Débloquer mon résultat, / }).click();
+  await page.waitForURL(/\/essai-paiement\//, { timeout: 15000 });
+}
+async function pay(page, email) {
+  await toPayForm(page);
+  await axe(page, "paiement-test");
+  await page.getByLabel("Ton e-mail").fill(email || `test${Date.now()}@example.com`);
+  await page.getByRole("button", { name: "Payer (test)" }).click();
   await page.waitForURL(/\/app\//, { timeout: 15000 });
-  if (await page.getByRole("button", { name: "Voir mon détail" }).count() || await page.waitForSelector(".tabs, .reveal", { timeout: 10000 }).then(() => page.locator(".reveal").count())) {
-    await page.waitForTimeout(1800); await axe(page, "révélation"); await page.getByRole("button", { name: "Voir mon détail" }).click();
-  }
+  await page.getByRole("heading", { name: "Ton compte est créé." }).waitFor();
+  await axe(page, "compte-cree");
+  const toNote = await page.getByRole("button", { name: "Voir ma note" }).count();
+  await page.getByRole("button", { name: /Voir ma note|Voir mon plan/ }).click();
+  if (toNote) { await page.waitForTimeout(1800); await axe(page, "révélation"); await page.getByRole("button", { name: "Voir mon détail" }).click(); }
   await page.getByRole("tablist").waitFor();
 }
 
@@ -160,7 +165,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     let n = 0; p.on("request", (r) => r.url().includes("/api/checkout") && !r.url().includes("done") && n++);
     await p.getByRole("checkbox", { name: /rétractation/ }).check();
     await p.getByRole("button", { name: /Débloquer mon résultat, / }).dblclick();
-    await p.waitForURL(/\/app\//, { timeout: 15000 });
+    await p.waitForURL(/\/essai-paiement\//, { timeout: 15000 });
     expect(n === 1, n + " demandes de paiement");
   }, browser);
 
@@ -189,17 +194,20 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     expect(r.sw <= r.w && r.main <= 480, JSON.stringify(r));
   }, browser, { width: 1440, height: 900 });
 
-  await test("F01-E7", "e-mail long avec accents et +", async (p) => {
-    await runTo(p, "email");
+  await test("F01-E7", "e-mail long avec accents et + (demandé au paiement)", async (p) => {
+    await runTo(p, "offre", { photos: false });
+    await toPayForm(p);
     await p.getByLabel("Ton e-mail").fill("élodie.martin+" + "x".repeat(60) + "@exemple-tres-long-pour-voir.fr");
-    await p.getByRole("button", { name: "Voir mon résultat" }).click();
-    await p.getByRole("button", { name: /Débloquer mon résultat, / }).waitFor({ timeout: 5000 });
+    await p.getByRole("button", { name: "Payer (test)" }).click();
+    await p.getByRole("heading", { name: "Ton compte est créé." }).waitFor({ timeout: 10000 });
+    expect(await p.getByText(/élodie\.martin\+x+@exemple/).count(), "l'adresse n'est pas affichée");
   }, browser);
 
-  await test("F01-N1", "e-mail invalide : message sous le champ", async (p) => {
-    await runTo(p, "email");
+  await test("F01-N1", "e-mail invalide au paiement : message sous le champ", async (p) => {
+    await runTo(p, "offre", { photos: false });
+    await toPayForm(p);
     await p.getByLabel("Ton e-mail").fill("prenom@");
-    await p.getByRole("button", { name: "Voir mon résultat" }).click();
+    await p.getByRole("button", { name: "Payer (test)" }).click();
     expect(await p.getByText("Cette adresse ne semble pas complète.").isVisible(), "pas d'erreur");
   }, browser);
 
@@ -246,8 +254,8 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
 
   await test("F04-H1", "connexion par code, mauvais code refusé, session expirée renvoie à la connexion", async (p) => {
     const email = `f04${Date.now()}@example.com`;
-    await runTo(p, "offre", { email, photos: false });
-    await pay(p);
+    await runTo(p, "offre", { photos: false });
+    await pay(p, email);
     await p.context().clearCookies();
     await p.goto(BASE + "/app/"); await p.waitForURL(/connexion/);
     await axe(p, "S30");

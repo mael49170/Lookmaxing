@@ -1,6 +1,6 @@
 import { handle, HttpError } from "../../lib/http.js";
 import { now, track, DAY } from "../../lib/db.js";
-import { currentQuiz, createSession, sessionCookie } from "../../lib/identity.js";
+import { currentQuiz, createSession, sessionCookie, emailKey } from "../../lib/identity.js";
 import { createMember, offerSnapshot } from "../../lib/members.js";
 import { OFFERS, DEFAULT_OFFER } from "../../src/shared/plans.js";
 import { sendMail, welcomeMail } from "../../lib/mail.js";
@@ -15,18 +15,18 @@ export const onRequestGet = handle(async ({ request, env }) => {
   const { d, quiz } = await currentQuiz(request, env, { required: false });
   // paiement fait dans un autre navigateur (sans le cookie du quiz) : le compte est créé par le webhook, la personne se connecte par e-mail
   if (!quiz) return redirect("/connexion/?paye=1");
-  const lead = await d.prepare("SELECT * FROM leads WHERE quiz_id = ?").bind(quiz.id).first();
-  if (!lead) throw new HttpError(400, "Paiement introuvable.");
   let customer;
   if (url.searchParams.get("session_id") && env.STRIPE_SECRET_KEY) {
     const { confirmCheckout } = await import("../../lib/stripe.js");
     customer = await confirmCheckout(env, d, { sessionId: url.searchParams.get("session_id"), quiz });
   } else if (url.searchParams.get("essai") === "1" && env.DEV_FAKE_PAY === "1" && !env.STRIPE_SECRET_KEY) {
-    // paiement d'essai, en local seulement
+    // paiement de test (DEV_FAKE_PAY, jamais avec Stripe branché) : l'e-mail vient du faux formulaire de paiement
+    const email = String(url.searchParams.get("email") || "").trim();
+    if (!emailKey(email)) return redirect(`/essai-paiement/?offre=${encodeURIComponent(url.searchParams.get("offre") || "")}&t=${url.searchParams.get("t") === "0" ? 0 : 1}&erreur=email`);
     const snap = offerSnapshot(url.searchParams.get("offre")) || offerSnapshot(DEFAULT_OFFER);
     const withTrial = url.searchParams.get("t") !== "0";
     const end = now() + (withTrial ? OFFERS[snap.offer].trialDays : 7) * DAY;
-    customer = await createMember(d, { quiz, email: lead.email, emailKey: lead.email_key, subscription: { id: "essai_" + quiz.id, ...snap, status: "active", current_period_end: end, trial_end: withTrial ? end : null, withdrawal_waived_at: now() } });
+    customer = await createMember(d, { quiz, email, emailKey: emailKey(email), subscription: { id: "essai_" + quiz.id, ...snap, status: "active", current_period_end: end, trial_end: withTrial ? end : null, withdrawal_waived_at: now() } });
   } else {
     throw new HttpError(400, "Paiement introuvable.");
   }

@@ -91,7 +91,7 @@ page("cgv", "Conditions générales de vente", `
 </table></div>
 <p><b>Engagement minimum :</b> les ${P.jours} jours d'essai puis la 1re semaine, soit ${P.min} au total.</p>
 <h3 id="reservation">Réservation de l'essai</h3>
-<p>Le prix d'essai de ${P.intro} est réservé pendant ${RESERVATION_MIN} minutes à partir de l'affichage de la page de paiement, comme l'indique le compteur de cette page. Il n'est proposé qu'une fois par adresse e-mail et par appareil. Une fois ce délai passé, l'abonnement démarre directement au prix de ${P.renew} par semaine, sans essai et sans engagement au-delà de la semaine payée. Le compteur est réel : il ne repart pas à zéro.</p>
+<p>Le prix d'essai de ${P.intro} est réservé pendant ${RESERVATION_MIN} minutes à partir de l'affichage de la page de paiement, comme l'indique le compteur de cette page. Il n'est proposé qu'une fois par appareil. Une fois ce délai passé, l'abonnement démarre directement au prix de ${P.renew} par semaine, sans essai et sans engagement au-delà de la semaine payée. Le compteur est réel : il ne repart pas à zéro.</p>
 
 <h2 id="commande">4. Commande et paiement</h2>
 <p>Tu réponds au questionnaire, tu indiques ton adresse e-mail, puis tu paies sur un formulaire sécurisé de notre prestataire de paiement Stripe (carte bancaire, Apple Pay, Google Pay). Avant de payer, tu acceptes les présentes conditions et tu demandes expressément l'accès immédiat à ton résultat (article 6).</p>

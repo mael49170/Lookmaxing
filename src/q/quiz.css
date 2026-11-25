@@ -232,3 +232,11 @@
 .landing .mini-legal { flex-wrap: wrap; margin-top: auto; padding-top: var(--sp-4); }
 .mini-legal a { min-height: var(--size-tap); display: inline-flex; align-items: center; }
 .gcard__input { position: absolute; inset: 0; z-index: 1; margin: 0; opacity: 0; cursor: pointer; }
+
+/* Juste après le paiement : « Ton compte est créé » */
+.welcome { display: flex; flex-direction: column; gap: var(--sp-4); padding-top: var(--sp-7); }
+.welcome .title, .welcome .lead, .welcome .eyebrow { margin: 0; }
+.welcome .lead b { color: var(--c-text); word-break: break-all; }
+.welcome .note { justify-content: flex-start; font-size: var(--fs-sm); text-align: left; }
+.welcome__ok { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--c-success) 16%, transparent); color: var(--c-success); border: 1px solid color-mix(in srgb, var(--c-success) 45%, transparent); }
+.welcome .btn { margin-top: var(--sp-4); }

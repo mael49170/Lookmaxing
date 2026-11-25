@@ -14,15 +14,16 @@ export const onRequestPost = handle(async ({ request, env }) => {
   if (!offer) throw new HttpError(400, "Offre inconnue.");
   if (!env.STRIPE_SECRET_KEY && body.waiver !== true) throw new HttpError(400, "Coche la case pour recevoir ton rapport tout de suite.");
   const { d, quiz } = await currentQuiz(request, env);
+  // pas d'e-mail avant le paiement : c'est le formulaire de paiement qui le demande, et le compte est créé avec
   const lead = await d.prepare("SELECT * FROM leads WHERE quiz_id = ?").bind(quiz.id).first();
-  if (!lead) throw new HttpError(400, "Ajoute ton e-mail d'abord.");
-  const { trial } = await reservation(d, { emailKey: lead.email_key, device: deviceId(request) });
+  const { trial } = await reservation(d, { emailKey: lead?.email_key, device: deviceId(request) });
   await track(d, trial ? "paiement_ouvert" : "paiement_ouvert_sans_essai", { variant: quiz.variant, source: quiz.utm_source });
   if (env.STRIPE_SECRET_KEY) {
     const { createCheckout } = await import("../../lib/stripe.js");
     const embedded = body.embedded === true && Boolean(env.STRIPE_PUBLISHABLE_KEY);
     return json({ trial, ...(await createCheckout(env, request, { quiz, lead, offer, trial, embedded })), ...(embedded ? { publishableKey: env.STRIPE_PUBLISHABLE_KEY } : {}) });
   }
-  if (env.DEV_FAKE_PAY === "1") return json({ trial, url: `/api/checkout-done?essai=1&offre=${offer}&t=${trial ? 1 : 0}` });
+  // mode test : un faux formulaire de paiement (aucune carte), qui demande l'e-mail comme Stripe
+  if (env.DEV_FAKE_PAY === "1") return json({ trial, url: `/essai-paiement/?offre=${offer}&t=${trial ? 1 : 0}` });
   throw new HttpError(503, "Le paiement n'est pas encore branché.");
 });

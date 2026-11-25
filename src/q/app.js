@@ -341,22 +341,6 @@ const VIEWS = {
     </main>`;
   },
 
-  email() {
-    return `<main class="screen">
-      <div class="brand">MOGX</div>
-      <h1 class="title" tabindex="-1">${S.scan === "done" ? "Ton résultat t'attend." : "Ton plan est prêt."}</h1>
-      <p class="lead">Où on te l'envoie ? Il reste attaché à ton adresse, sans mot de passe.</p>
-      <form id="mail-form" class="stack" novalidate>
-        <div class="field"><label for="email">Ton e-mail</label>
-          <input id="email" class="input" type="email" inputmode="email" autocomplete="email" placeholder="prenom@exemple.fr" required>
-          <span id="email-err" class="field__error" hidden></span></div>
-        <label class="check"><input type="checkbox" id="optin"><span>J'accepte de recevoir des conseils et des offres par e-mail. Désinscription en un clic.</span></label>
-        <p class="legal">On ne vend pas ton adresse. <a href="/confidentialite/" target="_blank" rel="noopener">Confidentialité</a></p>
-        ${footer(`<button class="btn btn--primary" type="submit">Voir mon résultat</button>`)}
-      </form>
-    </main>`;
-  },
-
   paywall() {
     const o = OFFERS[DEFAULT_OFFER];
     const pw = S.pw;
@@ -670,26 +654,6 @@ app.addEventListener("keydown", (e) => {
   if (t.type !== "radio" || !t.name || t.name === "offer") return;
   if (e.key.startsWith("Arrow")) arrowNav = true;
   else if ((e.key === "Enter" || e.key === " ") && t.checked) { e.preventDefault(); arrowNav = false; chooseSingle(t, true); }
-});
-
-app.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("email");
-  const err = document.getElementById("email-err");
-  const btn = e.target.querySelector("button[type=submit]");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) {
-    email.setAttribute("aria-invalid", "true"); email.setAttribute("aria-describedby", "email-err");
-    err.textContent = "Cette adresse ne semble pas complète."; err.hidden = false; email.focus(); return;
-  }
-  btn.setAttribute("aria-busy", "true");
-  try {
-    const r = await api("lead", { email: email.value.trim(), optin: document.getElementById("optin").checked });
-    S.lead = true; S.scanned = r.scanned; S.offers = r.offers; S.offer = r.defaultOffer; S.pw = null;
-    next();
-  } catch (ex) {
-    btn.removeAttribute("aria-busy");
-    err.textContent = ex.status === 401 ? "Ta session a expiré. Recommence le quiz." : ex.message; err.hidden = false;
-  }
 });
 
 // Écran S24 : les barres avancent ; 2 questions rapides ; on attend la fin de l'analyse

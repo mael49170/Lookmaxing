@@ -57,7 +57,8 @@ test("parcours complet avec scan", async () => {
   r = await call(checkout, "checkout", { body: { offer: "semaine", waiver: true } });
   assert.equal(r.status, 200);
   const u = new URL(r.data.url, "http://localhost");
-  r = await call(done, "checkout-done", { method: "GET", query: u.search });
+  assert.equal(u.pathname, "/essai-paiement/", "mode test : faux formulaire de paiement");
+  r = await call(done, "checkout-done", { method: "GET", query: u.search + "&essai=1&email=Test%40Example.com" });
   assert.equal(r.status, 303); assert.equal(r.location, "/app/?bienvenue=1");
   r = await call(me, "me", { method: "GET" });
   assert.equal(r.status, 200);
@@ -96,7 +97,7 @@ test("refus du scan : plan sans note, et les notes déjà faites sont effacées"
   assert.equal((await env.DB.prepare("SELECT COUNT(*) AS n FROM scans").first()).n, 0);
   await call(lead, "lead", { body: { email: "b@example.com" } });
   const { data } = await call(checkout, "checkout", { body: { offer: "semaine", waiver: true } });
-  await call(done, "checkout-done", { method: "GET", query: new URL(data.url, "http://x").search });
+  await call(done, "checkout-done", { method: "GET", query: new URL(data.url, "http://x").search + "&essai=1&email=b%40example.com" });
   const r = await call(me, "me", { method: "GET" });
   assert.equal(r.data.report, null);
   assert.ok(r.data.plan.tasks.length >= 2);
@@ -139,4 +140,20 @@ test("sans paiement d'essai ni Stripe, le paiement est fermé", async () => {
   assert.equal(r.status, 503);
   const d = await call(done, "checkout-done", { method: "GET", query: "?essai=1&offre=semaine" });
   assert.equal(d.status, 400, "le faux paiement ne marche pas en ligne");
+});
+
+test("e-mail demandé seulement au paiement : le compte est créé avec l'adresse donnée au paiement", async () => {
+  const env = { DB: localD1(), DEV_FAKE_PAY: "1" };
+  const call = client(env);
+  await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" } } });
+  const r = await call(checkout, "checkout", { body: { offer: "semaine", waiver: true } });
+  assert.equal(r.status, 200, "le paiement s'ouvre sans e-mail");
+  const q = new URL(r.data.url, "http://x").search + "&essai=1";
+  let d = await call(done, "checkout-done", { method: "GET", query: q + "&email=pas-un-mail" });
+  assert.equal(d.status, 303); assert.match(d.location, /^\/essai-paiement\/.*erreur=email/);
+  d = await call(done, "checkout-done", { method: "GET", query: q + "&email=Nouveau%40Example.com" });
+  assert.equal(d.location, "/app/?bienvenue=1");
+  const m = await call(me, "me", { method: "GET" });
+  assert.equal(m.data.email, "Nouveau@Example.com");
+  assert.equal((await env.DB.prepare("SELECT COUNT(*) AS n FROM leads").first()).n, 0, "aucun e-mail gardé avant le paiement");
 });
