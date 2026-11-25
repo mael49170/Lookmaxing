@@ -85,7 +85,9 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   interval TEXT NOT NULL CHECK (interval IN ('week','month','quarter','year')),
   status TEXT NOT NULL CHECK (status IN ('active','past_due','canceled','incomplete')),
   cancel_at_period_end INTEGER NOT NULL DEFAULT 0,
-  current_period_end INTEGER NOT NULL,
+  current_period_end INTEGER NOT NULL,              -- fin de la période en cours (fin de l'essai pendant l'essai)
+  trial_end INTEGER,                                 -- fin des 3 jours à 0,99 €
+  ends_at INTEGER,                                   -- fin de l'accès si résilié (après la semaine d'engagement)
   withdrawal_waived_at INTEGER,                      -- renonciation au délai de 14 jours (UE), cochée au paiement
   created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
 );

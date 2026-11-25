@@ -2,6 +2,7 @@ import { handle, HttpError } from "../../lib/http.js";
 import { now, track, DAY } from "../../lib/db.js";
 import { currentQuiz, createSession, sessionCookie } from "../../lib/identity.js";
 import { createMember, offerSnapshot } from "../../lib/members.js";
+import { OFFERS, DEFAULT_OFFER } from "../../src/shared/plans.js";
 import { sendMail, welcomeMail } from "../../lib/mail.js";
 import { welcomeLink } from "../../lib/auth.js";
 
@@ -21,8 +22,9 @@ export const onRequestGet = handle(async ({ request, env }) => {
     customer = await confirmCheckout(env, d, { sessionId: url.searchParams.get("session_id"), quiz });
   } else if (url.searchParams.get("essai") === "1" && env.DEV_FAKE_PAY === "1" && !env.STRIPE_SECRET_KEY) {
     // paiement d'essai, en local seulement
-    const snap = offerSnapshot(url.searchParams.get("offre")) || offerSnapshot("mois");
-    customer = await createMember(d, { quiz, email: lead.email, emailKey: lead.email_key, subscription: { id: "essai_" + quiz.id, ...snap, status: "active", current_period_end: now() + 30 * DAY, withdrawal_waived_at: now() } });
+    const snap = offerSnapshot(url.searchParams.get("offre")) || offerSnapshot(DEFAULT_OFFER);
+    const trialEnd = now() + OFFERS[snap.offer].trialDays * DAY;
+    customer = await createMember(d, { quiz, email: lead.email, emailKey: lead.email_key, subscription: { id: "essai_" + quiz.id, ...snap, status: "active", current_period_end: trialEnd, trial_end: trialEnd, withdrawal_waived_at: now() } });
   } else {
     throw new HttpError(400, "Paiement introuvable.");
   }

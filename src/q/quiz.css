@@ -1,7 +1,7 @@
 /* Mise en page propre au quiz. Seulement des variables de tokens.css. */
 .brand { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; font-size: var(--fs-base); letter-spacing: 0.02em; padding: var(--sp-2) 0; display: flex; align-items: center; gap: var(--sp-2); }
 .brand::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c-accent); box-shadow: 0 0 12px var(--c-glow); }
-.screen > * { animation: enter var(--motion-screen) var(--motion-ease) both; }
+.screen > * { animation: enter var(--motion-screen) var(--motion-ease) backwards; }
 @keyframes enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .stack { display: flex; flex-direction: column; gap: var(--sp-3); }
 .spacer { flex: 1; }
@@ -71,6 +71,12 @@
 .offer__price { text-align: right; font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: var(--fs-lg); font-variant-numeric: tabular-nums; }
 .offer__day { display: block; color: var(--c-text-muted); font-family: var(--font-sans); font-size: var(--fs-xs); font-weight: 500; }
 .offer__tag { position: absolute; top: -10px; right: var(--sp-4); background: var(--c-accent); color: var(--c-on-accent); font-size: var(--fs-xs); font-weight: 700; padding: 2px var(--sp-2); border-radius: var(--r-pill); }
+.offer--single { cursor: default; border-color: var(--c-accent); background: var(--c-accent-soft); box-shadow: 0 0 0 1px var(--c-accent), 0 0 32px -12px color-mix(in srgb, var(--c-glow) 70%, transparent); }
+.terms { border: 1px solid var(--c-border); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); font-size: var(--fs-sm); display: flex; flex-direction: column; gap: var(--sp-1); }
+.terms p { margin: 0; color: var(--c-text-muted); }
+.terms b { color: var(--c-text); }
+.price-line { margin: 0; text-align: center; color: var(--c-text-muted); font-size: var(--fs-xs); line-height: 1.4; }
+.price-line b { color: var(--c-text); }
 .includes { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-2); }
 .includes li { display: grid; grid-template-columns: 20px 1fr; gap: var(--sp-2); }
 .includes li::before { content: "✓"; color: var(--c-accent); font-weight: 800; }

@@ -25,3 +25,8 @@ Maël est cuisinier, pas développeur. Toujours expliquer simplement, en frança
 - Le compte se crée tout seul au paiement (pas d'inscription, pas de mot de passe) ; l'e-mail de bienvenue contient un lien de connexion direct.
 - Couleurs, typo, voix : `replica/brand.md` et `replica/design/tokens.json` (puis `node dev/tokens.mjs`). Le dégradé thermique est réservé à ce qui parle de la personne (visage, note, progression).
 - Limites qui restent : pas de faux avis, pas de faux chiffres, pas de faux compte à rebours, prix de renouvellement toujours visible.
+
+## Prix (décidé par Maël le 25/11/2026)
+
+- 0,99 € les 3 premiers jours, puis une 1re semaine obligatoire à 16,99 €, puis 16,99 € par semaine jusqu'à résiliation. Une seule offre : `src/shared/plans.js` (seule source, lue par la page de paiement, Stripe, les e-mails).
+- Le minimum (17,98 €), le prix à la semaine et l'engagement sont écrits juste au-dessus du bouton de paiement, sur la page Stripe et dans l'e-mail de bienvenue. Résilier pendant l'essai : la semaine d'engagement reste prélevée, puis plus rien.

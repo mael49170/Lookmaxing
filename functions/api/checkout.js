@@ -1,15 +1,15 @@
 import { json, readJson, handle, HttpError } from "../../lib/http.js";
 import { track } from "../../lib/db.js";
 import { currentQuiz } from "../../lib/identity.js";
-import { OFFERS } from "../../src/shared/plans.js";
+import { OFFERS, DEFAULT_OFFER } from "../../src/shared/plans.js";
 
 // POST { offer, waiver } -> adresse de la page de paiement.
 // waiver : la case « je veux mon rapport tout de suite et je renonce au délai de 14 jours » (obligatoire en France
 // pour livrer un contenu numérique avant la fin du délai de rétractation).
 export const onRequestPost = handle(async ({ request, env }) => {
   const body = await readJson(request, 2_000);
-  const offer = OFFERS[body.offer] ? body.offer : null;
-  if (!offer) throw new HttpError(400, "Choisis une offre.");
+  const offer = OFFERS[body.offer || DEFAULT_OFFER] ? body.offer || DEFAULT_OFFER : null;
+  if (!offer) throw new HttpError(400, "Offre inconnue.");
   // avec Stripe, la case est sur la page de paiement Stripe (une case de moins chez nous) ; sans Stripe, elle est chez nous
   if (!env.STRIPE_SECRET_KEY && body.waiver !== true) throw new HttpError(400, "Coche la case pour recevoir ton rapport tout de suite.");
   const { d, quiz } = await currentQuiz(request, env);

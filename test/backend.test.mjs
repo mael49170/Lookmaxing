@@ -35,7 +35,7 @@ function client(env) {
 
 async function member(env, email, opts = {}) {
   const d = await db(env);
-  return createMember(d, { quiz: null, email, emailKey: email, subscription: { id: "essai_" + email, ...offerSnapshot("mois"), status: "active", current_period_end: now() + 30 * DAY, ...opts } });
+  return createMember(d, { quiz: null, email, emailKey: email, subscription: { id: "essai_" + email, ...offerSnapshot("semaine"), status: "active", current_period_end: now() + 30 * DAY, ...opts } });
 }
 
 test("connexion par code, et un client ne voit que ses données", async () => {
@@ -113,24 +113,32 @@ function fakeStripe() {
     if (u.pathname.startsWith("/v1/coupons/")) return new Response(JSON.stringify({ error: { code: "resource_missing" } }), { status: 404 });
     if (u.pathname === "/v1/coupons") return ok({ id: body.id });
     if (u.pathname === "/v1/checkout/sessions") return ok({ url: "https://checkout.stripe.com/c/pay/test" });
-    if (u.pathname.startsWith("/v1/subscriptions/")) return ok({ id: u.pathname.split("/").pop(), status: "past_due", cancel_at_period_end: false, current_period_end: Math.floor(Date.now() / 1000) + 86400, metadata: { offer: "mois" } });
+    if (u.pathname.startsWith("/v1/subscriptions/")) return ok({ id: u.pathname.split("/").pop(), status: "past_due", cancel_at_period_end: false, current_period_end: Math.floor(Date.now() / 1000) + 86400, metadata: { offer: "semaine" } });
     return new Response("{}", { status: 404 });
   };
   return { calls, fetchImpl };
 }
 
-test("page de paiement Stripe : prix, réduction de 1re période, texte de renouvellement", async () => {
+test("page de paiement Stripe : 3 jours à 0,99 €, puis 16,99 € par semaine, engagement écrit en clair", async () => {
   const { calls, fetchImpl } = fakeStripe();
   const env = { STRIPE_SECRET_KEY: "sk_test_x", FETCH: fetchImpl };
-  const url = await createCheckout(env, new Request("https://site.fr/api/checkout"), { quiz: { id: "q1" }, lead: { email: "f@example.com" }, offer: "mois", waiverAt: 1 });
+  const url = await createCheckout(env, new Request("https://site.fr/api/checkout"), { quiz: { id: "q1" }, lead: { email: "f@example.com" }, offer: "semaine", waiverAt: 1 });
   assert.match(url, /checkout\.stripe\.com/);
   const co = calls.find((c) => c.path === "/v1/checkout/sessions").body;
   assert.equal(co.mode, "subscription"); assert.equal(co.client_reference_id, "q1"); assert.equal(co.customer_email, "f@example.com");
-  assert.equal(co["discounts[0][coupon]"], "lm_intro_mois_1000");
-  assert.match(co["custom_text[submit][message]"], /puis 19,99 € chaque mois/);
+  // l'abonnement à la semaine + les 3 jours d'essai payés une fois
+  assert.equal(co["subscription_data[trial_period_days]"], "3");
+  assert.equal(co["line_items[0][price]"], "price_lm_semaine_1699_1w");
+  assert.equal(co["line_items[1][price]"], "price_lm_semaine_essai_99_3j");
+  const prices = calls.filter((c) => c.path === "/v1/prices" && c.method === "POST").map((c) => c.body);
+  assert.equal(prices.find((p) => p.lookup_key === "lm_semaine_1699_1w")["recurring[interval]"], "week");
+  assert.equal(prices.find((p) => p.lookup_key === "lm_semaine_essai_99_3j").unit_amount, "99");
+  // tout est écrit en clair sur la page Stripe, au-dessus du bouton
+  assert.match(co["custom_text[submit][message]"].replace(/\s+/g, " "), /0,99 € pour 3 jours, puis 16,99 € par semaine/);
+  assert.match(co["custom_text[submit][message]"].replace(/\s+/g, " "), /17,98 €/);
   assert.equal(co["consent_collection[terms_of_service]"], "required", "la renonciation aux 14 jours est sur la page Stripe");
-  assert.match(co["custom_text[terms_of_service_acceptance][message]"], /rétractation/);
-  assert.equal(calls.find((c) => c.path === "/v1/coupons").body.duration, "once");
+  assert.match(co["custom_text[terms_of_service_acceptance][message]"], /engagement minimum.*rétractation/);
+  assert.ok(!calls.some((c) => c.path.startsWith("/v1/coupons")), "plus de réduction : l'essai est un prix à part");
 });
 
 async function signed(secret, event) {
@@ -146,8 +154,8 @@ test("webhook Stripe : signature, une seule fois par événement, membre créé,
   const d = await db(env);
   await d.prepare("INSERT INTO quizzes (id, answers, created_at, updated_at) VALUES ('q9', '{\"difficultes\":[\"peau\"]}', 1, 1)").run();
   await d.prepare("INSERT INTO leads (quiz_id, email, email_key, created_at) VALUES ('q9', 'g@example.com', 'g@example.com', 1)").run();
-  const event = { id: "evt_1", type: "checkout.session.completed", data: { object: { mode: "subscription", status: "complete", payment_status: "paid", client_reference_id: "q9", customer: "cus_1", customer_details: { email: "g@example.com" }, metadata: { offer: "mois", waiver_at: "5" },
-    subscription: { id: "sub_1", status: "active", cancel_at_period_end: false, current_period_end: Math.floor(Date.now() / 1000) + 2592000, metadata: { offer: "mois" } } } } };
+  const event = { id: "evt_1", type: "checkout.session.completed", data: { object: { mode: "subscription", status: "complete", payment_status: "paid", client_reference_id: "q9", customer: "cus_1", customer_details: { email: "g@example.com" }, metadata: { offer: "semaine", waiver_at: "5" },
+    subscription: { id: "sub_1", status: "active", cancel_at_period_end: false, current_period_end: Math.floor(Date.now() / 1000) + 2592000, metadata: { offer: "semaine" } } } } };
   const W = client(env);
   assert.equal((await W(webhook, "stripe-webhook", { raw: JSON.stringify(event), headers: { "stripe-signature": "t=1,v1=00" } })).status, 400);
   const s = await signed("whsec_t", event);
@@ -191,6 +199,53 @@ test("tâches du jour : secret, nettoyage, rappel une fois par jour, relances li
   r = await C(unsubscribe, link.replace(/t=\w+/, "t=faux").replace("http://localhost/api/", ""), { method: "GET" });
   assert.match(r.data, /ne marche plus/);
   assert.equal((await d.prepare("SELECT reminder_optin FROM customers WHERE id = ?").bind(c.id).first()).reminder_optin, 0);
+});
+
+test("résilier pendant les 3 jours : la semaine d'engagement reste due, puis tout s'arrête ; suppression après", async () => {
+  const env = { DB: localD1(), DEV_SHOW_CODE: "1" };
+  const trialEnd = now() + 2 * DAY;
+  await member(env, "k@example.com", { current_period_end: trialEnd, trial_end: trialEnd });
+  const K = client(env);
+  const s = await K(authStart, "auth-start", { body: { email: "k@example.com" } });
+  await K(authVerify, "auth-verify", { body: { email: "k@example.com", code: s.data.devCode } });
+  let r = await K(me, "me", { method: "GET" });
+  assert.equal(r.data.subscription.in_trial, true);
+  r = await K(cancel, "subscription-cancel");
+  assert.equal(r.data.ends_at, trialEnd + 7 * DAY, "fin = fin de l'essai + 1 semaine");
+  r = await K(me, "me", { method: "GET" });
+  assert.equal(r.data.subscription.cancel_at_period_end, true);
+  assert.equal(r.data.subscription.charge_pending, true, "la semaine d'engagement reste à prélever");
+  r = await K(del, "account-delete", { body: { confirme: true } });
+  assert.equal(r.status, 409); assert.match(r.data.error, /semaine d'engagement/);
+  // une fois la semaine payée (fin de période = fin d'engagement), plus rien de prévu : suppression possible
+  await env.DB.prepare("UPDATE subscriptions SET current_period_end = ends_at").run();
+  r = await K(del, "account-delete", { body: { confirme: true } });
+  assert.equal(r.status, 200);
+});
+
+test("résilier chez Stripe pendant l'essai : cancel_at à la fin de la semaine d'engagement, sans prorata", async () => {
+  const sent = [];
+  const trialEnd = Math.floor(Date.now() / 1000) + 2 * 86400;
+  const fetchImpl = async (url, init = {}) => {
+    const body = Object.fromEntries(new URLSearchParams(init.body || ""));
+    sent.push({ method: init.method, body });
+    const base = { id: "sub_9", status: "trialing", trial_end: trialEnd, current_period_end: trialEnd, cancel_at_period_end: false, metadata: { offer: "semaine" } };
+    return new Response(JSON.stringify(init.method === "POST" ? { ...base, cancel_at: Number(body.cancel_at) } : base), { status: 200 });
+  };
+  const env = { DB: localD1(), DEV_SHOW_CODE: "1", STRIPE_SECRET_KEY: "sk_test_x", FETCH: fetchImpl };
+  const d = await db(env);
+  const c = await createMember(d, { quiz: null, email: "m@example.com", emailKey: "m@example.com", subscription: { id: "sub_9", ...offerSnapshot("semaine"), status: "active", current_period_end: trialEnd * 1000, trial_end: trialEnd * 1000 } });
+  const M = client(env);
+  const s = await M(authStart, "auth-start", { body: { email: "m@example.com" } });
+  await M(authVerify, "auth-verify", { body: { email: "m@example.com", code: s.data.devCode } });
+  const r = await M(cancel, "subscription-cancel");
+  assert.equal(r.status, 200);
+  const post = sent.find((x) => x.method === "POST").body;
+  assert.equal(Number(post.cancel_at), trialEnd + 7 * 86400);
+  assert.equal(post.proration_behavior, "none");
+  const row = await d.prepare("SELECT * FROM subscriptions WHERE id = 'sub_9'").first();
+  assert.equal(row.ends_at, (trialEnd + 7 * 86400) * 1000); assert.equal(row.cancel_at_period_end, 1);
+  assert.ok(c.id);
 });
 
 test("signature Stripe trop vieille refusée", async () => {

@@ -14,10 +14,10 @@ a { color: var(--c-text); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
 /* Écran : une colonne, 16 px de marge, bouton collé en bas. Une lueur de braise en haut, discrète. */
-.screen { position: relative; min-height: 100dvh; max-width: var(--size-content-max); margin: 0 auto; padding: var(--sp-4) var(--size-gutter) calc(var(--size-cta) + var(--sp-8)); display: flex; flex-direction: column; gap: var(--sp-4); isolation: isolate; }
+.screen { position: relative; min-height: 100dvh; max-width: var(--size-content-max); margin: 0 auto; padding: var(--sp-4) var(--size-gutter) calc(var(--size-cta) + var(--sp-8) + var(--sp-7)); display: flex; flex-direction: column; gap: var(--sp-4); isolation: isolate; }
 .screen::before { content: ""; position: fixed; inset: -20vh -20vw auto; height: 60vh; z-index: -1; pointer-events: none;
   background: radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--c-glow) 18%, transparent), transparent 70%); }
-.screen__footer { position: fixed; z-index: 5; left: 0; right: 0; bottom: 0; padding: var(--sp-5) var(--size-gutter) calc(var(--sp-4) + env(safe-area-inset-bottom)); background: linear-gradient(to top, var(--c-bg) 65%, color-mix(in srgb, var(--c-bg) 0%, transparent)); }
+.screen__footer { position: fixed; z-index: 5; left: 0; right: 0; bottom: 0; padding: var(--sp-5) var(--size-gutter) calc(var(--sp-4) + env(safe-area-inset-bottom)); background: linear-gradient(to top, var(--c-bg) 82%, color-mix(in srgb, var(--c-bg) 0%, transparent)); }
 .screen__footer > * { max-width: calc(var(--size-content-max) - 2 * var(--size-gutter)); margin: 0 auto; }
 
 /* Textes : titres en Archivo serré et très gras, alignés à gauche comme une affiche */

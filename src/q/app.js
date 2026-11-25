@@ -1,6 +1,6 @@
 // Le quiz : un écran à la fois, décrit dans /shared/questions.js.
 import { SCREENS, S11_TEXT } from "/shared/questions.js";
-import { OFFERS, DEFAULT_OFFER, euros, renewText, perDay } from "/shared/plans.js";
+import { OFFERS, DEFAULT_OFFER, euros, priceLines, minimumCents } from "/shared/plans.js";
 import { FACTORS } from "/shared/factors.js";
 import { faceMesh } from "/q/mesh.js";
 
@@ -239,22 +239,25 @@ const VIEWS = {
         <h1 class="title" tabindex="-1">Ces points, on va les chercher ensemble.</h1>`
         : `<h1 class="title" tabindex="-1">Ton plan de 28 jours est prêt.</h1>`}
       <p class="lead">${S.scanned ? "Ta note, le détail de tes 15 critères, et le plan jour par jour pour progresser." : "Ton bilan et ton plan jour par jour, faits d'après tes réponses."}</p>
-      <fieldset class="options"><legend class="sr-only">Choisis ton offre</legend>
-        ${Object.entries(offers).map(([k, o]) => `<label class="offer">${o.best ? '<span class="offer__tag">Le moins cher par jour</span>' : ""}
-          <input type="radio" name="offer" value="${k}" ${k === S.offer ? "checked" : ""}>
-          <span class="offer__main"><span class="offer__name">${esc(o.label)}</span><span class="offer__renew">${esc(euros(o.intro))} aujourd'hui, ${esc(renewText(o))}</span></span>
-          <span class="offer__price">${esc(euros(o.intro))}<span class="offer__day">soit ${esc(perDay(o))} par jour</span></span></label>`).join("")}
-      </fieldset>
+      <div class="offer offer--single">
+        <span class="offer__main"><span class="offer__name">${esc(chosen.label)}</span><span class="offer__renew">${esc(priceLines(chosen).today)}, ${esc(priceLines(chosen).then)}</span></span>
+        <span class="offer__price">${esc(euros(chosen.intro))}<span class="offer__day">pour ${chosen.trialDays} jours</span></span>
+      </div>
       <ul class="includes">
         ${S.scanned ? "<li>Ta note et ton potentiel, critère par critère</li>" : "<li>Ton bilan d'après tes réponses</li>"}
         <li>Un plan de 28 jours, 5 à 10 minutes par jour</li>
         <li>Ton suivi jour par jour, et un rappel chaque matin si tu veux</li>
-        <li>Résiliable en ligne en un clic</li>
+        <li>Résiliable en ligne en un clic, après l'engagement</li>
       </ul>
       ${S.waiverOnSite ? `<label class="check"><input type="checkbox" id="waiver"><span>Je veux accéder à mon résultat tout de suite. Je reconnais perdre mon droit de rétractation de 14 jours une fois le résultat ouvert.</span></label>` : ""}
       <div id="pay-error"></div>
-      <p class="legal">Aujourd'hui : ${esc(euros(chosen.intro))}. Ensuite : ${esc(euros(chosen.renew))} ${chosen.count === 1 ? "chaque mois" : `tous les ${chosen.count} mois`}, jusqu'à résiliation. Carte, Apple Pay ou Google Pay, paiement sécurisé par Stripe. <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
-      ${footer(`<button class="btn btn--primary" data-pay>Débloquer mon résultat, ${esc(euros(chosen.intro))}</button>`)}
+      <div class="terms" role="note">
+        <p><b>Aujourd'hui : ${esc(priceLines(chosen).today)}.</b></p>
+        <p>Ensuite : ${esc(euros(chosen.renew))} par semaine, jusqu'à résiliation.</p>
+        <p>${esc(priceLines(chosen).minimum)}</p>
+      </div>
+      <p class="legal">Carte, Apple Pay ou Google Pay, paiement sécurisé par Stripe. <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
+      ${footer(`<p class="price-line"><b>${esc(priceLines(chosen).today)}</b>, puis ${esc(euros(chosen.renew))} par semaine. Engagement : ${esc(euros(minimumCents(chosen)))} au total, puis résiliable en un clic.</p><button class="btn btn--primary" data-pay>Débloquer mon résultat, ${esc(euros(chosen.intro))}</button>`)}
     </main>`;
   },
 
@@ -498,7 +501,7 @@ async function pay(btn) {
   const box = document.getElementById("pay-error");
   if (document.getElementById("waiver") && !document.getElementById("waiver").checked) { box.innerHTML = '<div class="alert" role="alert">Coche la case juste au-dessus pour recevoir ton rapport tout de suite.</div>'; document.getElementById("waiver").focus(); box.scrollIntoView({ block: "center" }); return; }
   btn.setAttribute("aria-busy", "true");
-  try { const { url } = await api("checkout", { offer: S.offer, waiver: Boolean(document.getElementById("waiver")?.checked) }); location.href = url; }
+  try { const { url } = await api("checkout", { offer: OFFERS[S.offer] ? S.offer : DEFAULT_OFFER, waiver: Boolean(document.getElementById("waiver")?.checked) }); location.href = url; }
   catch (e) { btn.removeAttribute("aria-busy"); box.innerHTML = `<div class="alert" role="alert">${esc(e.message)}</div>`; box.scrollIntoView({ block: "center" }); }
 }
 

@@ -49,8 +49,14 @@ function planView(p) {
 
 function accountView(m) {
   const s = m.subscription;
-  const status = !s ? "Pas d'abonnement." : s.cancel_at_period_end ? `Résilié : accès jusqu'au ${new Date(s.current_period_end).toLocaleDateString("fr-FR")}.`
-    : s.status === "active" ? `Abonnement actif : ${euros(s.renew_cents)} ${s.interval === "quarter" ? "tous les 3 mois" : "par mois"}, prochain prélèvement le ${new Date(s.current_period_end).toLocaleDateString("fr-FR")}.` : "Paiement en attente.";
+  const day = (t) => new Date(t).toLocaleDateString("fr-FR", { timeZone: "Europe/Paris" });
+  const week = s ? euros(s.renew_cents) + " par semaine" : "";
+  const status = !s ? "Pas d'abonnement."
+    : s.status === "past_due" ? "Le dernier paiement n'est pas passé : mets ta carte à jour."
+    : s.cancel_at_period_end && s.charge_pending ? `Résilié. Ta semaine d'engagement (${euros(s.renew_cents)}) sera prélevée le ${day(s.current_period_end)}, puis plus rien. Accès jusqu'au ${day(s.ends_at)}.`
+    : s.cancel_at_period_end ? `Résilié : plus aucun prélèvement. Accès jusqu'au ${day(s.ends_at || s.current_period_end)}.`
+    : s.in_trial ? `Essai en cours jusqu'au ${day(s.trial_end)}. Ensuite ${week}, avec une 1re semaine d'engagement.`
+    : s.status === "active" ? `Abonnement actif : ${week}, prochain prélèvement le ${day(s.current_period_end)}.` : "Paiement en attente.";
   return `<div class="account"><span>${esc(m.email)}</span><span>${esc(status)}</span>
     ${s && !s.cancel_at_period_end ? '<button data-cancel>Résilier mon abonnement</button>' : ""}
     ${s && m.hasCard ? '<button data-portal>Ma carte et mes factures</button>' : ""}
@@ -101,7 +107,9 @@ app.addEventListener("click", async (e) => {
     try { await api("account-delete", { confirme: true }); location.href = "/q/"; } catch (err) { alert(err.message); }
   }
   if (b.hasAttribute("data-cancel")) {
-    if (!confirm("Résilier ? Tu gardes l'accès jusqu'à la fin de la période payée, et rien ne sera plus prélevé.")) return;
+    const s = me.subscription;
+    const msg = s?.in_trial ? `Résilier ? Ta semaine d'engagement (${euros(s.renew_cents)}) sera prélevée à la fin de l'essai, puis plus rien. Tu gardes l'accès jusqu'au bout.` : "Résilier ? Tu gardes l'accès jusqu'à la fin de la semaine payée, et rien ne sera plus prélevé.";
+    if (!confirm(msg)) return;
     try { await api("subscription-cancel", {}); me = await api("me"); render(); } catch (err) { alert(err.message); }
   }
 });

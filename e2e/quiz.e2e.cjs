@@ -239,17 +239,22 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     await p.getByRole("tablist").waitFor();
   }, browser);
 
-  await test("F06-H1", "résilier puis supprimer le compte", async (p) => {
+  await test("F06-H1", "résilier pendant l'essai : semaine d'engagement annoncée, suppression refusée tant qu'elle n'est pas prélevée", async (p) => {
     await runTo(p, "offre", { photos: false });
+    expect(/17,98/.test((await p.textContent("main")).replace(/\s+/g, " ")), "le minimum à payer n'est pas écrit sur la page de paiement");
     await pay(p);
-    p.on("dialog", (d) => d.accept());
+    expect(/Essai en cours/.test(await p.textContent(".account")), "l'essai n'est pas indiqué");
+    const messages = [];
+    p.on("dialog", (d) => { messages.push(d.message()); d.accept(); });
     await p.getByRole("button", { name: "Supprimer mon compte et mes données" }).click();
     await p.waitForTimeout(400);
     expect(/\/app\//.test(p.url()), "suppression acceptée avec un abonnement en cours");
     await p.getByRole("button", { name: "Résilier mon abonnement" }).click();
-    await p.getByText(/Résilié : accès jusqu'au/).waitFor();
+    await p.getByText(/semaine d'engagement/).waitFor();
+    expect(messages.some((m) => /semaine d'engagement/.test(m)), "la confirmation ne parle pas de la semaine d'engagement");
     await p.getByRole("button", { name: "Supprimer mon compte et mes données" }).click();
-    await p.waitForURL(/\/q\//);
+    await p.waitForTimeout(400);
+    expect(messages.some((m) => /prélevée le/.test(m)), "pas de message clair sur la suppression");
   }, browser);
 
   await browser.close();

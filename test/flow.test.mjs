@@ -52,9 +52,9 @@ test("parcours complet avec scan", async () => {
   r = await call(lead, "lead", { body: { email: "Test@Example.com", optin: false } });
   assert.equal(r.status, 200); assert.equal(r.data.scanned, true);
   assert.equal((await env.DB.prepare("SELECT marketing_optin FROM leads").first()).marketing_optin, 0);
-  r = await call(checkout, "checkout", { body: { offer: "mois" } });
+  r = await call(checkout, "checkout", { body: { offer: "semaine" } });
   assert.equal(r.status, 400, "la case de renonciation est obligatoire");
-  r = await call(checkout, "checkout", { body: { offer: "mois", waiver: true } });
+  r = await call(checkout, "checkout", { body: { offer: "semaine", waiver: true } });
   assert.equal(r.status, 200);
   const u = new URL(r.data.url, "http://localhost");
   r = await call(done, "checkout-done", { method: "GET", query: u.search });
@@ -95,7 +95,7 @@ test("refus du scan : plan sans note, et les notes déjà faites sont effacées"
   await call(consent, "scan-consent", { body: { agree: false } });
   assert.equal((await env.DB.prepare("SELECT COUNT(*) AS n FROM scans").first()).n, 0);
   await call(lead, "lead", { body: { email: "b@example.com" } });
-  const { data } = await call(checkout, "checkout", { body: { offer: "trimestre", waiver: true } });
+  const { data } = await call(checkout, "checkout", { body: { offer: "semaine", waiver: true } });
   await call(done, "checkout-done", { method: "GET", query: new URL(data.url, "http://x").search });
   const r = await call(me, "me", { method: "GET" });
   assert.equal(r.data.report, null);
@@ -135,8 +135,8 @@ test("sans paiement d'essai ni Stripe, le paiement est fermé", async () => {
   const call = client(env);
   await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" } } });
   await call(lead, "lead", { body: { email: "c@example.com" } });
-  const r = await call(checkout, "checkout", { body: { offer: "mois", waiver: true } });
+  const r = await call(checkout, "checkout", { body: { offer: "semaine", waiver: true } });
   assert.equal(r.status, 503);
-  const d = await call(done, "checkout-done", { method: "GET", query: "?essai=1&offre=mois" });
+  const d = await call(done, "checkout-done", { method: "GET", query: "?essai=1&offre=semaine" });
   assert.equal(d.status, 400, "le faux paiement ne marche pas en ligne");
 });
