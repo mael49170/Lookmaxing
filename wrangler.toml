@@ -1,9 +1,9 @@
 # Projet Cloudflare Pages. La base D1 se crée dans Cloudflare (Storage & Databases -> D1), puis son id va ci-dessous.
-name = "lookmaxing"
+name = "mogx"
 pages_build_output_dir = "src"
 compatibility_date = "2026-11-01"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "lookmaxing"
+database_name = "mogx"
 database_id = "A_REMPLIR"

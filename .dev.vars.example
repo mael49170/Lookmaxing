@@ -14,7 +14,7 @@ STRIPE_PUBLISHABLE_KEY=
 
 # E-mails (resend.com, avec le domaine du site vérifié)
 RESEND_API_KEY=
-MAIL_FROM=MOGX <bonjour@ton-domaine.fr>
+MAIL_FROM=MOGX <bonjour@mogx.fr>
 MAIL_REPLY_TO=
 # adresse affichée « Une question avant de payer ? » sur la page de paiement
 SUPPORT_EMAIL=
