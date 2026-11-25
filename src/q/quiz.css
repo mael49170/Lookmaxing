@@ -197,3 +197,6 @@
 
 .mini-legal { display: flex; justify-content: center; gap: var(--sp-3); font-size: var(--fs-xs); }
 .mini-legal a { color: var(--c-text-muted); }
+
+/* Ligne de confiance en haut de l'accueil : uniquement des faits vrais (jamais de note ou de classement inventés) */
+.proof-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: var(--sp-1) var(--sp-4); margin: 0; font-size: var(--fs-sm); white-space: nowrap; font-weight: 600; color: var(--c-text); }
