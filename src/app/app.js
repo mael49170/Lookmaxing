@@ -65,6 +65,14 @@ function accountView(m) {
     <button data-delete>Supprimer mon compte et mes données</button></div>`;
 }
 
+// Garantie « satisfait ou remboursé » : où il en est, et le bouton quand c'est gagné
+function guaranteeView(g) {
+  if (!g || !g.available) return g?.used ? `<div class="guarantee"><b>Garantie utilisée</b><span>Ta 1re semaine t'a été remboursée.</span></div>` : "";
+  const day = (t) => new Date(t).toLocaleDateString("fr-FR", { timeZone: "Europe/Paris" });
+  if (g.eligible) return `<div class="guarantee guarantee--ok"><b>Satisfait ou remboursé</b><span>Tu as suivi ton plan ${g.done} jours sur 7 : tu peux te faire rembourser ta 1re semaine jusqu'au ${day(g.deadline)}. Ça arrête aussi ton abonnement.</span><button class="btn btn--secondary" data-guarantee>Me faire rembourser ma 1re semaine</button></div>`;
+  return `<div class="guarantee"><b>Satisfait ou remboursé</b><span>${esc(g.reason)}</span><div class="progress" role="progressbar" aria-label="Jours suivis pendant ta 1re semaine payée" aria-valuemin="0" aria-valuemax="${g.needed}" aria-valuenow="${Math.min(g.done, g.needed)}"><span style="width:${Math.min(100, (g.done / g.needed) * 100)}%"></span></div></div>`;
+}
+
 // Après le paiement : la note se révèle (compteur + jauge), puis le détail
 const fr = (n) => String(n).replace(".", ",");
 function reveal(r) {
@@ -93,6 +101,7 @@ function render() {
       <button role="tab" aria-selected="${tab === "rapport"}" data-tab="rapport">Mon rapport</button>
     </div>
     <section class="stack" role="tabpanel">${tab === "plan" ? planView(me.plan) : reportView(me.report)}</section>
+    ${guaranteeView(me.guarantee)}
     ${accountView(me)}`;
 }
 
@@ -102,6 +111,10 @@ app.addEventListener("click", async (e) => {
   if (b.dataset.tab) { tab = b.dataset.tab; render(); return; }
   if (b.hasAttribute("data-logout") || b.hasAttribute("data-logout-all")) { await api("logout", { partout: b.hasAttribute("data-logout-all") }).catch(() => {}); location.href = "/connexion/"; }
   if (b.hasAttribute("data-portal")) { try { location.href = (await api("portal", {})).url; } catch (err) { alert(err.message); } }
+  if (b.hasAttribute("data-guarantee")) {
+    if (!confirm("Te faire rembourser ta 1re semaine ? Ton abonnement s'arrête tout de suite.")) return;
+    try { await api("guarantee", { confirme: true }); me = await api("me"); render(); alert("C'est fait : le remboursement part sur ta carte (quelques jours selon ta banque)."); } catch (err) { alert(err.message); }
+  }
   if (b.hasAttribute("data-delete")) {
     if (!confirm("Supprimer ton compte ? Ton rapport, ton plan et ton suivi seront effacés pour de bon.")) return;
     try { await api("account-delete", { confirme: true }); location.href = "/q/"; } catch (err) { alert(err.message); }

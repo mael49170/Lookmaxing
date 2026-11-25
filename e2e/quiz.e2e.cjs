@@ -73,12 +73,12 @@ async function runTo(page, target, opts) {
     if ((await page.getByLabel("Ton e-mail").count()) && target !== "email") {
       await page.getByLabel("Ton e-mail").fill(opts?.email || `test${Date.now()}@example.com`);
       await page.getByRole("button", { name: "Voir mon résultat" }).click();
-      await page.getByRole("button", { name: /Débloquer mon résultat/ }).waitFor({ timeout: 10000 });
+      await page.getByRole("button", { name: /Débloquer mon résultat, / }).waitFor({ timeout: 10000 });
       continue;
     }
     const t = await h1(page).catch(() => "");
     if (target === "email" && await page.getByLabel("Ton e-mail").count()) return;
-    if (target === "offre" && await page.getByRole("button", { name: /Débloquer mon résultat/ }).count()) return;
+    if (target === "offre" && await page.getByRole("button", { name: /Débloquer mon résultat, / }).count()) return;
     if (typeof target === "number" && (await screenId(page)) === target) return;
     if (opts?.axe) await axe(page, "S" + String((await screenId(page)) + 1).padStart(2, "0"));
     await step(page, opts);
@@ -88,7 +88,7 @@ async function runTo(page, target, opts) {
 
 async function pay(page) {
   await page.getByRole("checkbox", { name: /rétractation/ }).check();
-  await page.getByRole("button", { name: /Débloquer mon résultat/ }).click();
+  await page.getByRole("button", { name: /Débloquer mon résultat, / }).click();
   await page.waitForURL(/\/app\//, { timeout: 15000 });
   if (await page.getByRole("button", { name: "Voir mon détail" }).count() || await page.waitForSelector(".tabs, .reveal", { timeout: 10000 }).then(() => page.locator(".reveal").count())) {
     await page.waitForTimeout(1800); await axe(page, "révélation"); await page.getByRole("button", { name: "Voir mon détail" }).click();
@@ -147,7 +147,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     await runTo(p, "offre");
     let n = 0; p.on("request", (r) => r.url().includes("/api/checkout") && !r.url().includes("done") && n++);
     await p.getByRole("checkbox", { name: /rétractation/ }).check();
-    await p.getByRole("button", { name: /Débloquer mon résultat/ }).dblclick();
+    await p.getByRole("button", { name: /Débloquer mon résultat, / }).dblclick();
     await p.waitForURL(/\/app\//, { timeout: 15000 });
     expect(n === 1, n + " demandes de paiement");
   }, browser);
@@ -182,7 +182,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     await runTo(p, "email");
     await p.getByLabel("Ton e-mail").fill("élodie.martin+" + "x".repeat(60) + "@exemple-tres-long-pour-voir.fr");
     await p.getByRole("button", { name: "Voir mon résultat" }).click();
-    await p.getByRole("button", { name: /Débloquer mon résultat/ }).waitFor({ timeout: 5000 });
+    await p.getByRole("button", { name: /Débloquer mon résultat, / }).waitFor({ timeout: 5000 });
   }, browser);
 
   await test("F01-N1", "e-mail invalide : message sous le champ", async (p) => {
@@ -194,9 +194,24 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
 
   await test("F01-N2", "payer sans cocher la renonciation : refusé avec un message", async (p) => {
     await runTo(p, "offre");
-    await p.getByRole("button", { name: /Débloquer mon résultat/ }).click();
+    await p.getByRole("button", { name: /Débloquer mon résultat, / }).click();
     expect(await p.getByRole("alert").filter({ hasText: "Coche la case" }).isVisible(), "pas de message");
     expect(!/\/app\//.test(p.url()), "paiement parti quand même");
+  }, browser);
+
+  await test("F01-P1", "page de paiement : vrai minuteur, vraies notes sans les noms, plan, garantie, prix écrit", async (p) => {
+    await runTo(p, "offre");
+    const timer = await p.textContent("#timer");
+    expect(/^1[45]:\d\d$/.test(timer), "minuteur absent ou faux : " + timer);
+    const text = (await p.textContent("main")).replace(/\s+/g, " ");
+    expect(/Tu peux monter jusqu'à \d,\d/.test(text), "le max n'est pas affiché");
+    expect(/Satisfait ou remboursé/.test(text) && /5 jours sur les 7/.test(text), "garantie absente");
+    expect(/17,98 €/.test(text) && /16,99 € par semaine/.test(text), "prix pas écrit en clair");
+    expect(!/(Mâchoire|Symétrie|Peau|Posture)\b.*\/100/.test(text), "un nom de critère est visible à côté de sa note");
+    expect((await p.locator(".week:not(.week--locked) .day").count()) === 14, "il manque des jours du plan");
+    await p.getByRole("button", { name: "Débloquer", exact: true }).click();
+    await p.waitForTimeout(600);
+    expect(await p.locator("#pay").evaluate((el) => el.getBoundingClientRect().top < innerHeight), "le bouton du bas ne mène pas au paiement");
   }, browser);
 
   await test("F02-H1", "sans photo (variante B) : plan d'après les réponses, pas de note", async (p) => {

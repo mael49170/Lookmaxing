@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   current_period_end INTEGER NOT NULL,              -- fin de la période en cours (fin de l'essai pendant l'essai)
   trial_end INTEGER,                                 -- fin des 3 jours à 0,99 €
   ends_at INTEGER,                                   -- fin de l'accès si résilié (après la semaine d'engagement)
+  guarantee_used_at INTEGER,                         -- garantie « satisfait ou remboursé » utilisée (une fois)
   withdrawal_waived_at INTEGER,                      -- renonciation au délai de 14 jours (UE), cochée au paiement
   created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
 );
@@ -136,4 +137,12 @@ CREATE TABLE IF NOT EXISTS funnel (
   day TEXT NOT NULL, step TEXT NOT NULL, variant TEXT NOT NULL DEFAULT 'a', source TEXT NOT NULL DEFAULT '',
   n INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (day, step, variant, source)
+);
+
+-- Réservation de l'essai à 0,99 € : 15 minutes, une seule fois par adresse e-mail et par téléphone.
+-- key : "e:<e-mail normalisé>" ou "d:<identifiant du téléphone>" (cookie). La première date gagne, jamais remise à zéro.
+CREATE TABLE IF NOT EXISTS offer_claims (
+  key TEXT PRIMARY KEY,
+  expires_at INTEGER NOT NULL,
+  created_at INTEGER NOT NULL
 );

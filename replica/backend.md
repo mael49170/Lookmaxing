@@ -7,7 +7,7 @@ Tout est codé et testé sans clé (tests : `node test/backend.test.mjs`, `flow`
 | service | pour quoi | où mettre la clé | état |
 | --- | --- | --- | --- |
 | Anthropic (console.anthropic.com) | l'analyse des photos | `ANTHROPIC_API_KEY` | à créer. Demander aussi le « zero data retention » et signer le DPA (RGPD) |
-| Stripe, **mode test** | le paiement | `STRIPE_SECRET_KEY` (sk_test_…), `STRIPE_WEBHOOK_SECRET` | à créer. Webhook vers `https://<site>/api/stripe-webhook` avec : checkout.session.completed, customer.subscription.updated, customer.subscription.deleted, invoice.paid, invoice.payment_failed. Activer le portail client (changer de carte, factures) |
+| Stripe, **mode test** | le paiement | `STRIPE_SECRET_KEY` (sk_test_…), `STRIPE_WEBHOOK_SECRET`, `STRIPE_PUBLISHABLE_KEY` (pk_test_…, paiement dans la page) | à créer. Webhook vers `https://<site>/api/stripe-webhook` avec : checkout.session.completed, customer.subscription.updated, customer.subscription.deleted, invoice.paid, invoice.payment_failed. Activer le portail client (changer de carte, factures) |
 | Resend | les e-mails | `RESEND_API_KEY`, `MAIL_FROM` | à créer, avec le domaine du site vérifié (SPF, DKIM, DMARC) |
 | Cloudflare Turnstile | l'anti-robot du scan | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET` | à créer (gratuit) |
 | Secrets maison | tâches du jour, désinscription, IP | `CRON_SECRET`, `UNSUB_SECRET`, `IP_SALT` | à générer au hasard |

@@ -1,22 +1,34 @@
 import { json, handle } from "../../lib/http.js";
 import { currentQuiz } from "../../lib/identity.js";
 import { FACTORS, outOf10 } from "../../src/shared/factors.js";
+import { buildPlan } from "../../lib/plan.js";
+import { taskShort, TASK_BY_ID } from "../../lib/tasks.js";
 
-// GET -> un VRAI aperçu du résultat avant le paiement : le point fort, le nombre de critères qui freinent,
-// et les points à gagner. Jamais la note elle-même ni le détail (ils restent pour après le paiement).
+// GET -> un VRAI aperçu avant le paiement, pour donner envie sans rien inventer :
+// - son max (vrai) et les points à gagner ; sa note actuelle reste cachée ;
+// - ses 3 meilleurs et 3 moins bons critères : les vraies notes, mais PAS leur nom (seulement sa longueur, pour le flou) ;
+// - son vrai plan : les 14 premiers jours en clair (le même plan que celui qu'il recevra), le reste caché.
 export const onRequestGet = handle(async ({ request, env }) => {
   const { d, quiz } = await currentQuiz(request, env);
+  const answers = JSON.parse(quiz.answers || "{}");
   const scan = await d.prepare("SELECT score_now, score_max, factors FROM scans WHERE quiz_id = ?").bind(quiz.id).first();
-  if (!scan) return json({ scanned: false });
-  const factors = JSON.parse(scan.factors);
-  const best = [...factors].sort((a, b) => b.note - a.note)[0];
+  const factors = scan ? JSON.parse(scan.factors) : null;
+  const plan = buildPlan(answers, factors);
+  // un titre par jour : la tâche ponctuelle du jour (les habitudes reviennent tous les jours)
+  const planPreview = plan.days.slice(0, 14).map((dd) => taskShort(dd.tasks.find((id) => !TASK_BY_ID[id]?.daily) || dd.tasks[0]));
+  const out = { scanned: Boolean(scan), plan: planPreview, planDays: plan.days.length };
+  if (!scan) return json(out);
+  const sorted = [...factors].sort((a, b) => b.note - a.note);
   const label = (id) => FACTORS.find((f) => f.id === id)?.label || id;
+  const hidden = (f) => ({ note: f.note, len: label(f.id).length });
   const holding = factors.filter((f) => f.note < 55 && FACTORS.find((x) => x.id === f.id)?.changeable >= 0.5);
   return json({
-    scanned: true,
-    strength: { label: label(best.id), note: best.note },
+    ...out,
+    max: outOf10(scan.score_max),
     gain: outOf10(scan.score_max - scan.score_now),
+    strength: { label: label(sorted[0].id), note: sorted[0].note },
+    strengths: sorted.slice(0, 3).map(hidden),
+    weaknesses: sorted.slice(-3).reverse().map(hidden),
     holding: holding.length,
-    holdingLabels: holding.slice(0, 3).map((f) => label(f.id)), // affichés floutés sur l'aperçu
   });
 });

@@ -46,3 +46,7 @@ Analyse en direct sur sa photo (maillage thermique),scan,should,no,yes,"S07b ajo
 Phrases qui reprennent ses réponses,quiz,should,no,yes,S13 S16 S17 S21 S23
 Révélation de la note après paiement,report,should,no,yes,compteur + jauge thermique
 Lien de connexion direct dans l'e-mail de bienvenue,account,should,no,yes,"compte créé au paiement, rien à créer"
+"Minuteur de réservation de l'essai (vrai, vérifié par le serveur)",payments,should,yes,yes,"15 min, une fois par e-mail et par téléphone ; l'original a un minuteur qui repart à zéro"
+Garantie satisfait ou remboursé automatique,payments,should,yes,yes,"5 jours cochés sur 7, demande sous 14 jours, remboursement Stripe + arrêt"
+Paiement Apple Pay / Google Pay dans la page,payments,should,yes,yes,Stripe Checkout intégré (STRIPE_PUBLISHABLE_KEY)
+"Page de paiement longue : photo, vrai max, vraies notes cachées, plan sur 2 semaines",funnel,should,yes,yes,sans faux avis ni faux chiffres

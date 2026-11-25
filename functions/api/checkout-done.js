@@ -5,6 +5,7 @@ import { createMember, offerSnapshot } from "../../lib/members.js";
 import { OFFERS, DEFAULT_OFFER } from "../../src/shared/plans.js";
 import { sendMail, welcomeMail } from "../../lib/mail.js";
 import { welcomeLink } from "../../lib/auth.js";
+import { welcomeTerms } from "../../lib/members.js";
 
 const redirect = (to, cookie) => new Response(null, { status: 303, headers: { location: to, ...(cookie ? { "set-cookie": cookie } : {}) } });
 
@@ -23,14 +24,15 @@ export const onRequestGet = handle(async ({ request, env }) => {
   } else if (url.searchParams.get("essai") === "1" && env.DEV_FAKE_PAY === "1" && !env.STRIPE_SECRET_KEY) {
     // paiement d'essai, en local seulement
     const snap = offerSnapshot(url.searchParams.get("offre")) || offerSnapshot(DEFAULT_OFFER);
-    const trialEnd = now() + OFFERS[snap.offer].trialDays * DAY;
-    customer = await createMember(d, { quiz, email: lead.email, emailKey: lead.email_key, subscription: { id: "essai_" + quiz.id, ...snap, status: "active", current_period_end: trialEnd, trial_end: trialEnd, withdrawal_waived_at: now() } });
+    const withTrial = url.searchParams.get("t") !== "0";
+    const end = now() + (withTrial ? OFFERS[snap.offer].trialDays : 7) * DAY;
+    customer = await createMember(d, { quiz, email: lead.email, emailKey: lead.email_key, subscription: { id: "essai_" + quiz.id, ...snap, status: "active", current_period_end: end, trial_end: withTrial ? end : null, withdrawal_waived_at: now() } });
   } else {
     throw new HttpError(400, "Paiement introuvable.");
   }
   if (customer._created) {
     await track(d, "paye", { variant: quiz.variant, source: quiz.utm_source });
-    await sendMail(env, { to: customer.email, ...welcomeMail(await welcomeLink(d, request, customer.email_key)) }).catch((e) => console.error("E-mail de bienvenue", e.message));
+    await sendMail(env, { to: customer.email, ...welcomeMail(await welcomeLink(d, request, customer.email_key), await welcomeTerms(d, customer)) }).catch((e) => console.error("E-mail de bienvenue", e.message));
   }
   return redirect("/app/?bienvenue=1", sessionCookie(await createSession(d, customer.id), request));
 });

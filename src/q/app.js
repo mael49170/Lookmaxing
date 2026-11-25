@@ -1,6 +1,6 @@
 // Le quiz : un écran à la fois, décrit dans /shared/questions.js.
 import { SCREENS, S11_TEXT } from "/shared/questions.js";
-import { OFFERS, DEFAULT_OFFER, euros, priceLines, minimumCents } from "/shared/plans.js";
+import { OFFERS, DEFAULT_OFFER, euros, priceLines, guaranteeText } from "/shared/plans.js";
 import { FACTORS } from "/shared/factors.js";
 import { faceMesh } from "/q/mesh.js";
 
@@ -230,34 +230,62 @@ const VIEWS = {
   },
 
   paywall() {
-    const offers = S.offers || OFFERS;
-    const chosen = offers[S.offer] || offers[DEFAULT_OFFER];
-    const gain = S.teaser?.scanned && Number(S.teaser.gain) > 0 ? S.teaser.gain : null;
-    return `<main class="screen">
+    const o = OFFERS[DEFAULT_OFFER];
+    const pw = S.pw;
+    if (!pw) return `<main class="screen"><div class="brand">Lookmaxing</div><h1 class="title" tabindex="-1">On prépare ta page…</h1><div class="skel"></div><div class="skel"></div></main>`;
+    const t = pw.teaser || {};
+    const trial = pw.offer.trial;
+    const lines = priceLines(o, trial);
+    const lock = '<svg class="lock" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 10V8a6 6 0 1 1 12 0v2h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 1 0-8 0v2Z"/></svg>';
+    const row = (f, kind) => `<div class="hidden-row"><span class="hidden-row__name" style="width:${Math.min(70, 18 + f.len * 2.6)}%" aria-hidden="true">${lock}</span><span class="sr-only">Critère caché jusqu'au paiement :</span><b class="hidden-row__note hidden-row__note--${kind}">${f.note}</b></div>`;
+    const days = (from) => (t.plan || []).slice(from, from + 7).map((txt, k) => `<div class="day"><span>Jour ${from + k + 1}</span><b>${esc(txt)}</b></div>`).join("");
+    return `<main class="screen screen--sales">
       <div class="brand">Lookmaxing</div>
-      ${gain ? `<p class="eyebrow">Ton potentiel, d'après ton analyse</p><div class="big-gain" aria-label="plus ${fr(gain)} point">+${fr(gain)}</div>
-        <h1 class="title" tabindex="-1">Ces points, on va les chercher ensemble.</h1>`
-        : `<h1 class="title" tabindex="-1">Ton plan de 28 jours est prêt.</h1>`}
-      <p class="lead">${S.scanned ? "Ta note, le détail de tes 15 critères, et le plan jour par jour pour progresser." : "Ton bilan et ton plan jour par jour, faits d'après tes réponses."}</p>
-      <div class="offer offer--single">
-        <span class="offer__main"><span class="offer__name">${esc(chosen.label)}</span><span class="offer__renew">${esc(priceLines(chosen).today)}, ${esc(priceLines(chosen).then)}</span></span>
-        <span class="offer__price">${esc(euros(chosen.intro))}<span class="offer__day">pour ${chosen.trialDays} jours</span></span>
+      ${t.scanned ? `
+      <div class="duo">
+        <div class="duo__card">${scanPreview ? `<img src="${scanPreview}" alt="Ta photo">` : faceMesh({ className: "mesh" })}<span class="duo__tag">Aujourd'hui</span><span class="duo__lock">${lock}</span></div>
+        <div class="duo__card duo__card--hot"><span class="duo__label">Ton max</span><span class="duo__max">${esc(fr(t.max))}</span><span class="duo__gain">+${esc(fr(t.gain))} possible</span></div>
       </div>
-      <ul class="includes">
-        ${S.scanned ? "<li>Ta note et ton potentiel, critère par critère</li>" : "<li>Ton bilan d'après tes réponses</li>"}
-        <li>Un plan de 28 jours, 5 à 10 minutes par jour</li>
-        <li>Ton suivi jour par jour, et un rappel chaque matin si tu veux</li>
-        <li>Résiliable en ligne en un clic, après l'engagement</li>
-      </ul>
-      ${S.waiverOnSite ? `<label class="check"><input type="checkbox" id="waiver"><span>Je veux accéder à mon résultat tout de suite. Je reconnais perdre mon droit de rétractation de 14 jours une fois le résultat ouvert.</span></label>` : ""}
-      <div id="pay-error"></div>
-      <div class="terms" role="note">
-        <p><b>Aujourd'hui : ${esc(priceLines(chosen).today)}.</b></p>
-        <p>Ensuite : ${esc(euros(chosen.renew))} par semaine, jusqu'à résiliation.</p>
-        <p>${esc(priceLines(chosen).minimum)}</p>
+      <h1 class="title title--hero" tabindex="-1">Tu peux monter jusqu'à ${esc(fr(t.max))}.</h1>
+      <p class="lead">Ta note actuelle, tes 15 critères et ton plan sont prêts. Il ne reste qu'à les débloquer.</p>
+      <section class="block"><h2 class="block__title">Tes points forts</h2><p class="block__lead">Ce qui joue déjà pour toi.</p>${t.strengths.map((f) => row(f, "hot")).join("")}</section>
+      <section class="block"><h2 class="block__title">Ce qui te freine</h2><p class="block__lead">${t.holding} critère${t.holding > 1 ? "s" : ""} qui se travaille${t.holding > 1 ? "nt" : ""}. C'est là que sont tes points.</p>${t.weaknesses.map((f) => row(f, "low")).join("")}</section>`
+      : `<h1 class="title title--hero" tabindex="-1">Ton plan de 28 jours est prêt.</h1>
+      <p class="lead">Fait d'après tes réponses, dans l'ordre de ce qui te pèse le plus.</p>`}
+      <button class="btn btn--primary" data-gopay>Débloquer mon résultat</button>
+      <section class="block"><h2 class="block__title">Ton plan, jour par jour</h2><p class="block__lead">Ton vrai plan, fait pour toi. Les 2 premières semaines :</p>
+        <div class="week"><span class="week__label">Semaine 1</span><div class="days">${days(0)}</div></div>
+        <div class="week"><span class="week__label">Semaine 2</span><div class="days">${days(7)}</div></div>
+        <div class="week week--locked" aria-hidden="true"><span class="week__label">Semaines 3 et 4</span><div class="days">${Array.from({ length: 7 }, (_, k) => `<div class="day"><span>Jour ${15 + k}</span><b>████</b></div>`).join("")}</div><span class="week__lock">${lock} Dans ton plan complet</span></div>
+      </section>
+      <section class="block"><h2 class="block__title">Ce que tu débloques</h2>
+        <ul class="includes">
+          ${t.scanned ? "<li>Ta note, ton max et tes 15 critères, avec une phrase claire pour chacun</li>" : "<li>Ton bilan d'après tes réponses</li>"}
+          <li>Ton plan de 28 jours, 5 à 10 minutes par jour</li>
+          <li>Le suivi jour par jour, et un rappel chaque matin si tu veux</li>
+          <li>Résiliable en ligne en un clic${trial ? ", après l'engagement" : ""}</li>
+        </ul>
+      </section>
+      <section class="block block--guarantee"><h2 class="block__title">Satisfait ou remboursé</h2><p class="block__lead">${esc(guaranteeText(o))}</p></section>
+      <section class="block" id="pay"><h2 class="block__title">${trial ? "Ton essai est réservé" : "Ton accès"}</h2>
+        ${trial ? "" : `<p class="block__lead">La réservation de l'essai à ${esc(euros(o.intro))} est terminée pour toi.</p>`}
+        <div class="offer offer--single">
+          <span class="offer__main"><span class="offer__name">${esc(o.label)}</span><span class="offer__renew">${esc(lines.today)}, ${esc(lines.then)}</span></span>
+          <span class="offer__price">${esc(euros(trial ? o.intro : o.renew))}<span class="offer__day">${trial ? `pour ${o.trialDays} jours` : "la 1re semaine"}</span></span>
+        </div>
+        <div class="terms" role="note"><p><b>Aujourd'hui : ${esc(lines.today)}.</b></p><p>Ensuite : ${esc(euros(o.renew))} par semaine, jusqu'à résiliation.</p><p>${esc(lines.minimum)}</p></div>
+        ${pw.stripeKey ? `<div id="checkout" class="checkout"></div>` : `
+          ${pw.waiverOnSite ? `<label class="check"><input type="checkbox" id="waiver"><span>Je veux accéder à mon résultat tout de suite. Je reconnais perdre mon droit de rétractation de 14 jours une fois le résultat ouvert.</span></label>` : ""}
+          <button class="btn btn--primary" data-pay>Débloquer mon résultat, ${esc(euros(trial ? o.intro : o.renew))}</button>`}
+        <div id="pay-error"></div>
+        <p class="legal">Apple Pay, Google Pay ou carte, paiement sécurisé par Stripe. <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
+      </section>
+      <div class="sticky-pay" role="region" aria-label="Paiement">
+        <div class="sticky-pay__info">${trial
+          ? `<span class="sticky-pay__timer" id="timer" aria-live="off">--:--</span><span class="sticky-pay__sub">essai à ${esc(euros(o.intro))} réservé</span>`
+          : `<span class="sticky-pay__timer">${esc(euros(o.renew))}</span><span class="sticky-pay__sub">par semaine</span>`}</div>
+        <button class="btn btn--primary" data-gopay>Débloquer</button>
       </div>
-      <p class="legal">Carte, Apple Pay ou Google Pay, paiement sécurisé par Stripe. <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
-      ${footer(`<p class="price-line"><b>${esc(priceLines(chosen).today)}</b>, puis ${esc(euros(chosen.renew))} par semaine. Engagement : ${esc(euros(minimumCents(chosen)))} au total, puis résiliable en un clic.</p><button class="btn btn--primary" data-pay>Débloquer mon résultat, ${esc(euros(chosen.intro))}</button>`)}
     </main>`;
   },
 
@@ -357,7 +385,7 @@ function render() {
   if (s.type === "photos") mountTurnstile();
   if (s.type === "building") runBuilding();
   if (s.type === "scanning") runScanning();
-  if (s.type === "paywall" && S.waiverOnSite === undefined) api("config", null, { method: "GET" }).then((c) => { S.waiverOnSite = !c.waiverInStripe; save(); render(); }).catch(() => {});
+  if (s.type === "paywall") { if (!S.pw) loadPaywall().catch((e) => { app.querySelector("h1").textContent = e.message; }); else { startTimer(); mountCheckout(); } }
 }
 
 app.addEventListener("click", async (e) => {
@@ -385,6 +413,7 @@ app.addEventListener("click", async (e) => {
   if (t.dataset.sheet) return answerSheet(t.dataset.sheet, t.dataset.v === "1");
   if (t.hasAttribute("data-retake")) { S.consent = true; return goTo("photos"); }
   if (t.hasAttribute("data-pay")) return pay(t);
+  if (t.hasAttribute("data-gopay")) { const box = document.getElementById("pay"); box?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); box?.querySelector("h2")?.setAttribute("tabindex", "-1"); box?.querySelector("h2")?.focus({ preventScroll: true }); return; }
 });
 
 app.addEventListener("change", async (e) => {
@@ -452,7 +481,7 @@ app.addEventListener("submit", async (e) => {
   btn.setAttribute("aria-busy", "true");
   try {
     const r = await api("lead", { email: email.value.trim(), optin: document.getElementById("optin").checked });
-    S.lead = true; S.scanned = r.scanned; S.offers = r.offers; S.offer = r.defaultOffer;
+    S.lead = true; S.scanned = r.scanned; S.offers = r.offers; S.offer = r.defaultOffer; S.pw = null;
     next();
   } catch (ex) {
     btn.removeAttribute("aria-busy");
@@ -497,11 +526,53 @@ async function runBuilding() {
   btn.disabled = false; btn.removeAttribute("aria-busy"); btn.textContent = S.scan === "failed" ? "Continuer sans scan" : "Voir mon résultat";
 }
 
+// ---------- Page de paiement ----------
+// Charge tout ce que la page affiche (aperçu réel, réservation de l'essai, réglages), puis lance le minuteur et le paiement
+async function loadPaywall() {
+  const [teaser, offer, config] = await Promise.all([
+    api("teaser", null, { method: "GET" }).catch(() => ({})),
+    api("offer", null, { method: "GET" }),
+    api("config", null, { method: "GET" }).catch(() => ({})),
+  ]);
+  S.pw = { teaser, offer, stripeKey: config.stripeKey || "", waiverOnSite: !config.waiverInStripe };
+  save(); render();
+}
+let timerTick = null;
+function startTimer() {
+  clearInterval(timerTick);
+  const el = document.getElementById("timer");
+  if (!el || !S.pw?.offer.trial) return;
+  // le décalage d'horloge du téléphone ne compte pas : on part de l'heure du serveur
+  const skew = S.pw.offer.now - Date.now();
+  const update = () => {
+    const left = S.pw.offer.expires_at - (Date.now() + skew);
+    if (left <= 0) { clearInterval(timerTick); S.pw = null; save(); loadPaywall().catch(() => {}); return; }
+    const m = Math.floor(left / 60e3), s = Math.floor((left % 60e3) / 1e3);
+    el.textContent = `${m}:${String(s).padStart(2, "0")}`;
+  };
+  update(); timerTick = setInterval(update, 1000);
+}
+let embedded = null;
+async function mountCheckout() {
+  const box = document.getElementById("checkout");
+  if (!box || !S.pw?.stripeKey) return;
+  try {
+    if (!window.Stripe) await new Promise((ok, ko) => { const sc = document.createElement("script"); sc.src = "https://js.stripe.com/v3/"; sc.onload = ok; sc.onerror = ko; document.head.append(sc); });
+    embedded?.destroy();
+    embedded = await window.Stripe(S.pw.stripeKey).initEmbeddedCheckout({
+      fetchClientSecret: async () => (await api("checkout", { offer: DEFAULT_OFFER, embedded: true })).clientSecret,
+    });
+    embedded.mount(box);
+  } catch (e) {
+    document.getElementById("pay-error").innerHTML = `<div class="alert" role="alert">Le paiement ne s'affiche pas. Recharge la page.</div>`;
+  }
+}
+
 async function pay(btn) {
   const box = document.getElementById("pay-error");
-  if (document.getElementById("waiver") && !document.getElementById("waiver").checked) { box.innerHTML = '<div class="alert" role="alert">Coche la case juste au-dessus pour recevoir ton rapport tout de suite.</div>'; document.getElementById("waiver").focus(); box.scrollIntoView({ block: "center" }); return; }
+  if (document.getElementById("waiver") && !document.getElementById("waiver").checked) { box.innerHTML = '<div class="alert" role="alert">Coche la case juste au-dessus pour recevoir ton résultat tout de suite.</div>'; document.getElementById("waiver").focus(); box.scrollIntoView({ block: "center" }); return; }
   btn.setAttribute("aria-busy", "true");
-  try { const { url } = await api("checkout", { offer: OFFERS[S.offer] ? S.offer : DEFAULT_OFFER, waiver: Boolean(document.getElementById("waiver")?.checked) }); location.href = url; }
+  try { const { url } = await api("checkout", { offer: DEFAULT_OFFER, waiver: Boolean(document.getElementById("waiver")?.checked) }); location.href = url; }
   catch (e) { btn.removeAttribute("aria-busy"); box.innerHTML = `<div class="alert" role="alert">${esc(e.message)}</div>`; box.scrollIntoView({ block: "center" }); }
 }
 

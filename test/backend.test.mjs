@@ -122,7 +122,7 @@ function fakeStripe() {
 test("page de paiement Stripe : 3 jours à 0,99 €, puis 16,99 € par semaine, engagement écrit en clair", async () => {
   const { calls, fetchImpl } = fakeStripe();
   const env = { STRIPE_SECRET_KEY: "sk_test_x", FETCH: fetchImpl };
-  const url = await createCheckout(env, new Request("https://site.fr/api/checkout"), { quiz: { id: "q1" }, lead: { email: "f@example.com" }, offer: "semaine", waiverAt: 1 });
+  const { url } = await createCheckout(env, new Request("https://site.fr/api/checkout"), { quiz: { id: "q1" }, lead: { email: "f@example.com" }, offer: "semaine" });
   assert.match(url, /checkout\.stripe\.com/);
   const co = calls.find((c) => c.path === "/v1/checkout/sessions").body;
   assert.equal(co.mode, "subscription"); assert.equal(co.client_reference_id, "q1"); assert.equal(co.customer_email, "f@example.com");

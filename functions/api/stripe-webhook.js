@@ -3,6 +3,7 @@ import { db, now } from "../../lib/db.js";
 import { verifyWebhook, memberFromSession, saveSub, stripe } from "../../lib/stripe.js";
 import { sendMail, welcomeMail, paymentFailedMail } from "../../lib/mail.js";
 import { welcomeLink } from "../../lib/auth.js";
+import { welcomeTerms } from "../../lib/members.js";
 
 // Messages de Stripe. Signature vérifiée ; chaque événement n'est traité qu'une fois (Stripe en renvoie parfois deux fois).
 export const onRequestPost = handle(async ({ request, env }) => {
@@ -18,7 +19,7 @@ export const onRequestPost = handle(async ({ request, env }) => {
     const origin = new URL(request.url).origin;
     if (event.type === "checkout.session.completed" && o.mode === "subscription") {
       const customer = await memberFromSession(env, d, o);
-      if (customer._created) await sendMail(env, { to: customer.email, ...welcomeMail(await welcomeLink(d, request, customer.email_key)) }).catch((e) => console.error("E-mail de bienvenue", e.message));
+      if (customer._created) await sendMail(env, { to: customer.email, ...welcomeMail(await welcomeLink(d, request, customer.email_key), await welcomeTerms(d, customer)) }).catch((e) => console.error("E-mail de bienvenue", e.message));
     } else if (["customer.subscription.updated", "customer.subscription.deleted"].includes(event.type)) {
       await saveSub(d, o);
     } else if (event.type === "invoice.paid" && o.subscription) {

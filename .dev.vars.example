@@ -9,6 +9,8 @@ ANTHROPIC_API_KEY=
 # Paiement (dashboard.stripe.com, mode TEST : sk_test_...)
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
+# clé publique (pk_test_...) : affiche le paiement (Apple Pay, Google Pay, carte) directement dans notre page
+STRIPE_PUBLISHABLE_KEY=
 
 # E-mails (resend.com, avec le domaine du site vérifié)
 RESEND_API_KEY=
