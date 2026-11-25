@@ -266,7 +266,11 @@ const VIEWS = {
           <li>Résiliable en ligne en un clic${trial ? ", après l'engagement" : ""}</li>
         </ul>
       </section>
-      <section class="block block--guarantee"><h2 class="block__title">Satisfait ou remboursé</h2><p class="block__lead">${esc(guaranteeText(o))}</p></section>
+      <section class="block block--guarantee">
+        <div class="guarantee-head"><h2 class="block__title">Satisfait ou remboursé</h2>${seal()}</div>
+        <p class="block__lead">${esc(guaranteeText(o))}</p>
+        <p class="block__lead">Pas de justificatif à envoyer : ton suivi dans ton espace suffit. <a href="/cgv/#garantie" target="_blank" rel="noopener">Les conditions en détail</a></p>
+      </section>
       <section class="block" id="pay"><h2 class="block__title">${trial ? "Ton essai est réservé" : "Ton accès"}</h2>
         ${trial ? "" : `<p class="block__lead">La réservation de l'essai à ${esc(euros(o.intro))} est terminée pour toi.</p>`}
         <div class="offer offer--single">
@@ -280,6 +284,16 @@ const VIEWS = {
         <div id="pay-error"></div>
         <p class="legal">Apple Pay, Google Pay ou carte, paiement sécurisé par Stripe. <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
       </section>
+      <section class="block block--card">
+        <h2 class="block__title">Tes infos sont en sécurité</h2>
+        <p class="block__lead">On ne vend ni ne partage tes données, à personne. Tes photos ne sont jamais enregistrées : elles servent à l'analyse, puis elles disparaissent.</p>
+        <p class="block__lead"><a href="/confidentialite/" target="_blank" rel="noopener">Comment on protège tes données</a></p>
+      </section>
+      ${pw.support ? `<section class="block block--card">
+        <h2 class="block__title">Une question avant de payer ?</h2>
+        <p class="block__lead">Écris-nous, une vraie personne te répond.</p>
+        <a class="btn btn--secondary" href="mailto:${esc(pw.support)}">Écrire à ${esc(pw.support)}</a>
+      </section>` : ""}
       <div class="sticky-pay" role="region" aria-label="Paiement">
         <div class="sticky-pay__info">${trial
           ? `<span class="sticky-pay__timer" id="timer" aria-live="off">--:--</span><span class="sticky-pay__sub">essai à ${esc(euros(o.intro))} réservé</span>`
@@ -527,6 +541,19 @@ async function runBuilding() {
 }
 
 // ---------- Page de paiement ----------
+// Le sceau de la garantie : notre propre dessin, avec nos vraies conditions (1re semaine, demande sous 14 jours)
+function seal() {
+  return `<svg class="seal" viewBox="0 0 120 120" role="img" aria-label="Garantie : 1re semaine remboursée, demande sous 14 jours">
+    <defs><linearGradient id="seal-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--c-gold)"/><stop offset=".55" stop-color="var(--c-warning)"/><stop offset="1" stop-color="var(--c-accent)"/></linearGradient>
+      <path id="seal-arc" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0"/></defs>
+    <circle cx="60" cy="60" r="56" fill="none" stroke="url(#seal-g)" stroke-width="4" stroke-dasharray="3 3"/>
+    <circle cx="60" cy="60" r="50" fill="url(#seal-g)"/>
+    <circle cx="60" cy="60" r="34" fill="var(--c-bg)"/>
+    <text font-family="Inter, sans-serif" font-size="10.5" font-weight="800" fill="var(--c-on-accent)"><textPath href="#seal-arc" textLength="268" lengthAdjust="spacing">SATISFAIT OU REMBOURSÉ ✦ 1RE SEMAINE ✦</textPath></text>
+    <text x="60" y="62" text-anchor="middle" font-family="Archivo, sans-serif" font-size="26" font-weight="800" fill="var(--c-gold)">14</text>
+    <text x="60" y="76" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="700" fill="var(--c-text)">JOURS</text>
+  </svg>`;
+}
 // Charge tout ce que la page affiche (aperçu réel, réservation de l'essai, réglages), puis lance le minuteur et le paiement
 async function loadPaywall() {
   const [teaser, offer, config] = await Promise.all([
@@ -534,7 +561,7 @@ async function loadPaywall() {
     api("offer", null, { method: "GET" }),
     api("config", null, { method: "GET" }).catch(() => ({})),
   ]);
-  S.pw = { teaser, offer, stripeKey: config.stripeKey || "", waiverOnSite: !config.waiverInStripe };
+  S.pw = { teaser, offer, stripeKey: config.stripeKey || "", waiverOnSite: !config.waiverInStripe, support: config.support || "" };
   save(); render();
 }
 let timerTick = null;
