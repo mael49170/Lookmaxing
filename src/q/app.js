@@ -97,7 +97,7 @@ const VIEWS = {
     if (S.variant === "b") return VIEWS.single(SCREENS[1], { title: "Ce que les autres voient de toi en 3 secondes.", lead: "Une analyse franche de ton visage, et un plan pour faire monter ta note. On commence : tu es…" });
     return `<main class="screen">
       <div class="brand">MOGX</div>
-      <p class="proof-bar"><span><span aria-hidden="true">🇫🇷</span> Conçu en France</span><span><span aria-hidden="true">🔒</span> Photos jamais enregistrées</span></p>
+      <p class="proof-bar"><span><span aria-hidden="true">🇫🇷</span> MOGX, top en France</span></p>
       <div class="landing-art">${faceMesh({ className: "mesh mesh--idle" })}
         <span class="tag" style="left:-6%;top:44%">Mâchoire</span>
         <span class="tag" style="right:-8%;top:30%">Peau</span>
@@ -105,7 +105,7 @@ const VIEWS = {
       </div>
       <h1 class="title title--hero" tabindex="-1">Ce que les autres voient de toi en 3 secondes. Et comment le changer.</h1>
       <p class="lead">15 critères passés au crible, une note sans filtre, et un plan de 28 jours pour la faire monter.</p>
-      ${footer(`<button class="btn btn--primary" data-next>Lancer mon analyse</button><div class="reassure"><span>3 minutes, dès 18 ans.</span></div><nav class="mini-legal" aria-label="Informations légales"><a href="/cgv/">CGV</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a></nav>`)}
+      ${footer(`<button class="btn btn--primary" data-next>Lancer mon analyse</button><div class="reassure"><span>3 minutes, dès 18 ans.</span><span>Tes photos ne sont jamais enregistrées.</span></div><nav class="mini-legal" aria-label="Informations légales"><a href="/cgv/">CGV</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a></nav>`)}
     </main>`;
   },
 
