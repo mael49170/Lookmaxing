@@ -7,7 +7,7 @@ Quiz mobile + scan du visage + plan pour s'améliorer, pour le marché français
 
 ## Le propriétaire
 
-Maël est cuisinier, pas développeur. Toujours expliquer simplement, en français, et dire ce qui va être fait avant chaque grosse modification. Ne rien supprimer sans son accord.
+Maël est cuisinier, pas développeur. **Toujours répondre en français**, dans tous les messages, sans exception (demandé par Maël le 25/11/2026). Toujours expliquer simplement, et dire ce qui va être fait avant chaque grosse modification. Ne rien supprimer sans son accord.
 
 ## Règles (ne pas changer sans accord)
 
