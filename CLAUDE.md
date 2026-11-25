@@ -40,3 +40,9 @@ Maël est cuisinier, pas développeur. **Toujours répondre en français**, dans
 - Nom : **MOGX** (choisi par Maël). Vérifications de marque et de domaine à faire : `replica/brand.md`.
 - Pages légales fabriquées par `node dev/legal.mjs` (CGV, confidentialité, données du visage, mentions légales) : les prix et conditions viennent de `src/shared/plans.js`. Après un changement de prix, relancer le script (un test le vérifie). Les informations de la société sont dans `EDITEUR` en haut du script (« [À REMPLIR] » tant qu'elles manquent : ne pas ouvrir le site avant).
 - Le texte du consentement biométrique a une version (`CONSENT_VERSION` dans `functions/api/scan-consent.js`) : la changer à chaque modification du texte.
+
+## Lancement (25/11/2026)
+
+- Accueil du site (`/`) fabriqué par `node dev/home.mjs` à partir des vrais prix (un test le vérifie). Les pubs mènent au quiz (`/q/`).
+- Pubs Meta : `replica/launch/ads.md` (ne jamais dire ce que la personne EST, pas d'avant/après, pas de promesse de résultat).
+- Avant toute vraie vente : `node dev/preflight.mjs --env` doit passer (bloque tant qu'il reste des « À REMPLIR », un test en échec ou une clé manquante), puis cocher sa liste « à la main ».
