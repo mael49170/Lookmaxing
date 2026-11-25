@@ -1,4 +1,4 @@
-# Lookmaxing (nom provisoire)
+# MOGX
 
 Quiz mobile, scan du visage (2 photos, jamais enregistrées) et plan de 28 jours. Marché français.
 

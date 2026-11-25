@@ -17,6 +17,17 @@ export const onRequestPost = handle(async ({ request, env }) => {
   // 1. Nettoyage (politique biométrique) : notes sans achat après 30 jours, quiz sans e-mail après 90 jours
   out.notes_effacees = (await d.prepare("DELETE FROM scans WHERE delete_after < ?").bind(t).run()).meta.changes || 0;
   out.quiz_effaces = (await d.prepare("DELETE FROM quizzes WHERE created_at < ? AND id NOT IN (SELECT quiz_id FROM leads) AND id NOT IN (SELECT quiz_id FROM customers WHERE quiz_id IS NOT NULL)").bind(t - 90 * DAY).run()).meta.changes || 0;
+  // Durées promises dans la politique de confidentialité : e-mail sans achat effacé 3 ans après le dernier contact,
+  // compte client effacé 3 ans après la fin de son dernier abonnement
+  const Y3 = 3 * 365 * DAY;
+  out.emails_effaces = (await d.prepare(`DELETE FROM quizzes WHERE id IN (SELECT l.quiz_id FROM leads l WHERE MAX(l.created_at, COALESCE(l.last_nudge_at, 0)) < ?
+    AND NOT EXISTS (SELECT 1 FROM customers c WHERE c.email_key = l.email_key))`).bind(t - Y3).run()).meta.changes || 0;
+  const oldCustomers = (await d.prepare(`SELECT c.id, c.quiz_id FROM customers c WHERE c.created_at < ? AND NOT EXISTS (SELECT 1 FROM subscriptions s WHERE s.customer_id = c.id
+    AND (s.status IN ('active','past_due') OR MAX(s.current_period_end, COALESCE(s.ends_at, 0)) > ?))`).bind(t - Y3, t - Y3).all()).results;
+  for (const c of oldCustomers) {
+    await d.batch([d.prepare("DELETE FROM customers WHERE id = ?").bind(c.id), ...(c.quiz_id ? [d.prepare("DELETE FROM quizzes WHERE id = ?").bind(c.quiz_id)] : [])]);
+  }
+  out.comptes_effaces = oldCustomers.length;
   await d.prepare("DELETE FROM hits WHERE reset_at < ?").bind(t).run();
   await d.prepare("DELETE FROM login_codes WHERE expires_at < ?").bind(t).run();
   await d.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(t).run();

@@ -62,7 +62,8 @@ function accountView(m) {
     ${s && m.hasCard ? '<button data-portal>Ma carte et mes factures</button>' : ""}
     <button data-logout>Me déconnecter</button>
     <button data-logout-all>Me déconnecter de tous mes appareils</button>
-    <button data-delete>Supprimer mon compte et mes données</button></div>`;
+    <button data-delete>Supprimer mon compte et mes données</button>
+    <a href="/cgv/">Conditions générales de vente</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a></div>`;
 }
 
 // Garantie « satisfait ou remboursé » : où il en est, et le bouton quand c'est gagné
@@ -76,7 +77,7 @@ function guaranteeView(g) {
 // Après le paiement : la note se révèle (compteur + jauge), puis le détail
 const fr = (n) => String(n).replace(".", ",");
 function reveal(r) {
-  app.innerHTML = `<div class="brand">Lookmaxing</div>
+  app.innerHTML = `<div class="brand">MOGX</div>
     <section class="reveal" aria-live="polite">
       <p class="eyebrow">Ta note</p>
       <div class="reveal__num" id="num">0,0</div>
@@ -95,7 +96,7 @@ function reveal(r) {
 }
 
 function render() {
-  app.innerHTML = `<div class="brand">Lookmaxing</div>
+  app.innerHTML = `<div class="brand">MOGX</div>
     <div class="tabs" role="tablist">
       <button role="tab" aria-selected="${tab === "plan"}" data-tab="plan">Mon plan</button>
       <button role="tab" aria-selected="${tab === "rapport"}" data-tab="rapport">Mon rapport</button>
@@ -141,5 +142,5 @@ try {
   else render();
 } catch (err) {
   if (err.status === 401) location.href = "/connexion/";
-  else app.innerHTML = `<div class="brand">Lookmaxing</div><div class="alert" role="alert">${esc(err.message)}</div>`;
+  else app.innerHTML = `<div class="brand">MOGX</div><div class="alert" role="alert">${esc(err.message)}</div>`;
 }

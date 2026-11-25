@@ -194,3 +194,6 @@
 .sources { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
 .sources li { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-3) var(--sp-4); border: 1px solid var(--c-border); border-left: 3px solid var(--c-accent); border-radius: var(--r-md); background: var(--c-surface); }
 .sources span { color: var(--c-text-muted); font-size: var(--fs-xs); }
+
+.mini-legal { display: flex; justify-content: center; gap: var(--sp-3); font-size: var(--fs-xs); }
+.mini-legal a { color: var(--c-text-muted); }

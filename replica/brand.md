@@ -5,7 +5,16 @@ Direction donnée par Maël (24/11/2026) : sombre, noir, émotionnelle, « ultra
 ## L'idée
 **La chaleur, au sens propre.** Comme une caméra thermique : le noir, et ce qui parle de toi (ton visage, ta note, ta progression) chauffe du rouge sombre à l'or. Une seule audace visuelle (le dégradé thermique), tout le reste calme.
 
-## Nom : 5 candidats (Maël choisit)
+## Nom : MOGX (choisi par Maël le 25/11/2026)
+
+« Mog », dans l'argot du lookmaxing, c'est dominer par l'apparence ; le X ajoute le côté transformation. Court, se dit pareil en français et en anglais.
+Recherche web du 25/11/2026 : aucune appli ni marque « MOGX » trouvée (proches : MOGL, appli américaine de contrats sportifs ; MOG, ancien service de musique). Ce n'est **pas** une vérification de marque : à faire avant de dépenser de l'argent sur le nom :
+- INPI (data.inpi.fr) et EUIPO, classes 9, 42 et 44 ;
+- domaines mogx.fr, mogx.com, mogx.app ;
+- @mogx sur Instagram et TikTok, et le nom sur l'App Store et Google Play.
+Le mieux : déposer la marque à l'INPI (environ 190 € pour 1 classe, 40 € par classe en plus) une fois les vérifications faites.
+
+### Les autres candidats (non retenus)
 
 Écartés : tout ce qui ressemble à l'original (« god », « mode », « looks » + suffixe). « Lookmaxing » reste un nom de travail : c'est le nom générique de la pratique, impossible à protéger comme marque.
 

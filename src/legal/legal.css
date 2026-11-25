@@ -1,0 +1,21 @@
+/* Pages légales : lisibles d'abord. Seulement des variables de tokens.css. */
+.legal-page { max-width: 720px; margin: 0 auto; padding: var(--sp-5) var(--size-gutter) var(--sp-8); }
+.legal-page .brand { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; letter-spacing: .02em; display: inline-flex; align-items: center; gap: var(--sp-2); color: var(--c-text); text-decoration: none; }
+.legal-page .brand::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c-accent); box-shadow: 0 0 12px var(--c-glow); }
+.legal-page h1 { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: var(--fs-xl); line-height: var(--lh-xl); margin: var(--sp-5) 0 var(--sp-2); }
+.legal-page h2 { font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: var(--fs-lg); line-height: var(--lh-lg); margin: var(--sp-6) 0 var(--sp-2); scroll-margin-top: var(--sp-5); }
+.legal-page h3 { font-size: var(--fs-base); margin: var(--sp-4) 0 var(--sp-1); }
+.legal-page p, .legal-page li { color: var(--c-text); line-height: 1.6; font-size: var(--fs-sm); }
+.legal-page ul, .legal-page ol { padding-left: var(--sp-5); }
+.legal-page a { color: var(--c-gold); }
+.legal-page .updated { color: var(--c-text-muted); font-size: var(--fs-xs); margin: 0; }
+.legal-page .summary { border: 1px solid var(--c-accent-line); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); background: var(--c-accent-soft); }
+.legal-page .summary p { margin: var(--sp-1) 0; }
+.legal-page table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); margin: var(--sp-3) 0; }
+.legal-page th, .legal-page td { text-align: left; vertical-align: top; padding: var(--sp-2); border-bottom: 1px solid var(--c-border); }
+.legal-page th { color: var(--c-text-muted); font-weight: 600; }
+.legal-page .table-wrap { overflow-x: auto; }
+.legal-page .box { border: 1px solid var(--c-border); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); background: var(--c-surface); }
+.todo { background: var(--c-warning); color: var(--c-on-accent); padding: 0 4px; border-radius: 4px; font-weight: 700; }
+.legal-links { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); justify-content: center; margin: var(--sp-6) 0 0; padding: var(--sp-4) 0 0; border-top: 1px solid var(--c-border); font-size: var(--fs-xs); }
+.legal-links a { color: var(--c-text-muted); }

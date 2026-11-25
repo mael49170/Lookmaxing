@@ -251,3 +251,19 @@ test("résilier chez Stripe pendant l'essai : cancel_at à la fin de la semaine 
 test("signature Stripe trop vieille refusée", async () => {
   assert.equal(await verifyWebhook("{}", "t=1000,v1=abc", "s"), false);
 });
+
+test("durées de conservation promises : e-mail sans achat et vieux comptes effacés après 3 ans", async () => {
+  const env = { DB: localD1(), CRON_SECRET: "s" };
+  const d = await db(env);
+  const old = now() - 3 * 365 * DAY - DAY;
+  await d.prepare("INSERT INTO quizzes (id, answers, created_at, updated_at) VALUES ('vieux', '{}', ?, ?), ('recent', '{}', ?, ?)").bind(old, old, now(), now()).run();
+  await d.prepare("INSERT INTO leads (quiz_id, email, email_key, created_at) VALUES ('vieux', 'v@example.com', 'v@example.com', ?), ('recent', 'r@example.com', 'r@example.com', ?)").bind(old, now()).run();
+  const gone = await createMember(d, { quiz: null, email: "parti@example.com", emailKey: "parti@example.com", subscription: { id: "essai_parti", ...offerSnapshot("semaine"), status: "canceled", current_period_end: old } });
+  await d.prepare("UPDATE customers SET created_at = ? WHERE id = ?").bind(old, gone.id).run();
+  const kept = await member(env, "actif@example.com");
+  await d.prepare("UPDATE customers SET created_at = ? WHERE id = ?").bind(old, kept.id).run();
+  const r = await client(env)(cron, "cron", { headers: { authorization: "Bearer s" } });
+  assert.equal(r.data.emails_effaces, 1); assert.equal(r.data.comptes_effaces, 1);
+  assert.equal((await d.prepare("SELECT COUNT(*) AS n FROM leads").first()).n, 1);
+  assert.ok(await d.prepare("SELECT 1 FROM customers WHERE id = ?").bind(kept.id).first(), "un client actif n'est jamais effacé");
+});

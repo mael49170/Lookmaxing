@@ -119,3 +119,16 @@ test("plan : les réponses détaillées choisissent les tâches", async () => {
   const { cleanAnswers } = await import("../src/shared/questions.js");
   assert.deepEqual(cleanAnswers({ finir: true, sport: "jamais", soirees: "nimporte" }), { sport: "jamais", finir: true });
 });
+
+test("pages légales : à jour avec les prix de la page de paiement", async () => {
+  const { readFileSync } = await import("node:fs");
+  const { OFFERS, DEFAULT_OFFER, RESERVATION_MIN, GUARANTEE, euros, minimumCents } = await import("../src/shared/plans.js");
+  const o = OFFERS[DEFAULT_OFFER];
+  const cgv = readFileSync(new URL("../src/cgv/index.html", import.meta.url), "utf8");
+  for (const v of [euros(o.intro), euros(o.renew), euros(minimumCents(o)), `${RESERVATION_MIN} minutes`, `${GUARANTEE.minDays} jours sur les ${GUARANTEE.ofDays}`]) assert.ok(cgv.includes(v), "CGV : il manque " + v + " (lancer node dev/legal.mjs)");
+  for (const page of ["cgv", "confidentialite", "biometrie", "mentions-legales"]) {
+    const html = readFileSync(new URL(`../src/${page}/index.html`, import.meta.url), "utf8");
+    assert.match(html, /MOGX/); assert.match(html, /<h1>/);
+  }
+  assert.match(cgv, /id="garantie"/);
+});

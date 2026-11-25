@@ -83,7 +83,7 @@ const progress = () => Math.round((Math.max(0, qIndexes.filter((i) => i <= S.i).
 
 function topbar(withProgress = true) {
   return `<div class="topbar">${S.history.length ? `<button class="topbar__back" data-back aria-label="Retour">${ICON_BACK}</button>` : '<span style="width:48px"></span>'}
-    ${withProgress ? `<div class="progress" role="progressbar" aria-label="Avancement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress()}"><span style="width:${progress()}%"></span></div>` : '<div class="brand" style="flex:1">Lookmaxing</div><span style="width:48px"></span>'}</div>`;
+    ${withProgress ? `<div class="progress" role="progressbar" aria-label="Avancement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress()}"><span style="width:${progress()}%"></span></div>` : '<div class="brand" style="flex:1">MOGX</div><span style="width:48px"></span>'}</div>`;
 }
 const footer = (html) => `<div class="screen__footer"><div class="stack">${html}</div></div>`;
 // Une phrase qui reprend ses propres réponses : il voit qu'on l'écoute
@@ -96,7 +96,7 @@ const VIEWS = {
     // Variante B : on passe directement à la première question, avec le titre de l'accueil
     if (S.variant === "b") return VIEWS.single(SCREENS[1], { title: "Ce que les autres voient de toi en 3 secondes.", lead: "Une analyse franche de ton visage, et un plan pour faire monter ta note. On commence : tu es…" });
     return `<main class="screen">
-      <div class="brand">Lookmaxing</div>
+      <div class="brand">MOGX</div>
       <div class="landing-art">${faceMesh({ className: "mesh mesh--idle" })}
         <span class="tag" style="left:-6%;top:44%">Mâchoire</span>
         <span class="tag" style="right:-8%;top:30%">Peau</span>
@@ -104,7 +104,7 @@ const VIEWS = {
       </div>
       <h1 class="title title--hero" tabindex="-1">Ce que les autres voient de toi en 3 secondes. Et comment le changer.</h1>
       <p class="lead">15 critères passés au crible, une note sans filtre, et un plan de 28 jours pour la faire monter.</p>
-      ${footer(`<button class="btn btn--primary" data-next>Lancer mon analyse</button><div class="reassure"><span>3 minutes, dès 18 ans.</span><span>Tes photos ne sont jamais enregistrées.</span></div>`)}
+      ${footer(`<button class="btn btn--primary" data-next>Lancer mon analyse</button><div class="reassure"><span>3 minutes, dès 18 ans.</span><span>Tes photos ne sont jamais enregistrées.</span></div><nav class="mini-legal" aria-label="Informations légales"><a href="/cgv/">CGV</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a></nav>`)}
     </main>`;
   },
 
@@ -159,7 +159,7 @@ const VIEWS = {
       <p class="lead">L'analyse lit la forme et les proportions de ton visage : ce sont des données biométriques. On a besoin de ton accord écrit.</p>
       <div class="consent">
         <h3>Ce qu'on en fait</h3><p>On mesure ton visage sur 2 photos pour calculer ta note et régler ton plan. Rien d'autre : pas d'identification, pas de comparaison avec d'autres personnes, pas d'entraînement d'IA.</p>
-        <h3>Qui les voit</h3><p>Notre prestataire d'IA (Anthropic), le temps de l'analyse, puis plus personne.</p>
+        <h3>Qui les voit</h3><p>Notre prestataire d'IA (Anthropic), pour l'analyse seulement, sans s'en servir pour entraîner ses modèles. Personne chez MOGX ne les regarde.</p>
         <h3>Combien de temps</h3><p>Tes photos ne sont jamais enregistrées. Tes notes sont gardées 30 jours si tu n'achètes pas, puis effacées.</p>
         <h3>Si tu changes d'avis</h3><p>Dis non ici : tu auras quand même un plan, fait d'après tes réponses. <a href="/biometrie/" target="_blank" rel="noopener">Tout le détail</a>.</p>
       </div>
@@ -323,7 +323,7 @@ const VIEWS = {
     const p = scanPhotos;
     const bars = [...(S.consent ? [["Rapport de ton visage"]] : []), ["Plan d'assurance"], ["Programme peau"], ["Conseils de style"]];
     return `<main class="screen">
-      <div class="brand">Lookmaxing</div>
+      <div class="brand">MOGX</div>
       ${p.face ? `<div class="tilted tilted--small"><div class="tilted__card tilted__card--a"><img src="${p.face}" alt=""></div>${p.profil ? `<div class="tilted__card tilted__card--b"><img src="${p.profil}" alt=""></div>` : ""}</div>` : ""}
       <h1 class="title" tabindex="-1">On prépare ton rapport.</h1>
       <div class="bars">
@@ -337,7 +337,7 @@ const VIEWS = {
 
   email() {
     return `<main class="screen">
-      <div class="brand">Lookmaxing</div>
+      <div class="brand">MOGX</div>
       <h1 class="title" tabindex="-1">${S.scan === "done" ? "Ton résultat t'attend." : "Ton plan est prêt."}</h1>
       <p class="lead">Où on te l'envoie ? Il reste attaché à ton adresse, sans mot de passe.</p>
       <form id="mail-form" class="stack" novalidate>
@@ -354,7 +354,7 @@ const VIEWS = {
   paywall() {
     const o = OFFERS[DEFAULT_OFFER];
     const pw = S.pw;
-    if (!pw) return `<main class="screen"><div class="brand">Lookmaxing</div><h1 class="title" tabindex="-1">On prépare ta page…</h1><div class="skel"></div><div class="skel"></div></main>`;
+    if (!pw) return `<main class="screen"><div class="brand">MOGX</div><h1 class="title" tabindex="-1">On prépare ta page…</h1><div class="skel"></div><div class="skel"></div></main>`;
     const t = pw.teaser || {};
     const trial = pw.offer.trial;
     const lines = priceLines(o, trial);
@@ -362,7 +362,7 @@ const VIEWS = {
     const row = (f, kind) => `<div class="hidden-row"><span class="hidden-row__name" style="width:${Math.min(70, 18 + f.len * 2.6)}%" aria-hidden="true">${lock}</span><span class="sr-only">Critère caché jusqu'au paiement :</span><b class="hidden-row__note hidden-row__note--${kind}">${f.note}</b></div>`;
     const days = (from) => (t.plan || []).slice(from, from + 7).map((txt, k) => `<div class="day"><span>Jour ${from + k + 1}</span><b>${esc(txt)}</b></div>`).join("");
     return `<main class="screen screen--sales">
-      <div class="brand">Lookmaxing</div>
+      <div class="brand">MOGX</div>
       ${t.scanned ? `
       <div class="duo">
         <div class="duo__card">${scanPreview ? `<img src="${scanPreview}" alt="Ta photo">` : faceMesh({ className: "mesh" })}<span class="duo__tag">Aujourd'hui</span><span class="duo__lock">${lock}</span></div>
@@ -442,7 +442,7 @@ const VIEWS = {
   teaser() {
     const t = S.teaser || {};
     return `<main class="screen">
-      <div class="brand">Lookmaxing</div>
+      <div class="brand">MOGX</div>
       <p class="eyebrow">Aperçu de ton analyse</p>
       <h1 class="title" tabindex="-1">Tu as plus de marge que tu ne crois.</h1>
       <div class="teaser">

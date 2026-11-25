@@ -2,7 +2,7 @@ import { json, readJson, handle, HttpError } from "../../lib/http.js";
 import { now, track } from "../../lib/db.js";
 import { currentQuiz } from "../../lib/identity.js";
 
-export const CONSENT_VERSION = "biometrie-v1";
+export const CONSENT_VERSION = "biometrie-v2"; // v2 (25/11/2026) : « Qui les voit » précisé
 
 // POST { agree } -> enregistre (ou retire) le consentement biométrique, avec la version du texte accepté
 export const onRequestPost = handle(async ({ request, env }) => {

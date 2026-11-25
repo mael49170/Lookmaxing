@@ -1,4 +1,4 @@
-# Lookmaxing (nom provisoire)
+# MOGX
 
 Quiz mobile + scan du visage + plan pour s'améliorer, pour le marché français, en français. Reconstruit les fonctions d'un site existant (voir `replica/recon.md`), jamais ses textes, ses images ni sa marque, avec le pack Replica.
 
@@ -34,3 +34,9 @@ Maël est cuisinier, pas développeur. Toujours expliquer simplement, en frança
 - Garantie avec conditions (25/11/2026) : 1re semaine payée remboursée si le plan est coché au moins 5 jours sur 7, demande dans les 14 jours, une fois ; automatique depuis l'espace membre (`lib/guarantee.js`), et ça arrête l'abonnement.
 - Paiement dans notre page (Stripe intégré, Apple Pay / Google Pay) si `STRIPE_PUBLISHABLE_KEY` est réglée, sinon page Stripe.
 - Page de paiement : la photo (en mémoire seulement), le vrai max, les vraies notes avec les noms cachés, le vrai plan (2 semaines visibles). Refusé (DGCCRF, Meta) : faux compteurs de personnes, faux avis, avant/après d'inconnus, prix barrés fictifs, célébrités, produits de marque avec faux pourcentages.
+
+## Nom et pages légales (25/11/2026)
+
+- Nom : **MOGX** (choisi par Maël). Vérifications de marque et de domaine à faire : `replica/brand.md`.
+- Pages légales fabriquées par `node dev/legal.mjs` (CGV, confidentialité, données du visage, mentions légales) : les prix et conditions viennent de `src/shared/plans.js`. Après un changement de prix, relancer le script (un test le vérifie). Les informations de la société sont dans `EDITEUR` en haut du script (« [À REMPLIR] » tant qu'elles manquent : ne pas ouvrir le site avant).
+- Le texte du consentement biométrique a une version (`CONSENT_VERSION` dans `functions/api/scan-consent.js`) : la changer à chaque modification du texte.
