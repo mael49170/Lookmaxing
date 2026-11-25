@@ -91,3 +91,31 @@ test("appel à Claude : format de la requête, refus géré, aucune photo dans l
   console.error = orig;
   assert.ok(logs.length && !logs.join(" ").includes("SECRETPHOTO"));
 });
+
+test("parcours complet : écrans clés présents, dans le bon ordre, consentement AVANT la caméra", async () => {
+  const { SCREENS } = await import("../src/shared/questions.js");
+  const ids = SCREENS.map((s) => s.id);
+  for (const id of ["genre", "age", "consentement", "selfies", "photos", "analyse", "peau_acne", "cheveux", "sport", "rencontrer", "dire_non", "science", "attentes", "duree", "profil", "construction", "email", "offre"]) assert.ok(ids.includes(id), "manque " + id);
+  assert.ok(ids.indexOf("consentement") < ids.indexOf("photos"), "le consentement doit venir avant la caméra");
+  assert.equal(new Set(ids).size, ids.length);
+  const all = JSON.stringify(SCREENS);
+  assert.ok(!/Harvard|Oxford|Cambridge|360|64 ?%/i.test(all), "pas de caution ni de chiffre inventés");
+});
+
+test("profil : résumé des réponses, titre lisible", async () => {
+  const { profile } = await import("../src/shared/questions.js");
+  assert.equal(profile({}), null);
+  const p = profile({ rencontrer: "toujours", soirees: "daccord", message_appel: "jamais", aborder: "bloque", relire: "daccord", mal_a_l_aise: "oui", inquiet: "jamais", calme_conflit: "daccord" });
+  assert.equal(p.weakest, "aisance");
+  assert.match(p.title, /qui doute en face à face/);
+});
+
+test("plan : les réponses détaillées choisissent les tâches", async () => {
+  const { buildPlan } = await import("../lib/plan.js");
+  const first = (a) => buildPlan(a).days.slice(0, 4).flatMap((d) => d.tasks);
+  assert.ok(first({ relire: "daccord" }).includes("message_direct"));
+  assert.ok(first({ dire_non: "pas_daccord" }).includes("dire_non"));
+  assert.ok(first({ cheveux: ["coupe"] }).includes("coupe_photo"));
+  const { cleanAnswers } = await import("../src/shared/questions.js");
+  assert.deepEqual(cleanAnswers({ finir: true, sport: "jamais", soirees: "nimporte" }), { sport: "jamais", finir: true });
+});

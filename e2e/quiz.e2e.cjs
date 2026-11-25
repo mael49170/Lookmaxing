@@ -12,7 +12,7 @@ const results = [];
 const a11y = new Map();
 
 async function newPage(browser, { width = 390, height = 844 } = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion: "reduce" }); // sans animation : axe lit les vraies couleurs
+  const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion: "reduce", permissions: ["camera"] }); // sans animation : axe lit les vraies couleurs
   const page = await ctx.newPage();
   page.problems = [];
   // les réponses 4xx attendues (refus voulus) ne comptent pas ; les 5xx sont comptées à part
@@ -30,23 +30,34 @@ async function axe(page, label) {
 }
 
 const screenId = (page) => page.evaluate(() => { try { return JSON.parse(sessionStorage.getItem("lm_quiz_v1")).i; } catch { return -1; } });
+// l'identifiant de l'écran affiché (genre, pari, construction…)
+const screenName = (page) => page.evaluate(async () => { try { const i = JSON.parse(sessionStorage.getItem("lm_quiz_v1")).i || 0; return (await import("/shared/questions.js")).SCREENS[i].id; } catch { return ""; } });
 const h1 = async (page) => (await page.getByRole("heading", { level: 1 }).first().textContent()).trim();
 
 // Avance d'un écran comme le ferait quelqu'un (première réponse adulte, premier choix multiple)
 async function step(page, { photos = true } = {}) {
   await page.waitForTimeout(350);
-  if (await page.getByRole("button", { name: "Lancer l'analyse" }).count()) {
+  // caméra dans la page (fausse caméra de Chromium) : face puis profil
+  if (await page.getByRole("button", { name: /^Prendre la photo/ }).count()) {
+    if (!photos) return page.getByRole("button", { name: "Continuer sans photo" }).click();
+    await page.waitForTimeout(700);
+    await page.getByRole("button", { name: /^Prendre la photo/ }).click();
+    return page.getByRole("button", { name: "C'est bon" }).click();
+  }
+  if (await page.getByRole("button", { name: "C'est bon" }).count()) return page.getByRole("button", { name: "C'est bon" }).click();
+  if (await page.getByRole("button", { name: "Lancer l'analyse" }).count()) { // écran de secours, sans caméra
     if (!photos) return page.getByRole("button", { name: "Continuer sans photo" }).click();
     await page.getByLabel("Photo de face").setInputFiles(PHOTO);
     await page.waitForTimeout(300);
     await page.getByLabel("Photo de profil").setInputFiles(PHOTO);
-    await page.getByRole("button", { name: "Lancer l'analyse" }).click({ trial: false });
-    return;
+    return page.getByRole("button", { name: "Lancer l'analyse" }).click();
   }
+  if (!photos && await page.getByRole("button", { name: "Prendre mes selfies" }).count()) return page.getByRole("button", { name: "Continuer sans photo" }).click();
+  if (await page.getByRole("button", { name: "On calcule ton potentiel" }).count()) return page.locator(".screen__footer .btn--primary:not([disabled])").waitFor({ timeout: 40000 });
   if (await page.getByRole("button", { name: "J'accepte, on continue" }).count()) return page.getByRole("button", { name: photos ? "J'accepte, on continue" : "Pas maintenant" }).click();
   if (await page.getByRole("button", { name: /Ton plan se prépare|Voir mon résultat|Continuer sans scan/ }).count()) {
-    for (let k = 0; k < 2; k++) { await page.getByRole("dialog").waitFor({ timeout: 15000 }); await page.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
-    await page.getByRole("button", { name: /Voir mon résultat|Continuer sans scan/ }).waitFor({ timeout: 30000 });
+    for (let k = 0; k < 3; k++) { await page.getByRole("dialog").waitFor({ timeout: 20000 }); await page.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
+    await page.getByRole("button", { name: /Voir mon résultat|Continuer sans scan/ }).waitFor({ timeout: 40000 });
     return page.getByRole("button", { name: /Voir mon résultat|Continuer sans scan/ }).click();
   }
   const radios = page.getByRole("radio");
@@ -69,7 +80,7 @@ async function step(page, { photos = true } = {}) {
 }
 
 async function runTo(page, target, opts) {
-  for (let n = 0; n < 45; n++) {
+  for (let n = 0; n < 90; n++) {
     if ((await page.getByLabel("Ton e-mail").count()) && target !== "email") {
       await page.getByLabel("Ton e-mail").fill(opts?.email || `test${Date.now()}@example.com`);
       await page.getByRole("button", { name: "Voir mon résultat" }).click();
@@ -79,8 +90,8 @@ async function runTo(page, target, opts) {
     const t = await h1(page).catch(() => "");
     if (target === "email" && await page.getByLabel("Ton e-mail").count()) return;
     if (target === "offre" && await page.getByRole("button", { name: /Débloquer mon résultat, / }).count()) return;
-    if (typeof target === "number" && (await screenId(page)) === target) return;
-    if (opts?.axe) await axe(page, "S" + String((await screenId(page)) + 1).padStart(2, "0"));
+    if (typeof target === "string" && target.startsWith("id:") && (await screenName(page)) === target.slice(3)) return;
+    if (opts?.axe) await axe(page, await screenName(page));
     await step(page, opts);
   }
   throw new Error("écran cible jamais atteint : " + target);
@@ -113,7 +124,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
 
 (async () => {
   if (!fs.existsSync(PHOTO)) throw new Error("Mets une image dans " + PHOTO);
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"] });
 
   await test("F01-H1", "quiz complet avec photos, paiement, rapport", async (p) => {
     await runTo(p, "offre", { axe: true });
@@ -131,15 +142,16 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   }, browser);
 
   await test("F01-E1", "rechargement en plein quiz : on reprend au même écran", async (p) => {
-    await runTo(p, 12);
+    await runTo(p, "id:pari");
+    const before = await screenId(p);
     await p.reload({ waitUntil: "networkidle" });
-    expect((await screenId(p)) === 12 && /pronostic|note/.test(await h1(p)), "pas revenu au S12");
+    expect((await screenId(p)) === before && /pronostic|note/.test(await h1(p)), "pas revenu au pronostic");
   }, browser);
 
   await test("F01-E2", "retour arrière du navigateur : écran précédent, réponses gardées", async (p) => {
-    await runTo(p, 10);
+    await runTo(p, "id:objectifs");
     await p.goBack(); await p.waitForTimeout(300);
-    expect((await screenId(p)) === 9, "pas revenu au S09 (écran " + (await screenId(p)) + ")");
+    expect((await screenName(p)) === "difficultes", "pas revenu aux difficultés (écran " + (await screenName(p)) + ")");
     expect(await p.getByRole("checkbox", { checked: true }).count() >= 1, "réponse perdue");
   }, browser);
 
@@ -164,16 +176,17 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
 
   await test("F01-E5", "l'analyse échoue : message clair, reprendre les photos ou continuer sans", async (p) => {
     await p.route("**/api/scan", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: false, problem: "pas_de_visage", message: "On ne trouve pas de visage sur une des photos." }) }));
-    await runTo(p, 24);
-    for (let k = 0; k < 2; k++) { await p.getByRole("dialog").waitFor({ timeout: 15000 }); await p.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
-    await p.getByRole("button", { name: "Continuer sans scan" }).waitFor({ timeout: 30000 });
+    await runTo(p, "id:construction");
+    for (let k = 0; k < 3; k++) { await p.getByRole("dialog").waitFor({ timeout: 20000 }); await p.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
+    await p.getByRole("button", { name: "Continuer sans scan" }).waitFor({ timeout: 40000 });
     expect(await p.getByRole("alert").filter({ hasText: "pas de visage" }).count(), "pas de message");
     await p.getByRole("button", { name: "Reprendre les photos" }).click();
-    expect(/Deux photos/.test(await h1(p)), "pas revenu aux photos");
+    await p.waitForTimeout(400);
+    expect((await screenName(p)) === "photos" && await p.getByRole("button", { name: /^Prendre la photo de face/ }).count(), "pas revenu à la caméra");
   }, browser);
 
   await test("F01-E6", "grand écran (1440 px) : pas de défilement horizontal, colonne centrée", async (p) => {
-    await runTo(p, 8);
+    await runTo(p, "id:difficultes");
     const r = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, w: innerWidth, main: document.querySelector("main").getBoundingClientRect().width }));
     expect(r.sw <= r.w && r.main <= 480, JSON.stringify(r));
   }, browser, { width: 1440, height: 900 });

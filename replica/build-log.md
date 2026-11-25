@@ -29,3 +29,13 @@ Parcours complet automatique avec captures : `node dev/e2e-walk.cjs a chemin/pho
 Points à surveiller :
 - L'analyse n'a été testée qu'en mode essai (fausses notes). Le vrai test avec Claude demande une clé et 20 photos de personnes d'accord : c'est le test le plus important avant d'ouvrir.
 - Les prix sont provisoires (`src/shared/plans.js`).
+
+## 25/11/2026 : parcours complet (51 écrans), sur le modèle du concurrent maxxing.me (captures de Maël)
+- Caméra dans la page : ovale, exemple dessiné, déclencheur, galerie, « C'est bon / Je la reprends », face puis profil ; écran de secours si la caméra est refusée. Consentement toujours AVANT la caméra (RGPD).
+- Nouvelles questions : peau, routine, cheveux, sport, alimentation, groupe, langage du corps, regard, 8 questions de personnalité, attentes, durée, « tu vas au bout ? ».
+- Nouveaux écrans : selfies (exemples dessinés), analyse avec les 2 photos penchées, 4 écrans « braise », aujourd'hui / avec ton plan (d'après SES réponses), estimation de gain (vraie, depuis son scan), « ce que dit la recherche » (3 vraies études), profil (résumé de ses réponses), rapport en 4 barres.
+- Dessins maison : avatars homme / femme, silhouettes de corps (aucune photo de vraie personne).
+- Le plan lit les nouvelles réponses (3 tâches « présence » ajoutées).
+- Refusé : 360 000 utilisateurs, ★4,9, Harvard/Oxford/Cambridge, « +64 % », avant/après de mannequins, graphique avec logos NIH/APA.
+- Retirés car en double avec les questions du concurrent : « on te passe devant », « pièce pleine d'inconnus », « déjà évité », « déjà essayé », « une photo ne dit pas tout ».
+- Tests : 35 serveur + 15 navigateur (avec fausse caméra), 0 problème d'accessibilité.

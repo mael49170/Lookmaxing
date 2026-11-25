@@ -1,5 +1,5 @@
 // Le quiz : un écran à la fois, décrit dans /shared/questions.js.
-import { SCREENS, S11_TEXT } from "/shared/questions.js";
+import { SCREENS, S11_TEXT, DIFFICULTES, profile, PROFILE_DIMS } from "/shared/questions.js";
 import { OFFERS, DEFAULT_OFFER, euros, priceLines, guaranteeText } from "/shared/plans.js";
 import { FACTORS } from "/shared/factors.js";
 import { faceMesh } from "/q/mesh.js";
@@ -8,6 +8,32 @@ const app = document.getElementById("app");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const ICON_BACK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
 const ICON_CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+// ---------- Dessins maison (aucune photo de vraie personne) ----------
+const ICON_CAM = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+const ICON_GALLERY = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="15" height="13" rx="2"/><path d="M7 2h12a2 2 0 0 1 2 2v11"/><path d="m3 15 4-4 5 5 2-2 4 4"/></svg>';
+const ICON_SHIELD = '<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--c-success)" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m8.5 12 2.5 2.5 4.5-5" stroke="var(--c-bg)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
+const AVATARS = {
+  homme: `<svg class="avatar" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="var(--c-surface-alt)"/><path d="M11 46c1.5-8 6.5-11.5 13-11.5S35.5 38 37 46" fill="var(--c-accent-line)"/><ellipse cx="24" cy="22" rx="8.5" ry="10.5" fill="var(--c-gold)"/><path d="M15 20c-.5-7.5 4.5-11 9.5-11s10 3.5 8.5 11c-1.5-3.5-5.5-5-8.5-5S16.5 16.5 15 20z" fill="var(--c-text)"/></svg>`,
+  femme: `<svg class="avatar" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="var(--c-surface-alt)"/><path d="M13 36c-3-9-2-26 11-26s14 17 11 26z" fill="var(--c-accent)"/><path d="M11 46c1.5-8 6.5-11.5 13-11.5S35.5 38 37 46" fill="var(--c-accent-line)"/><ellipse cx="24" cy="23" rx="8" ry="10" fill="var(--c-gold)"/><path d="M15.5 21c0-6.5 4-9.5 8.5-9.5s8.5 3 8.5 9.5c-3-2-6-5-8.5-5.5-1.5 2.5-4.5 4.5-8.5 5.5z" fill="var(--c-accent)"/></svg>`,
+};
+// Silhouettes de corps, dessinées (demi-largeurs : épaules, taille, ventre)
+const BODY = { musclee: [26, 15, 0, true], mince: [17, 12, 0], moyenne: [21, 17, 2], enrobee: [23, 21, 9] };
+function bodyArt(id) {
+  const [sh, wa, be, mus] = BODY[id] || BODY.moyenne;
+  const c = 40;
+  const torso = `M${c - sh} 34 C${c - sh} 28 ${c + sh} 28 ${c + sh} 34 C${c + sh + 1} 56 ${c + wa + be} 74 ${c + wa} 100 L${c - wa} 100 C${c - wa - be} 74 ${c - sh - 1} 56 ${c - sh} 34Z`;
+  const arms = `M${c - sh} 34 C${c - sh - 9} 46 ${c - sh - 8} 70 ${c - sh - 6} 92 M${c + sh} 34 C${c + sh + 9} 46 ${c + sh + 8} 70 ${c + sh + 6} 92`;
+  const lines = mus ? `<path d="M${c - 12} 50 Q${c - 6} 56 ${c} 50 Q${c + 6} 56 ${c + 12} 50 M${c} 58 V90 M${c - 8} 66 H${c + 8} M${c - 8} 76 H${c + 8}" stroke="var(--c-accent)" stroke-width="1.4" fill="none" opacity=".8"/>` : "";
+  return `<svg class="body-art" viewBox="0 0 80 104" aria-hidden="true"><circle cx="${c}" cy="15" r="10" fill="var(--c-gold)"/><path d="M${c - 4} 24h8v6h-8z" fill="var(--c-gold)"/><path d="${arms}" stroke="var(--c-gold)" stroke-width="${mus ? 9 : be > 5 ? 9 : 7}" stroke-linecap="round" fill="none"/><path d="${torso}" fill="var(--c-gold)"/>${lines}</svg>`;
+}
+// Le profil (2e selfie), dessiné au trait avec quelques points « thermiques »
+const PROFILE_ART = `<svg class="mesh" viewBox="0 0 100 130" aria-hidden="true"><path d="M40 16C62 8 80 24 78 44l-1 8 8 13-8 3 2 8c0 6-4 8-8 8l1 7c0 8-8 12-16 12l-2 14H28l2-22C20 86 18 68 20 50c1-18 8-30 20-34Z" fill="none" stroke="var(--c-accent)" stroke-width="1.6" stroke-linejoin="round"/>${[[70, 46], [81, 64], [72, 84], [60, 98], [44, 60], [52, 40], [36, 80]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${1.6 + (i % 3) * 0.5}" fill="${["var(--c-gold)", "var(--c-warning)", "var(--c-accent)"][i % 3]}"/>`).join("")}</svg>`;
+// « Aujourd'hui / avec ton plan » : construit avec SES réponses, sans promesse de résultat
+const OUTCOME = {
+  confiance: "Une assurance qui se travaille chaque jour", rencontres: "Une première impression soignée", invisible: "Une présence qu'on remarque",
+  visage: "Un visage mis en valeur : peau, coupe, barbe", poids: "Une silhouette qui s'affine, semaine après semaine", peau: "Une routine de peau que tu tiens",
+  cheveux: "Une coupe choisie pour ton visage", presence: "Un regard et une voix plus posés", progresser: "Des progrès suivis jour après jour",
+};
 
 // ---------- État (gardé dans l'onglet pour survivre à un rechargement) ----------
 const KEY = "lm_quiz_v1";
@@ -90,9 +116,9 @@ const VIEWS = {
       <h1 class="title" tabindex="-1">${esc(override.title || s.title)}</h1>
       ${override.lead || s.lead ? `<p class="lead">${esc(override.lead || s.lead)}</p>` : ""}
       ${echoHtml(s)}
-      <fieldset class="options"><legend class="sr-only">${esc(s.title)}</legend>
-        ${s.options.map((x) => `<label class="option option--radio"><input type="radio" name="${s.id}" value="${x.id}" ${val === x.id ? "checked" : ""}>
-          ${x.emoji ? `<span class="option__emoji" aria-hidden="true">${x.emoji}</span>` : ""}
+      <fieldset class="options ${s.grid ? "options--grid" : ""}"><legend class="sr-only">${esc(s.title)}</legend>
+        ${s.options.map((x) => `<label class="option option--radio ${s.grid ? "option--tile" : ""}"><input type="radio" name="${s.id}" value="${x.id}" ${val === x.id ? "checked" : ""}>
+          ${s.grid ? bodyArt(x.id) : s.avatars && AVATARS[x.id] ? AVATARS[x.id] : x.emoji ? `<span class="option__emoji" aria-hidden="true">${x.emoji}</span>` : ""}
           <span class="option__text"><span class="option__label">${esc(x.label)}</span>${x.hint ? `<span class="option__hint">${esc(x.hint)}</span>` : ""}</span><span class="option__check"></span></label>`).join("")}
       </fieldset>
       ${s.confirm ? footer(`${s.note ? `<p class="note">${esc(s.note)}</p>` : ""}<button class="btn btn--primary" data-confirm ${val ? "" : "disabled"}>${esc(s.confirm)}</button>`) : ""}
@@ -107,7 +133,7 @@ const VIEWS = {
       ${echoHtml(s)}
       <fieldset class="options"><legend class="sr-only">${esc(s.title)}</legend>
         ${s.options.map((x) => `<label class="option"><input type="checkbox" name="${s.id}" value="${x.id}" ${val.includes(x.id) ? "checked" : ""}>
-          <span class="option__emoji" aria-hidden="true">${x.emoji}</span>
+          ${x.emoji ? `<span class="option__emoji" aria-hidden="true">${x.emoji}</span>` : ""}
           <span class="option__text"><span class="option__label">${esc(x.label)}</span></span><span class="option__check">${ICON_CHECK}</span></label>`).join("")}
       </fieldset>
       ${footer(`<button class="btn btn--primary" data-multi ${val.length ? "" : "disabled"}>Continuer</button>`)}
@@ -121,6 +147,7 @@ const VIEWS = {
       ${s.lead ? `<p class="lead">${esc(s.lead)}</p>` : ""}
       ${s.steps ? `<ol class="steps-list">${s.steps.map(([e, b, t]) => `<li><span><b>${esc(b)}</b><span>${esc(t)}</span></span></li>`).join("")}</ol>` : ""}
       ${s.source ? `<p class="source">Source : ${esc(s.source)}</p>` : ""}
+      ${s.sources ? `<ul class="sources">${s.sources.map(([f, c]) => `<li><b>${esc(f)}</b><span>${esc(c)}</span></li>`).join("")}</ul>` : ""}
       ${echoHtml(s)}
       ${footer(`<button class="btn btn--primary" data-next>${esc(s.cta || "Continuer")}</button>`)}
     </main>`;
@@ -140,20 +167,113 @@ const VIEWS = {
     </main>`;
   },
 
-  photos() {
+  selfies() {
     return `<main class="screen">${topbar()}
-      <h1 class="title" tabindex="-1">Deux photos. Pleine lumière, sans filtre.</h1>
-      <p class="lead">Face à une fenêtre, téléphone à hauteur des yeux, sans lunettes ni casquette.</p>
+      <h1 class="title" tabindex="-1">2 selfies, et ton analyse démarre.</h1>
+      <div class="examples">
+        <figure class="example"><div class="example__art">${faceMesh({ className: "mesh" })}</div><span class="example__num">1</span><figcaption>De face</figcaption></figure>
+        <figure class="example"><div class="example__art">${PROFILE_ART}</div><span class="example__num">2</span><figcaption>De profil</figcaption></figure>
+      </div>
+      <ul class="tips"><li>Pleine lumière, face à une fenêtre</li><li>Sans lunettes ni casquette, expression neutre</li><li>Seul sur la photo</li></ul>
+      <p class="safe">${ICON_SHIELD}<span>Tes selfies ne sont vus par personne et ne sont jamais enregistrés.</span></p>
+      ${footer(`<button class="btn btn--primary" data-next>${ICON_CAM} Prendre mes selfies</button><button class="btn btn--ghost" data-noscan>Continuer sans photo</button>`)}
+    </main>`;
+  },
+
+  photos() {
+    const k = cam.step;
+    const name = k === "face" ? "de face" : "de profil";
+    if (cam.phase === "fallback") return `<main class="screen">${topbar()}
+      <h1 class="title" tabindex="-1">Choisis 2 photos.</h1>
+      <p class="lead">On n'a pas accès à ta caméra. Choisis une photo de face et une de profil, ou autorise la caméra dans les réglages de ton navigateur.</p>
       <div class="shots">
-        ${["face", "profil"].map((k) => `<label class="shot ${shots[k] ? "shot--done" : ""}">
-          <input type="file" accept="image/*" capture="user" data-shot="${k}" aria-label="Photo de ${k}">
-          ${shots[k] ? `<img src="${shots[k]}" alt="Ta photo de ${k}">` : `<span class="option__emoji" aria-hidden="true">${k === "face" ? "🙂" : "👤"}</span><span class="shot__label">De ${k}</span><span class="shot__hint">Touche pour prendre la photo</span>`}
+        ${["face", "profil"].map((x) => `<label class="shot ${shots[x] ? "shot--done" : ""}">
+          <input type="file" accept="image/*" capture="user" data-shot="${x}" aria-label="Photo ${x === "face" ? "de face" : "de profil"}">
+          ${shots[x] ? `<img src="${shots[x]}" alt="Ta photo ${x === "face" ? "de face" : "de profil"}">` : `<span class="shot__label">${x === "face" ? "De face" : "De profil"}</span><span class="shot__hint">Touche pour choisir</span>`}
         </label>`).join("")}
       </div>
-      <ul class="tips"><li>Visage entier, cheveux compris</li><li>Expression neutre</li><li>Seul sur la photo</li></ul>
-      <div id="ts"></div>
-      <div id="photo-error"></div>
+      <div id="ts"></div><div id="photo-error"></div>
       ${footer(`<button class="btn btn--primary" data-scan ${shots.face && shots.profil ? "" : "disabled"}>Lancer l'analyse</button><button class="btn btn--ghost" data-noscan>Continuer sans photo</button>`)}
+    </main>`;
+    if (cam.phase === "review") return `<main class="screen screen--cam">${topbar()}
+      <h1 class="sr-only" tabindex="-1">Ton selfie ${name} : on le garde ?</h1>
+      <div class="cam"><img class="cam__shot" src="${shots[k]}" alt="Ton selfie ${name}"><span class="cam__step">${k === "face" ? "1/2" : "2/2"} · ${k === "face" ? "De face" : "De profil"}</span></div>
+      <div id="ts"></div><div id="photo-error"></div>
+      ${footer(`<button class="btn btn--primary" data-keep>C'est bon</button><button class="btn btn--ghost" data-reshoot>Je la reprends</button>`)}
+    </main>`;
+    return `<main class="screen screen--cam">${topbar()}
+      <h1 class="sr-only" tabindex="-1">Selfie ${name}</h1>
+      <div class="cam">
+        <video id="cam-video" playsinline muted autoplay></video>
+        <svg class="cam__oval" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true"><ellipse cx="50" cy="60" rx="32" ry="${k === "face" ? 40 : 42}"/></svg>
+        <span class="cam__step">${k === "face" ? "1/2" : "2/2"} · ${k === "face" ? "De face" : "De profil"}</span>
+        <div class="cam__example" aria-hidden="true">${k === "face" ? faceMesh({ className: "mesh" }) : PROFILE_ART}</div>
+        <label class="cam__gallery"><input type="file" accept="image/*" data-shot="${k}" aria-label="Choisir une photo ${name} dans ta galerie">${ICON_GALLERY}</label>
+        <button class="cam__shutter" data-shoot aria-label="Prendre la photo ${name}"></button>
+      </div>
+      <p class="cam__tip">${k === "face" ? "Visage dans l'ovale, regard droit, pleine lumière." : "Tourne la tête sur le côté : on doit voir ton oreille."}</p>
+      <div id="ts"></div><div id="photo-error"></div>
+      ${footer(`<button class="btn btn--ghost" data-noscan>Continuer sans photo</button>`)}
+    </main>`;
+  },
+
+  ember(s) {
+    return `<main class="screen screen--ember">${topbar()}
+      ${s.eyebrow ? `<p class="eyebrow">${esc(s.eyebrow)}</p>` : ""}
+      <h1 class="title title--hero" tabindex="-1">${esc(s.title)}</h1>
+      <p class="lead">${esc(s.lead)}</p>
+      ${echoHtml(s)}
+      ${footer(`<button class="btn btn--primary" data-next>${esc(s.cta || "Continuer")}</button>`)}
+    </main>`;
+  },
+
+  contrast() {
+    const picked = (S.answers.difficultes || []).filter((d) => d !== "progresser");
+    const ids = picked.length ? picked.slice(0, 5) : ["progresser"];
+    const left = ids.map((id) => id === "progresser" ? "Pas de vrai blocage, juste l'envie de progresser" : DIFFICULTES.find((x) => x.id === id)?.label);
+    return `<main class="screen">${topbar()}
+      <h1 class="title" tabindex="-1">Ce que tu as coché. Et ce que ton plan travaille.</h1>
+      <div class="vs">
+        <div class="vs__col"><h2 class="vs__title">Aujourd'hui</h2><ul>${left.map((t) => `<li class="vs__no">${esc(t)}</li>`).join("")}</ul></div>
+        <div class="vs__col vs__col--hot"><h2 class="vs__title">Avec ton plan</h2><ul>${ids.map((id) => `<li class="vs__yes">${esc(OUTCOME[id])}</li>`).join("")}</ul></div>
+      </div>
+      <p class="legal">Ton plan travaille ces points chaque jour. Le résultat dépend de ta régularité.</p>
+      ${footer(`<button class="btn btn--primary" data-next>Continuer</button>`)}
+    </main>`;
+  },
+
+  projection() {
+    const t = S.teaser;
+    if (S.scan === "running") return `<main class="screen">${topbar()}
+      <p class="eyebrow">Encore un instant</p>
+      <h1 class="title" tabindex="-1">Ton analyse se termine…</h1>
+      <div class="scanner scanner--small">${faceMesh({ animated: true, className: "mesh mesh--live" })}</div>
+      ${footer(`<button class="btn btn--primary" disabled aria-busy="true">On calcule ton potentiel</button>`)}
+    </main>`;
+    if (S.scan === "done" && t?.scanned && Number(t.gain) > 0) return `<main class="screen screen--ember">${topbar()}
+      <p class="eyebrow">D'après ton scan et tes réponses</p>
+      <h1 class="title title--hero" tabindex="-1">Jusqu'à <span class="big-gain">+${esc(fr(t.gain))}</span> point en 12 semaines.</h1>
+      <p class="lead">En suivant ton plan 5 à 10 minutes par jour. Ta note de départ reste cachée jusqu'au résultat.</p>
+      <p class="legal">Une estimation calculée seulement sur ce qui se travaille (peau, coupe, posture, style…), jamais sur l'ossature. Pas une promesse : ça dépend de toi.</p>
+      ${footer(`<button class="btn btn--primary" data-next>Je veux ces points</button>`)}
+    </main>`;
+    return `<main class="screen">${topbar()}
+      <h1 class="title" tabindex="-1">Ton plan se construit d'après tes réponses.</h1>
+      <p class="lead">${S.scan === "failed" ? "L'analyse de tes photos n'a pas abouti : tu pourras la refaire juste avant ton résultat." : "On continue."}</p>
+      ${footer(`<button class="btn btn--primary" data-next>Continuer</button>`)}
+    </main>`;
+  },
+
+  profile() {
+    const p = profile(S.answers);
+    if (!p) return VIEWS.ember({ title: "Ton plan prend forme.", lead: "Encore une étape et on assemble tout.", cta: "Continuer" });
+    return `<main class="screen">${topbar()}
+      <p class="eyebrow">Ton profil, d'après tes réponses</p>
+      <h1 class="title title--hero" tabindex="-1">${esc(p.title)}.</h1>
+      <div class="bars">${p.dims.map((d) => `<div><div class="bar__row"><span>${esc(d.label)}</span><b>${d.score}</b></div><div class="progress"><span style="width:${d.score}%"></span></div></div>`).join("")}</div>
+      <p class="lead">Ton plan commence par « ${esc(PROFILE_DIMS[p.weakest].label.toLowerCase())} » : c'est là que tu as le plus à gagner.</p>
+      <p class="legal">Un résumé de tes réponses, pas un test psychologique.</p>
+      ${footer(`<button class="btn btn--primary" data-next>Assembler mon plan</button>`)}
     </main>`;
   },
 
@@ -199,13 +319,15 @@ const VIEWS = {
     </main>`;
   },
 
-  building(s) {
+  building() {
+    const p = scanPhotos;
+    const bars = [...(S.consent ? [["Rapport de ton visage"]] : []), ["Plan d'assurance"], ["Programme peau"], ["Conseils de style"]];
     return `<main class="screen">
       <div class="brand">Lookmaxing</div>
-      <h1 class="title" tabindex="-1">On assemble ton plan.</h1>
-      <p class="lead">${S.consent ? "On termine l'analyse de tes photos et on range tes 28 jours." : "On range tes 28 jours d'après tes réponses."}</p>
+      ${p.face ? `<div class="tilted tilted--small"><div class="tilted__card tilted__card--a"><img src="${p.face}" alt=""></div>${p.profil ? `<div class="tilted__card tilted__card--b"><img src="${p.profil}" alt=""></div>` : ""}</div>` : ""}
+      <h1 class="title" tabindex="-1">On prépare ton rapport.</h1>
       <div class="bars">
-        ${[["🧴", "Peau et soins"], ["💪", "Corps et style"], ["🧠", "Assurance"]].map(([e, l], k) => `<div><div class="bar__row"><span><span aria-hidden="true">${e}</span> ${l}</span><b data-pct="${k}">0 %</b></div><div class="progress"><span data-bar="${k}" style="width:0%"></span></div></div>`).join("")}
+        ${bars.map(([l], k) => `<div><div class="bar__row"><span>${l}</span><b data-pct="${k}">0 %</b></div><div class="progress"><span data-bar="${k}" style="width:0%"></span></div></div>`).join("")}
       </div>
       <div id="build-error"></div>
       <div id="sheet"></div>
@@ -304,12 +426,15 @@ const VIEWS = {
   },
 
   scanning() {
-    const shown = scanPreview ? `<img src="${scanPreview}" alt="">` : "";
+    const p = scanPhotos;
+    const art = p.face
+      ? `<div class="tilted"><div class="tilted__card tilted__card--a"><img src="${p.face}" alt="Ton selfie de face">${faceMesh({ animated: true, className: "mesh mesh--live" })}</div>${p.profil ? `<div class="tilted__card tilted__card--b"><img src="${p.profil}" alt="Ton selfie de profil"></div>` : ""}</div>`
+      : `<div class="scanner">${faceMesh({ animated: true, className: "mesh mesh--live" })}</div>`;
     return `<main class="screen">${topbar()}
       <h1 class="title" tabindex="-1">On lit ton visage.</h1>
-      <div class="scanner">${shown}${faceMesh({ animated: true, className: "mesh mesh--live" })}</div>
+      ${art}
       <p class="reading" id="reading" aria-live="polite">Calage du visage…</p>
-      <p class="lead">L'analyse se termine pendant que tu réponds aux questions suivantes.</p>
+      <p class="lead">L'analyse prend un peu de temps : elle se termine pendant que tu réponds aux questions suivantes.</p>
       ${footer(`<button class="btn btn--primary" data-next>Continuer</button>`)}
     </main>`;
   },
@@ -366,6 +491,43 @@ async function mountTurnstile() {
 // L'analyse part en arrière-plan : le quiz continue pendant qu'elle tourne
 let scanPromise = null;
 let scanPreview = null; // la photo de face, en mémoire seulement, pour l'écran d'analyse
+let scanPhotos = {}; // les 2 selfies, en mémoire seulement (jamais enregistrés), pour les écrans d'analyse
+// ---------- Caméra dans la page : ovale, face puis profil, « C'est bon / Je la reprends » ----------
+const cam = { step: "face", phase: "live", stream: null };
+function stopCam() { cam.stream?.getTracks().forEach((t) => t.stop()); cam.stream = null; }
+async function startCam() {
+  const v = document.getElementById("cam-video");
+  if (!v) return;
+  if (!navigator.mediaDevices?.getUserMedia) { cam.phase = "fallback"; return render(); }
+  try {
+    if (!cam.stream) cam.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1280 } }, audio: false });
+    const now = document.getElementById("cam-video");
+    if (!now) return stopCam();
+    now.srcObject = cam.stream;
+    await now.play().catch(() => {});
+  } catch {
+    cam.phase = "fallback"; render();
+  }
+}
+function snap() {
+  const v = document.getElementById("cam-video");
+  if (!v || !v.videoWidth) return;
+  const k = Math.min(1, 1024 / Math.max(v.videoWidth, v.videoHeight));
+  const c = document.createElement("canvas");
+  c.width = Math.round(v.videoWidth * k); c.height = Math.round(v.videoHeight * k);
+  c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+  shots[cam.step] = c.toDataURL("image/jpeg", 0.85);
+  cam.phase = "review"; stopCam(); render();
+}
+function keepShot() {
+  if (cam.step === "face") { cam.step = "profil"; cam.phase = "live"; return render(); }
+  launchScan();
+}
+function launchScan() {
+  stopCam();
+  scanPreview = shots.face; scanPhotos = { face: shots.face, profil: shots.profil };
+  startScan(); next();
+}
 async function loadTeaser() { S.teaser = await api("teaser", null, { method: "GET" }).catch(() => null); save(); }
 // Écran d'analyse : on montre les critères que l'analyse lit vraiment
 function runScanning() {
@@ -386,6 +548,18 @@ function startScan() {
     .finally(() => { shots.face = shots.profil = null; save(); }); // on oublie les photos tout de suite
 }
 
+let projWaiting = false;
+async function runProjection() {
+  if (S.scan === "running" && scanPromise && !projWaiting) {
+    projWaiting = true; await scanPromise; projWaiting = false;
+    if (S.scan === "done") await loadTeaser();
+    if (SCREENS[S.i].type === "projection") render();
+  } else if (S.scan === "done" && S.teaser === undefined) {
+    await loadTeaser(); if (S.teaser === null) S.teaser = {};
+    if (SCREENS[S.i].type === "projection") render();
+  }
+}
+
 // ---------- Rendu et événements ----------
 function render() {
   const s = SCREENS[S.i];
@@ -396,7 +570,9 @@ function render() {
   app.querySelector("h1")?.focus({ preventScroll: true });
   window.scrollTo(0, 0);
   trackStep(s.id === "accueil" && S.variant === "b" ? "genre" : s.id);
-  if (s.type === "photos") mountTurnstile();
+  if (s.type !== "photos") stopCam();
+  if (s.type === "photos") { mountTurnstile(); if (cam.phase === "live") startCam(); }
+  if (s.type === "projection") runProjection();
   if (s.type === "building") runBuilding();
   if (s.type === "scanning") runScanning();
   if (s.type === "paywall") { if (!S.pw) loadPaywall().catch((e) => { app.querySelector("h1").textContent = e.message; }); else { startTimer(); mountCheckout(); } }
@@ -422,10 +598,13 @@ app.addEventListener("click", async (e) => {
     S.consent = false; api("scan-consent", { agree: false }).catch(() => {});
     return next();
   }
-  if (t.hasAttribute("data-scan")) { scanPreview = shots.face; startScan(); return next(); }
+  if (t.hasAttribute("data-scan")) return launchScan();
+  if (t.hasAttribute("data-shoot")) return snap();
+  if (t.hasAttribute("data-keep")) return keepShot();
+  if (t.hasAttribute("data-reshoot")) { cam.phase = "live"; return render(); }
   if (t.hasAttribute("data-tomail")) { if (S.scan === "done") await loadTeaser(); return next(); }
   if (t.dataset.sheet) return answerSheet(t.dataset.sheet, t.dataset.v === "1");
-  if (t.hasAttribute("data-retake")) { S.consent = true; return goTo("photos"); }
+  if (t.hasAttribute("data-retake")) { S.consent = true; cam.step = "face"; cam.phase = "live"; shots.face = shots.profil = null; return goTo("photos"); }
   if (t.hasAttribute("data-pay")) return pay(t);
   if (t.hasAttribute("data-gopay")) { const box = document.getElementById("pay"); box?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); box?.querySelector("h2")?.setAttribute("tabindex", "-1"); box?.querySelector("h2")?.focus({ preventScroll: true }); return; }
 });
@@ -436,7 +615,11 @@ app.addEventListener("change", async (e) => {
   if (input.dataset.shot) {
     const file = input.files?.[0];
     if (!file) return;
-    try { shots[input.dataset.shot] = await shrink(file); render(); }
+    try {
+      shots[input.dataset.shot] = await shrink(file);
+      if (cam.phase !== "fallback") { stopCam(); cam.step = input.dataset.shot; cam.phase = "review"; }
+      render();
+    }
     catch (err) { document.getElementById("photo-error").innerHTML = `<div class="alert" role="alert">${esc(err.message)}</div>`; }
     return;
   }
@@ -523,14 +706,15 @@ async function runBuilding() {
   const s = SCREENS[S.i];
   const set = (k, p) => { const b = app.querySelector(`[data-bar="${k}"]`); if (b) { b.style.width = p + "%"; app.querySelector(`[data-pct="${k}"]`).textContent = p + " %"; } };
   const animate = (k, from, to, ms) => new Promise((ok) => { const t0 = performance.now(); const step = (t) => { const p = Math.min(1, (t - t0) / ms); set(k, Math.round(from + (to - from) * p)); p < 1 ? requestAnimationFrame(step) : ok(); }; requestAnimationFrame(step); });
-  await animate(0, 0, 60, 1500);
-  await ask(s.sheets[0]);
-  await animate(0, 60, 100, 800); await animate(1, 0, 50, 1200);
-  await ask(s.sheets[1]);
-  await animate(1, 50, 100, 800);
-  await animate(2, 0, 70, 1000);
-  if (scanPromise) await scanPromise; // la barre reste à 70 % tant que l'analyse n'est pas finie
-  await animate(2, 70, 100, 500);
+  const n = app.querySelectorAll("[data-bar]").length;
+  const face = n === 4; // la 1re barre est le rapport du visage : elle ne finit qu'avec la vraie analyse
+  let q = 0;
+  for (let k = 0; k < n; k++) {
+    await animate(k, 0, face && k === 0 ? 85 : 60, 1100);
+    if (s.sheets[q]) await ask(s.sheets[q++]);
+    if (!(face && k === 0)) await animate(k, 60, 100, 700);
+  }
+  if (face) { if (scanPromise) await scanPromise; await animate(0, 85, 100, 500); }
   if (SCREENS[S.i] !== s) return;
   const btn = app.querySelector("[data-tomail]");
   if (S.scan === "failed") {
