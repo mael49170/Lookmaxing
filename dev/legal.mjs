@@ -8,16 +8,18 @@ import { OFFERS, DEFAULT_OFFER, RESERVATION_MIN, GUARANTEE, euros, minimumCents 
 // ---------- À remplir par Maël (ou son comptable) ----------
 const todo = (t) => `<mark class="todo">[À REMPLIR : ${t}]</mark>`;
 export const EDITEUR = {
-  nom: todo("nom de la société ou ton nom si micro-entreprise"),
-  forme: todo("forme (SAS, SASU, EI…) et capital"),
-  adresse: todo("adresse du siège"),
-  siren: todo("SIREN / RCS"),
-  tva: todo("n° de TVA intracommunautaire, ou « TVA non applicable, art. 293 B du CGI »"),
-  directeur: todo("nom du directeur de la publication"),
-  email: todo("adresse e-mail de contact et de support"),
+  // Même entreprise individuelle que Kadrio, adresse propre à MOGX (donné par Maël le 26/11/2026)
+  nom: "Maël Poitiers",
+  forme: "entrepreneur individuel (EI), nom commercial MOGX",
+  adresse: "16 rue du Jubilé, 49170 Saint-Martin-du-Fouilloux, France",
+  siren: "SIRET 131 842 700 00018",
+  tva: "TVA non applicable, article 293 B du Code général des impôts",
+  directeur: "Maël Poitiers",
+  email: `<a href="mailto:contact@mykadrio.fr">contact@mykadrio.fr</a>`,
+  telephone: `<a href="tel:+33752045665">07 52 04 56 65</a>`,
   mediateur: todo("nom, site et adresse du médiateur de la consommation choisi (obligatoire)"),
 };
-export const MAJ = "25 novembre 2026";
+export const MAJ = "26 novembre 2026";
 // ------------------------------------------------------------
 
 const o = OFFERS[DEFAULT_OFFER];
@@ -68,7 +70,7 @@ page("cgv", "Conditions générales de vente", `
 </div>
 
 <h2 id="vendeur">1. Qui vend</h2>
-<p>Le service MOGX est vendu par ${E.nom}, ${E.forme}, dont le siège est ${E.adresse}, immatriculée ${E.siren}, ${E.tva}. Contact : ${E.email}.</p>
+<p>Le service MOGX est vendu par ${E.nom}, ${E.forme}, dont l'adresse professionnelle est ${E.adresse}, ${E.siren}, ${E.tva}. Contact : ${E.email} · ${E.telephone}.</p>
 
 <h2 id="service">2. Ce que tu achètes</h2>
 <p>MOGX est un service en ligne qui comprend :</p>
@@ -82,7 +84,7 @@ page("cgv", "Conditions générales de vente", `
 <p>Les notes sont l'avis d'un logiciel sur deux photos, avec une lumière et un angle donnés. Ce n'est ni une mesure, ni un diagnostic, ni un avis médical, psychologique ou esthétique professionnel. Une autre photo peut donner une autre note. Le plan propose des habitudes non médicales (soins, coupe, style, sport, posture, assurance). MOGX ne garantit aucun résultat physique, ni aucun effet sur ta vie sentimentale ou sociale : le résultat dépend notamment de ta régularité.</p>
 
 <h2 id="prix">3. Prix</h2>
-<p>Les prix sont en euros, toutes taxes comprises. Ils sont affichés avant le paiement, juste au-dessus du bouton qui le déclenche, et repris sur la page de paiement et dans l'e-mail envoyé après l'achat.</p>
+<p>Les prix sont en euros. Ce sont les prix finaux, rien ne s'y ajoute : TVA non applicable, article 293 B du Code général des impôts. Ils sont affichés avant le paiement, juste au-dessus du bouton qui le déclenche, et repris sur la page de paiement et dans l'e-mail envoyé après l'achat.</p>
 <div class="table-wrap"><table>
   <tr><th>Période</th><th>Prix</th></tr>
   <tr><td>Essai : les ${P.jours} premiers jours</td><td>${P.intro}, payés le jour de l'achat</td></tr>
@@ -253,7 +255,7 @@ page("biometrie", "Données du visage", `
 // ================= Mentions légales =================
 page("mentions-legales", "Mentions légales", `
 <h2>Éditeur</h2>
-<p>${E.nom}<br>${E.forme}<br>${E.adresse}<br>${E.siren}<br>${E.tva}<br>Contact : ${E.email}</p>
+<p>${E.nom}<br>${E.forme}<br>${E.adresse}<br>${E.siren}<br>${E.tva}<br>Contact : ${E.email} · ${E.telephone}</p>
 <p>Directeur de la publication : ${E.directeur}</p>
 
 <h2>Hébergeur</h2>
