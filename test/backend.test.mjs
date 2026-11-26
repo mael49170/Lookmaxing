@@ -170,6 +170,10 @@ test("webhook Stripe : signature, une seule fois par événement, membre créé,
   await W(webhook, "stripe-webhook", { raw: failed.payload, headers: { "stripe-signature": failed.header } });
   assert.equal((await d.prepare("SELECT status FROM subscriptions WHERE id = 'sub_1'").first()).status, "past_due");
   assert.equal(calls.filter((c) => c.path === "/emails").length, 2);
+  // format des versions récentes de Stripe (2025 et après) : l'abonnement est dans « parent »
+  const fresh = await signed("whsec_t", { id: "evt_3", type: "invoice.payment_failed", data: { object: { object: "invoice", parent: { subscription_details: { subscription: "sub_1" } } } } });
+  await W(webhook, "stripe-webhook", { raw: fresh.payload, headers: { "stripe-signature": fresh.header } });
+  assert.equal(calls.filter((c) => c.path === "/emails").length, 3, "facture au nouveau format bien comprise");
 });
 
 test("tâches du jour : secret, nettoyage, rappel une fois par jour, relances limitées, désinscription", async () => {

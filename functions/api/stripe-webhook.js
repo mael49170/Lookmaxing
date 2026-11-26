@@ -16,17 +16,19 @@ export const onRequestPost = handle(async ({ request, env }) => {
   if (!first.meta?.changes) return json({ ok: true, deja: true });
   try {
     const o = event.data.object;
+    // l'abonnement d'une facture : « subscription » (anciennes versions de Stripe) ou « parent » (versions depuis 2025)
+    const subId = event.type.startsWith("invoice.") ? o.subscription || o.parent?.subscription_details?.subscription || null : null;
     const origin = new URL(request.url).origin;
     if (event.type === "checkout.session.completed" && o.mode === "subscription") {
       const customer = await memberFromSession(env, d, o);
       if (customer._created) await sendMail(env, { to: customer.email, ...welcomeMail(await welcomeLink(d, request, customer.email_key), await welcomeTerms(d, customer)) }).catch((e) => console.error("E-mail de bienvenue", e.message));
     } else if (["customer.subscription.updated", "customer.subscription.deleted"].includes(event.type)) {
       await saveSub(d, o);
-    } else if (event.type === "invoice.paid" && o.subscription) {
-      await saveSub(d, await stripe(env, "GET", "subscriptions/" + o.subscription));
-    } else if (event.type === "invoice.payment_failed" && o.subscription) {
-      await saveSub(d, await stripe(env, "GET", "subscriptions/" + o.subscription));
-      const c = await d.prepare("SELECT c.email, c.stripe_customer FROM customers c JOIN subscriptions s ON s.customer_id = c.id WHERE s.id = ?").bind(o.subscription).first();
+    } else if (event.type === "invoice.paid" && subId) {
+      await saveSub(d, await stripe(env, "GET", "subscriptions/" + subId));
+    } else if (event.type === "invoice.payment_failed" && subId) {
+      await saveSub(d, await stripe(env, "GET", "subscriptions/" + subId));
+      const c = await d.prepare("SELECT c.email, c.stripe_customer FROM customers c JOIN subscriptions s ON s.customer_id = c.id WHERE s.id = ?").bind(subId).first();
       if (c) await sendMail(env, { to: c.email, ...paymentFailedMail(origin + "/app/") }).catch((e) => console.error("E-mail de paiement refusé", e.message));
     }
   } catch (err) {
