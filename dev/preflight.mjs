@@ -27,7 +27,7 @@ for (const t of readdirSync(new URL("test/", root)).filter((f) => f.endsWith(".t
 // 3. Aucune clé secrète dans le code envoyé sur GitHub
 const tracked = execFileSync("git", ["ls-files"], { cwd: root.pathname }).toString().split("\n").filter((f) => /\.(js|mjs|cjs|html|json|toml|md)$/.test(f));
 const secret = /(sk_live_|sk_test_[A-Za-z0-9]{10,}|rk_live_|whsec_[A-Za-z0-9]{10,}|sk-ant-[A-Za-z0-9-]{10,}|re_[A-Za-z0-9]{20,})/;
-const leaks = tracked.filter((f) => existsSync(new URL(f, root)) && secret.test(read(f)));
+const leaks = tracked.filter((f) => f !== "dev/preflight.mjs" && existsSync(new URL(f, root)) && secret.test(read(f)));
 if (leaks.length) ko.push("clé secrète dans le code : " + leaks.join(", ")); else ok.push("aucune clé secrète dans le code");
 if (tracked.includes(".dev.vars")) ko.push(".dev.vars est envoyé sur GitHub : le retirer tout de suite");
 
@@ -51,7 +51,8 @@ const manual = [
   "Test réel de l'analyse sur 20 photos (note stable à 3 points près)",
   "Paiement test complet : carte acceptée, carte refusée 4000 0000 0000 0002, 3-D Secure, webhook, e-mail reçu",
   "Caméra testée sur un vrai iPhone (Safari) et un vrai Android (Chrome)",
-  "Marque MOGX vérifiée (INPI, EUIPO) et domaine acheté",
+  "Marque MOGX vérifiée (INPI, EUIPO)",
+  "mogx.fr branché sur le site (Cloudflare → Custom domains) et e-mails Resend vérifiés pour mogx.fr",
 ];
 
 console.log("\nCE QUI EST BON");

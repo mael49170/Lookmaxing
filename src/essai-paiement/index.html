@@ -30,6 +30,9 @@
 <script type="module">
 import { OFFERS, DEFAULT_OFFER, priceLines } from "/shared/plans.js";
 const p = new URLSearchParams(location.search);
+// hors mode test (vrai site), cette page ne sert à rien : on renvoie à l'accueil
+const cfg = await fetch("/api/config").then((r) => r.json()).catch(() => ({}));
+if (!cfg.fakePay) location.replace("/");
 const offer = OFFERS[p.get("offre")] ? p.get("offre") : DEFAULT_OFFER;
 const trial = p.get("t") !== "0";
 document.getElementById("offre").value = offer;

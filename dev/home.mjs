@@ -47,7 +47,7 @@ const html = `<!doctype html>
 <header class="home-top"><a class="brand" href="/">MOGX</a><a class="home-login" href="/connexion/">Mon espace</a></header>
 <main class="home">
   <section class="home-hero">
-    <p class="proof-bar"><span><span aria-hidden="true">🇫🇷</span> MOGX, top en France</span></p>
+    <p class="proof-bar"><span><svg class="proof-bar__flag" viewBox="0 0 3 2" aria-hidden="true"><rect width="1" height="2" fill="#0055A4"/><rect x="1" width="1" height="2" fill="#F6F3EF"/><rect x="2" width="1" height="2" fill="#EF4135"/></svg>MOGX, top en France</span></p>
     <div class="home-hero__art">${faceMesh({ className: "mesh mesh--idle" })}
       <span class="tag" style="left:-4%;top:42%">Mâchoire</span><span class="tag" style="right:-6%;top:28%">Peau</span><span class="tag" style="right:-2%;top:66%">Posture</span></div>
     <h1 class="title title--hero">Ce que les autres voient de toi en 3 secondes. Et comment le changer.</h1>

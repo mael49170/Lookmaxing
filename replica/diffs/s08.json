@@ -1,0 +1,72 @@
+{
+  "mode": "layout",
+  "original": {
+    "width": 390,
+    "height": 844
+  },
+  "clone": {
+    "width": 390,
+    "height": 844
+  },
+  "compared_at": {
+    "width": 390,
+    "height": 844
+  },
+  "height_delta_pct": 0.0,
+  "score": 12.2,
+  "verdict": "different",
+  "regions": [
+    {
+      "x": 0,
+      "y": 64,
+      "w": 384,
+      "h": 384,
+      "cells": 87,
+      "where": "top centre"
+    },
+    {
+      "x": 0,
+      "y": 480,
+      "w": 384,
+      "h": 160,
+      "cells": 39,
+      "where": "middle centre"
+    },
+    {
+      "x": 0,
+      "y": 736,
+      "w": 384,
+      "h": 96,
+      "cells": 24,
+      "where": "bottom centre"
+    },
+    {
+      "x": 32,
+      "y": 32,
+      "w": 128,
+      "h": 32,
+      "cells": 4,
+      "where": "top left"
+    },
+    {
+      "x": 32,
+      "y": 384,
+      "w": 64,
+      "h": 64,
+      "cells": 4,
+      "where": "middle left"
+    },
+    {
+      "x": 96,
+      "y": 96,
+      "w": 64,
+      "h": 32,
+      "cells": 2,
+      "where": "top left"
+    }
+  ],
+  "files": {
+    "original": "replica/screens/s08.png",
+    "clone": "replica/clone-screens/S10-plan_intro.png"
+  }
+}

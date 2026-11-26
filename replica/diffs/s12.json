@@ -1,0 +1,56 @@
+{
+  "mode": "layout",
+  "original": {
+    "width": 390,
+    "height": 844
+  },
+  "clone": {
+    "width": 390,
+    "height": 844
+  },
+  "compared_at": {
+    "width": 390,
+    "height": 844
+  },
+  "height_delta_pct": 0.0,
+  "score": 30.7,
+  "verdict": "different",
+  "regions": [
+    {
+      "x": 0,
+      "y": 32,
+      "w": 384,
+      "h": 608,
+      "cells": 149,
+      "where": "middle centre"
+    },
+    {
+      "x": 0,
+      "y": 736,
+      "w": 352,
+      "h": 96,
+      "cells": 17,
+      "where": "bottom centre"
+    },
+    {
+      "x": 64,
+      "y": 704,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "bottom left"
+    },
+    {
+      "x": 352,
+      "y": 736,
+      "w": 32,
+      "h": 32,
+      "cells": 1,
+      "where": "bottom right"
+    }
+  ],
+  "files": {
+    "original": "replica/screens/s12.png",
+    "clone": "replica/clone-screens/S15-pari.png"
+  }
+}

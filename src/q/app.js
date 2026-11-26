@@ -97,7 +97,7 @@ const VIEWS = {
     // Accueil le plus court possible : un titre, puis on choisit Homme ou Femme (c'est déjà la 1re réponse du quiz)
     return `<main class="screen landing">
       <div class="brand">MOGX</div>
-      <p class="proof-bar"><span><span aria-hidden="true">🇫🇷</span> MOGX, top en France</span></p>
+      <p class="proof-bar"><span><svg class="proof-bar__flag" viewBox="0 0 3 2" aria-hidden="true"><rect width="1" height="2" fill="#0055A4"/><rect x="1" width="1" height="2" fill="#F6F3EF"/><rect x="2" width="1" height="2" fill="#EF4135"/></svg>MOGX, top en France</span></p>
       <h1 class="title title--hero landing__title" tabindex="-1">Ce que les autres voient de toi <span class="hot">en 3 secondes.</span></h1>
       <p class="lead landing__lead">Ta note sur 15 critères, et exactement quoi changer pour la faire monter.</p>
       <fieldset class="gcards"><legend class="sr-only">Tu es…</legend>

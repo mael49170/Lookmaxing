@@ -1,5 +1,5 @@
 // Parcours complet du quiz en local (mode essai), avec une capture par écran dans replica/clone-screens/.
-// node dev/e2e-walk.cjs [variante a|b] [photos|sans]
+// node dev/e2e-walk.cjs [variante a|b] [photos|sans]   (l'e-mail n'est plus demandé avant le paiement)
 // La caméra est simulée par Chromium (fausse vidéo), comme un vrai téléphone.
 const { chromium } = require("playwright");
 const path = require("path");
@@ -30,9 +30,9 @@ const path = require("path");
       if (await p.locator("[data-keep]").count()) { await p.click("[data-keep]"); continue; }
       throw new Error("caméra indisponible (écran de secours)");
     }
+    if (s.id === "accueil") { await p.locator("label.gcard").first().click(); continue; }
     if (s.id === "consentement") { await p.click(photos ? "[data-consent=yes]" : "[data-consent=no]"); continue; }
     if (s.id === "selfies" && !photos) { await p.click("[data-noscan]"); continue; }
-    if (s.id === "email") { await p.fill("#email", `walk${Date.now()}@example.com`); await p.click("button[type=submit]"); continue; }
     if (s.id === "construction") {
       for (let k = 0; k < 3; k++) { await p.locator("[data-sheet]").first().waitFor({ timeout: 20000 }); if (k === 0) await shot(`${s.sid}-construction-question`); await p.locator("[data-sheet][data-v='1']").click(); }
       await p.locator("[data-tomail]:not([disabled])").waitFor({ timeout: 40000 });
@@ -52,7 +52,8 @@ const path = require("path");
     await p.locator(".screen__footer .btn--primary").first().click();
   }
   await p.waitForTimeout(1500);
-  await p.screenshot({ path: "replica/clone-screens/S51-offre-full.png", fullPage: true });
+  const end = await cur();
+  await p.screenshot({ path: `replica/clone-screens/${end.sid}-offre-full.png`, fullPage: true });
   console.log("erreurs console :", errs.length ? errs : "aucune");
   await b.close();
 })();

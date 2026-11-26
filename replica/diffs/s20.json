@@ -1,0 +1,64 @@
+{
+  "mode": "layout",
+  "original": {
+    "width": 390,
+    "height": 844
+  },
+  "clone": {
+    "width": 390,
+    "height": 844
+  },
+  "compared_at": {
+    "width": 390,
+    "height": 844
+  },
+  "height_delta_pct": 0.0,
+  "score": 40.7,
+  "verdict": "different",
+  "regions": [
+    {
+      "x": 0,
+      "y": 160,
+      "w": 384,
+      "h": 320,
+      "cells": 79,
+      "where": "middle centre"
+    },
+    {
+      "x": 0,
+      "y": 32,
+      "w": 384,
+      "h": 160,
+      "cells": 26,
+      "where": "top centre"
+    },
+    {
+      "x": 0,
+      "y": 736,
+      "w": 384,
+      "h": 96,
+      "cells": 24,
+      "where": "bottom centre"
+    },
+    {
+      "x": 256,
+      "y": 96,
+      "w": 64,
+      "h": 64,
+      "cells": 3,
+      "where": "top right"
+    },
+    {
+      "x": 224,
+      "y": 512,
+      "w": 96,
+      "h": 32,
+      "cells": 3,
+      "where": "middle right"
+    }
+  ],
+  "files": {
+    "original": "replica/screens/s20.png",
+    "clone": "replica/clone-screens/S26-recap.png"
+  }
+}

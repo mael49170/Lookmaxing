@@ -13,36 +13,28 @@
     "height": 844
   },
   "height_delta_pct": 0.0,
-  "score": 12.8,
+  "score": 21.3,
   "verdict": "different",
   "regions": [
     {
       "x": 0,
-      "y": 64,
+      "y": 128,
       "w": 384,
-      "h": 640,
-      "cells": 133,
+      "h": 544,
+      "cells": 157,
       "where": "middle centre"
     },
     {
       "x": 0,
-      "y": 736,
-      "w": 384,
-      "h": 96,
-      "cells": 24,
-      "where": "bottom centre"
-    },
-    {
-      "x": 32,
       "y": 32,
-      "w": 32,
-      "h": 32,
-      "cells": 1,
-      "where": "top left"
+      "w": 352,
+      "h": 128,
+      "cells": 22,
+      "where": "top centre"
     }
   ],
   "files": {
-    "original": "replica/screens/s06.png",
-    "clone": "replica/clone-screens/S05.png"
+    "original": "replica/screens/s18.png",
+    "clone": "replica/clone-screens/S20-morpho.png"
   }
 }

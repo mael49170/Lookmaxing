@@ -43,7 +43,8 @@ createServer(async (req, res) => {
     }
     let p = join(root, "src", decodeURIComponent(url.pathname));
     if (existsSync(p) && statSync(p).isDirectory()) p = join(p, "index.html");
-    if (!existsSync(p)) { res.writeHead(404); return res.end("Not found"); }
+    // comme Cloudflare Pages : une adresse inconnue reçoit src/404.html avec le code 404
+    if (!existsSync(p)) { res.writeHead(404, { "content-type": "text/html; charset=utf-8" }); return res.end(readFileSync(join(root, "src", "404.html"))); }
     res.writeHead(200, { "content-type": TYPES[extname(p)] || "application/octet-stream" });
     res.end(readFileSync(p));
   } catch (err) {
