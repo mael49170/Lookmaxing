@@ -15,7 +15,7 @@ export const EDITEUR = {
   siren: "SIRET 131 842 700 00018",
   tva: "TVA non applicable, article 293 B du Code général des impôts",
   directeur: "Maël Poitiers",
-  email: `<a href="mailto:contact@mykadrio.fr">contact@mykadrio.fr</a>`,
+  email: `<a href="mailto:contact@mogx.fr">contact@mogx.fr</a>`,
   telephone: `<a href="tel:+33752045665">07 52 04 56 65</a>`,
   mediateur: todo("nom, site et adresse du médiateur de la consommation choisi (obligatoire)"),
 };
