@@ -215,20 +215,17 @@
 .gcard:active { transform: scale(.97); }
 .gcard:has(input:focus-visible) { outline: 2px solid var(--c-accent); outline-offset: 3px; }
 .gcard:has(input:checked) { border-color: var(--c-accent); }
-.gcard__art { position: relative; padding: var(--sp-5) var(--sp-4) 0; }
-.gcard__art .mesh { position: relative; }
-.gcard__hair { position: absolute; inset: var(--sp-5) var(--sp-4) 0; width: calc(100% - 2 * var(--sp-4)); height: auto; }
-.gcard__hair path { fill: color-mix(in srgb, var(--c-accent-line) 70%, transparent); }
-.gcard__frame { position: absolute; inset: 22% 16% 4%; --b: 2px; --l: 16px; opacity: .85; pointer-events: none;
+.gcard__img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
+.gcard__frame { position: absolute; inset: 14% 19% 34%; --b: 2px; --l: 18px; opacity: .9; pointer-events: none;
   background:
     linear-gradient(var(--c-text), var(--c-text)) top left / var(--l) var(--b), linear-gradient(var(--c-text), var(--c-text)) top left / var(--b) var(--l),
     linear-gradient(var(--c-text), var(--c-text)) top right / var(--l) var(--b), linear-gradient(var(--c-text), var(--c-text)) top right / var(--b) var(--l),
     linear-gradient(var(--c-text), var(--c-text)) bottom left / var(--l) var(--b), linear-gradient(var(--c-text), var(--c-text)) bottom left / var(--b) var(--l),
     linear-gradient(var(--c-text), var(--c-text)) bottom right / var(--l) var(--b), linear-gradient(var(--c-text), var(--c-text)) bottom right / var(--b) var(--l);
   background-repeat: no-repeat; }
-.gcard__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); padding: var(--sp-4); background: linear-gradient(to top, var(--c-bg), transparent); }
-.gcard__label { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-lg); }
-.gcard__go { flex: none; width: var(--size-tap); height: var(--size-tap); border-radius: 50%; display: grid; place-items: center; background: var(--c-accent); color: var(--c-on-accent); box-shadow: 0 0 20px color-mix(in srgb, var(--c-glow) 60%, transparent); }
+.gcard__foot { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); padding: var(--sp-7) var(--sp-3) var(--sp-3) var(--sp-4); background: linear-gradient(to top, var(--c-bg) 35%, transparent); }
+.gcard__label { min-width: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(18px, 5.4vw, 24px); line-height: 1; }
+.gcard__go { flex: none; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--c-accent); color: var(--c-on-accent); box-shadow: 0 0 20px color-mix(in srgb, var(--c-glow) 60%, transparent); }
 .landing .mini-legal { flex-wrap: wrap; margin-top: auto; padding-top: var(--sp-4); }
 .mini-legal a { min-height: var(--size-tap); display: inline-flex; align-items: center; }
 .gcard__input { position: absolute; inset: 0; z-index: 1; margin: 0; opacity: 0; cursor: pointer; }
@@ -240,3 +237,4 @@
 .welcome .note { justify-content: flex-start; font-size: var(--fs-sm); text-align: left; }
 .welcome__ok { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--c-success) 16%, transparent); color: var(--c-success); border: 1px solid color-mix(in srgb, var(--c-success) 45%, transparent); }
 .welcome .btn { margin-top: var(--sp-4); }
+.ai-note { margin: 0; text-align: center; color: var(--c-text-muted); font-size: var(--fs-xs); }

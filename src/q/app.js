@@ -8,11 +8,6 @@ const app = document.getElementById("app");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const ICON_BACK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
 const ICON_GO = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
-// Cheveux posés derrière le visage maillé des cartes de l'accueil (même repère que faceMesh)
-const HAIR = {
-  homme: '<svg class="gcard__hair" viewBox="-4 6 108 128" aria-hidden="true"><path d="M11 56C8 22 28 8 50 8s42 14 39 48c-4-16-18-28-39-28S15 40 11 56z"/></svg>',
-  femme: '<svg class="gcard__hair" viewBox="-4 6 108 128" aria-hidden="true"><path d="M9 126C0 84 4 12 50 9c46 3 50 75 41 117-7-24-3-50-7-70-5-18-17-28-34-28S21 38 16 56c-4 20 0 46-7 70z"/></svg>',
-};
 const ICON_CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
 // ---------- Dessins maison (aucune photo de vraie personne) ----------
 const ICON_CAM = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
@@ -107,9 +102,11 @@ const VIEWS = {
       <p class="lead landing__lead">Ta note sur 15 critères, et exactement quoi changer pour la faire monter.</p>
       <fieldset class="gcards"><legend class="sr-only">Tu es…</legend>
         ${[["homme", "Homme"], ["femme", "Femme"]].map(([id, label]) => `<label class="gcard"><input class="gcard__input" type="radio" name="genre" value="${id}" ${S.answers.genre === id ? "checked" : ""}>
-          <span class="gcard__art">${HAIR[id]}${faceMesh({ className: "mesh mesh--idle" })}<span class="gcard__frame" aria-hidden="true"></span></span>
+          <img class="gcard__img" src="/img/carte-${id}.webp" alt="" width="600" height="800" decoding="async">
+          <span class="gcard__frame" aria-hidden="true"></span>
           <span class="gcard__foot"><span class="gcard__label">${label}</span><span class="gcard__go" aria-hidden="true">${ICON_GO}</span></span></label>`).join("")}
       </fieldset>
+      <p class="ai-note">Visages d'illustration créés par IA.</p>
       <nav class="mini-legal" aria-label="Informations"><a href="/infos/">Prix et infos</a><a href="/connexion/">Mon espace</a><a href="/cgv/">CGV</a><a href="/mentions-legales/">Mentions légales</a></nav>
     </main>`;
   },
