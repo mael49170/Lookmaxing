@@ -45,7 +45,6 @@ if (process.argv.includes("--env")) {
 // 5. Ce que le code ne peut pas vérifier : à cocher à la main
 const manual = [
   "Médiateur de la consommation choisi et écrit dans les CGV",
-  "Accord de non-conservation (zero data retention) signé avec Anthropic, ou page « Données du visage » corrigée",
   "Analyse d'impact (AIPD) écrite pour les données du visage",
   "CGV relues par un avocat (semaine obligatoire, rétractation)",
   "Test réel de l'analyse sur 20 photos (note stable à 3 points près)",

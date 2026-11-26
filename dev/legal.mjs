@@ -234,12 +234,12 @@ page("biometrie", "Données du visage", `
 <p>Tu peux retirer ton accord à tout moment : revenir sur l'écran et choisir « Pas maintenant » efface tes notes ; tu peux aussi supprimer ton compte, ou nous écrire à ${E.email}.</p>
 
 <h2>3. Qui voit tes photos</h2>
-<p>Tes photos sont réduites dans ton téléphone, puis envoyées une seule fois, de façon chiffrée, à notre prestataire d'intelligence artificielle, Anthropic, pour l'analyse. Elles ne servent pas à entraîner ses modèles. ${todo("confirmer avant l'ouverture l'accord de non-conservation (« zero data retention ») signé avec Anthropic. Sans cet accord, remplacer cette phrase par la durée de conservation prévue dans son contrat")}</p>
+<p>Tes photos sont réduites dans ton téléphone, puis envoyées une seule fois, de façon chiffrée, à notre prestataire d'intelligence artificielle, Anthropic, pour l'analyse. Elles ne servent pas à entraîner ses modèles. Anthropic les efface ensuite automatiquement de ses serveurs, dans un délai de 30 jours au plus, comme le prévoit son contrat ; seul un contenu signalé comme contraire à ses règles d'usage peut être gardé plus longtemps (jusqu'à 2 ans) pour des raisons de sécurité. Chez MOGX, tes photos ne sont jamais enregistrées.</p>
 <p>Aucune personne de MOGX ne regarde tes photos.</p>
 
 <h2>4. Combien de temps</h2>
 <ul>
-  <li><b>Photos :</b> jamais enregistrées par MOGX. Elles restent dans l'onglet de ton navigateur pendant ta visite, puis disparaissent.</li>
+  <li><b>Photos :</b> jamais enregistrées par MOGX. Elles restent dans l'onglet de ton navigateur pendant ta visite, puis disparaissent. Chez Anthropic, qui fait l'analyse : effacées sous 30 jours au plus (voir 3).</li>
   <li><b>Mesures du visage :</b> jamais enregistrées par MOGX. Seules les notes qui en résultent sont gardées.</li>
   <li><b>Notes, sans achat :</b> effacées automatiquement après 30 jours.</li>
   <li><b>Notes, si tu achètes :</b> gardées tant que ton compte existe, pour que tu retrouves ton rapport, puis effacées avec lui.</li>
