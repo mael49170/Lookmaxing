@@ -7,3 +7,9 @@ compatibility_date = "2026-11-01"
 binding = "DB"
 database_name = "mogx"
 database_id = "d6b4da50-aa9e-4c21-b813-9cad3b018324"
+
+# Réglages publics (pas secrets) : modifiables ici seulement, Cloudflare ne garde dans son tableau de bord que les secrets.
+[vars]
+SUPPORT_EMAIL = "contact@mogx.fr"
+MAIL_REPLY_TO = "contact@mogx.fr"
+MAIL_FROM = "MOGX <bonjour@mogx.fr>"
