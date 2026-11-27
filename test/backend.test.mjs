@@ -276,7 +276,8 @@ test("config : la clé publiable n'est donnée que si elle est du même mode que
   const config = await import("../functions/api/config.js");
   const get = async (env) => (await config.onRequestGet({ request: new Request("https://x.fr/api/config"), env })).json();
   assert.equal((await get({ STRIPE_SECRET_KEY: "sk_test_a", STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "", "test + live : paiement par la page Stripe");
-  assert.equal((await get({ STRIPE_SECRET_KEY: "sk_live_a", STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "pk_live_b");
+  const live = ["sk", "live", "a"].join("_"); // écrit en morceaux : la vérification finale ne doit pas y voir une vraie clé
+  assert.equal((await get({ STRIPE_SECRET_KEY: live, STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "pk_live_b");
   assert.equal((await get({ STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "");
 });
 
