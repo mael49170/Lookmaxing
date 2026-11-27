@@ -56,7 +56,6 @@ async function step(page, { photos = true } = {}) {
   }
   if (!photos && await page.getByRole("button", { name: "Prendre mes selfies" }).count()) return page.getByRole("button", { name: "Continuer sans photo" }).click();
   if (await page.getByRole("button", { name: "On calcule ton potentiel" }).count()) return page.locator(".screen__footer .btn--primary:not([disabled])").waitFor({ timeout: 40000 });
-  if (await page.getByRole("button", { name: "J'accepte, on continue" }).count()) return page.getByRole("button", { name: photos ? "J'accepte, on continue" : "Pas maintenant" }).click();
   if (await page.getByRole("button", { name: /Ton plan se prépare|Voir mon résultat|Continuer sans scan/ }).count()) {
     for (let k = 0; k < 3; k++) { await page.getByRole("dialog").waitFor({ timeout: 20000 }); await page.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
     await page.getByRole("button", { name: /Voir mon résultat|Continuer sans scan/ }).waitFor({ timeout: 40000 });
@@ -147,10 +146,10 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   }, browser);
 
   await test("F01-E1", "rechargement en plein quiz : on reprend au même écran", async (p) => {
-    await runTo(p, "id:pari");
+    await runTo(p, "id:peau_acne");
     const before = await screenId(p);
     await p.reload({ waitUntil: "networkidle" });
-    expect((await screenId(p)) === before && /pronostic|note/.test(await h1(p)), "pas revenu au pronostic");
+    expect((await screenId(p)) === before && /Boutons|imperfections/.test(await h1(p)), "pas revenu au même écran");
   }, browser);
 
   await test("F01-E2", "retour arrière du navigateur : écran précédent, réponses gardées", async (p) => {
@@ -227,7 +226,9 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     expect(/Satisfait ou remboursé/.test(text) && /5 jours sur les 7/.test(text), "garantie absente");
     expect(/17,98 €/.test(text) && /16,99 € par semaine/.test(text), "prix pas écrit en clair");
     expect(!/(Mâchoire|Symétrie|Peau|Posture)\b.*\/100/.test(text), "un nom de critère est visible à côté de sa note");
-    expect((await p.locator(".week:not(.week--locked) .day").count()) === 14, "il manque des jours du plan");
+    expect((await p.locator(".module").count()) >= 3, "il manque des parties du programme");
+    expect((await p.locator(".module__keys b").count()) >= 5, "il manque les titres concrets du plan");
+    expect(!(await p.content()).includes("Cherche des ingrédients sur l'étiquette"), "le détail du plan est envoyé avant le paiement");
     await p.getByRole("button", { name: "Débloquer", exact: true }).click();
     await p.waitForTimeout(600);
     expect(await p.locator("#pay").evaluate((el) => el.getBoundingClientRect().top < innerHeight), "le bouton du bas ne mène pas au paiement");
@@ -245,7 +246,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   await test("F03-H1", "moins de 18 ans : arrêt, rien de gardé", async (p) => {
     await p.getByRole("radio", { name: /Homme/ }).check({ force: true });
     await p.waitForTimeout(500);
-    await p.getByRole("radio", { name: /Moins de 18/ }).check({ force: true });
+    await p.getByText("Moins de 18 ans").click(); // un simple toucher (l'écran change aussitôt)
     await p.getByRole("heading", { name: "Réservé aux adultes" }).waitFor();
     const cookies = await p.context().cookies();
     expect(!cookies.some((c) => c.name === "lm_q"), "cookie du quiz encore là");

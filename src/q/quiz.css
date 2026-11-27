@@ -237,7 +237,6 @@
 .welcome .note { justify-content: flex-start; font-size: var(--fs-sm); text-align: left; }
 .welcome__ok { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--c-success) 16%, transparent); color: var(--c-success); border: 1px solid color-mix(in srgb, var(--c-success) 45%, transparent); }
 .welcome .btn { margin-top: var(--sp-4); }
-.ai-note { margin: 0; text-align: center; color: var(--c-text-muted); font-size: var(--fs-xs); }
 
 /* Bannière cookies (pixel Meta) : Refuser et Accepter au même niveau */
 .cookie-bar { position: fixed; z-index: 50; left: var(--sp-3); right: var(--sp-3); bottom: calc(var(--sp-3) + env(safe-area-inset-bottom)); max-width: 520px; margin: 0 auto; display: grid; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--c-border); border-radius: var(--r-xl); background: var(--c-surface); color: var(--c-text); font-size: var(--fs-sm); line-height: 1.45; box-shadow: 0 20px 50px -20px var(--c-scrim); }
@@ -247,3 +246,37 @@
 .cookie-bar__btns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
 .cookie-bar__btns .btn { min-height: var(--size-tap); font-size: var(--fs-base); }
 .linklike { appearance: none; border: 0; background: none; padding: 0; font: inherit; color: var(--c-text-muted); text-decoration: underline; cursor: pointer; min-height: var(--size-tap); }
+
+/* Écran des selfies : vraie photo de face, silhouette de profil, cadre de scan ; accord en une phrase au-dessus du bouton */
+.example__art--photo, .example__art--profile { position: relative; padding: 0; overflow: hidden; background: var(--c-bg); }
+.example__art--photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.profile-art { display: block; width: 100%; height: 100%; }
+.cam__example .profile-art { width: 100%; height: 100%; }
+.frame { position: absolute; inset: 16% 18% 26%; --b: 2px; --l: 14px; opacity: .9; pointer-events: none;
+  background:
+    linear-gradient(var(--c-text), var(--c-text)) top left / var(--l) var(--b), linear-gradient(var(--c-text), var(--c-text)) top left / var(--b) var(--l),
+    linear-gradient(var(--c-text), var(--c-text)) top right / var(--l) var(--b), linear-gradient(var(--c-text), var(--c-text)) top right / var(--b) var(--l),
+    linear-gradient(var(--c-text), var(--c-text)) bottom left / var(--l) var(--b), linear-gradient(var(--c-text), var(--c-text)) bottom left / var(--b) var(--l),
+    linear-gradient(var(--c-text), var(--c-text)) bottom right / var(--l) var(--b), linear-gradient(var(--c-text), var(--c-text)) bottom right / var(--b) var(--l);
+  background-repeat: no-repeat; }
+.consent-line { margin: 0; color: var(--c-text-muted); font-size: var(--fs-xs); line-height: 1.45; text-align: center; }
+.consent-line a { color: var(--c-text); }
+
+/* Page de paiement : le programme par partie, titres en clair, détail flouté */
+.module { display: grid; gap: var(--sp-2); padding: var(--sp-4); border: 1px solid var(--c-border); border-radius: var(--r-lg); background: var(--c-surface); }
+.module--first { border-color: var(--c-accent-line); background: radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--c-glow) 14%, transparent), transparent 70%), var(--c-surface); }
+.module__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2); }
+.module__name { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-lg); }
+.module__count { color: var(--c-gold); font-size: var(--fs-xs); font-weight: 700; white-space: nowrap; }
+.module__keys { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
+.module__keys li { display: grid; gap: 4px; }
+.module__keys b { font-size: var(--fs-base); line-height: 1.3; }
+.blurline { color: var(--c-text-muted); font-size: var(--fs-sm); line-height: 1.4; filter: blur(5px); user-select: none; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.module__habits { display: flex; gap: var(--sp-2); align-items: flex-start; margin: 0; color: var(--c-text-muted); font-size: var(--fs-sm); }
+.module__habits .lock { flex: none; color: var(--c-accent); margin-top: 2px; }
+
+/* Écran « Ce que dit la recherche » : noms des universités en typo (jamais leurs logos) */
+.unis { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-2) var(--sp-4); padding: var(--sp-3) 0; border-top: 1px solid var(--c-border); border-bottom: 1px solid var(--c-border); }
+.unis span { font-family: Georgia, "Times New Roman", serif; font-size: var(--fs-base); letter-spacing: .06em; text-transform: uppercase; color: var(--c-text); opacity: .85; }
+.sources__uni { color: var(--c-gold) !important; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.fine { margin: 0; color: var(--c-text-muted); font-size: var(--fs-xs); line-height: 1.45; }

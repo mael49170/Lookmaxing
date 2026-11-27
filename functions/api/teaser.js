@@ -1,7 +1,7 @@
 import { json, handle } from "../../lib/http.js";
 import { currentQuiz } from "../../lib/identity.js";
 import { FACTORS, outOf10 } from "../../src/shared/factors.js";
-import { buildPlan } from "../../lib/plan.js";
+import { buildPlan, priorities } from "../../lib/plan.js";
 import { taskShort, TASK_BY_ID } from "../../lib/tasks.js";
 
 // GET -> un VRAI aperçu avant le paiement, pour donner envie sans rien inventer :
@@ -16,7 +16,15 @@ export const onRequestGet = handle(async ({ request, env }) => {
   const plan = buildPlan(answers, factors);
   // un titre par jour : la tâche ponctuelle du jour (les habitudes reviennent tous les jours)
   const planPreview = plan.days.slice(0, 14).map((dd) => taskShort(dd.tasks.find((id) => !TASK_BY_ID[id]?.daily) || dd.tasks[0]));
-  const out = { scanned: Boolean(scan), plan: planPreview, planDays: plan.days.length };
+  // le programme par domaine (dans l'ordre de ses priorités) : les titres des « clés » en clair, jamais leur contenu
+  const w = priorities(answers, factors);
+  const all = [...new Set(plan.days.flatMap((dd) => dd.tasks))].map((id) => TASK_BY_ID[id]).filter(Boolean);
+  const modules = Object.keys(w).sort((a, b) => w[b] - w[a]).map((domain) => {
+    const tasks = all.filter((t) => t.domain === domain);
+    return { domain, count: tasks.length, keys: tasks.filter((t) => t.key).map((t) => ({ title: t.short, len: t.text.length })) };
+  }).filter((m) => m.count);
+  const habits = all.filter((t) => t.daily).length;
+  const out = { scanned: Boolean(scan), plan: planPreview, planDays: plan.days.length, modules, habits };
   if (!scan) return json(out);
   const sorted = [...factors].sort((a, b) => b.note - a.note);
   const label = (id) => FACTORS.find((f) => f.id === id)?.label || id;

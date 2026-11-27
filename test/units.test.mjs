@@ -92,15 +92,25 @@ test("appel à Claude : format de la requête, refus géré, aucune photo dans l
   assert.ok(logs.length && !logs.join(" ").includes("SECRETPHOTO"));
 });
 
-test("parcours complet : écrans clés présents, dans le bon ordre, consentement AVANT la caméra", async () => {
+test("parcours complet : écrans clés présents, dans le bon ordre, accord AVANT la caméra", async () => {
   const { SCREENS } = await import("../src/shared/questions.js");
   const ids = SCREENS.map((s) => s.id);
-  for (const id of ["genre", "age", "consentement", "selfies", "photos", "analyse", "peau_acne", "cheveux", "sport", "rencontrer", "dire_non", "science", "attentes", "duree", "profil", "construction", "offre"]) assert.ok(ids.includes(id), "manque " + id);
-  assert.ok(ids.indexOf("consentement") < ids.indexOf("photos"), "le consentement doit venir avant la caméra");
+  for (const id of ["genre", "age", "selfies", "photos", "analyse", "peau_acne", "cheveux", "sport", "rencontrer", "dire_non", "science", "attentes", "duree", "profil", "construction", "offre"]) assert.ok(ids.includes(id), "manque " + id);
+  assert.ok(ids.indexOf("selfies") < ids.indexOf("photos"), "l'écran des selfies (où l'accord est donné) doit venir avant la caméra");
+  assert.ok(!ids.includes("consentement") && !ids.includes("pari"), "écran d'accord séparé et pronostic retirés (décidé par Maël le 27/11/2026)");
+  const app = (await import("node:fs")).readFileSync(new URL("../src/q/app.js", import.meta.url), "utf8");
+  assert.match(app, /En touchant « Prendre mes selfies », tu acceptes que notre IA analyse ton visage/, "la phrase d'accord doit rester au-dessus du bouton");
+  assert.match(app, /data-selfies[^]*scan-consent/, "l'accord est enregistré quand on touche « Prendre mes selfies »");
   assert.equal(new Set(ids).size, ids.length);
   assert.ok(!ids.includes("email"), "l'e-mail est demandé au paiement, pas avant (décidé par Maël le 25/11/2026)");
   const all = JSON.stringify(SCREENS);
-  assert.ok(!/Harvard|Oxford|Cambridge|360|64 ?%/i.test(all), "pas de caution ni de chiffre inventés");
+  assert.ok(!/360|64 ?%/i.test(all), "pas de chiffre inventé");
+  // les universités ne sont citées que pour de vraies études (revue + année), avec la phrase qui dit qu'elles ne valident pas MOGX
+  const sci = SCREENS.find((s) => s.id === "science");
+  assert.ok(sci.sources.every(([, , c]) => /, (19|20)\d\d$/.test(c)), "chaque étude a sa revue et son année");
+  assert.match(sci.fine, /ne sont pas liées à MOGX et ne le valident pas/);
+  const others = JSON.stringify(SCREENS.filter((s) => s.id !== "science"));
+  assert.ok(!/Harvard|Princeton|Oxford|Cambridge|Stanford|MIT\b/.test(others), "aucune université citée hors de l'écran des études");
 });
 
 test("profil : résumé des réponses, titre lisible", async () => {

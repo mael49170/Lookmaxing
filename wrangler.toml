@@ -16,4 +16,4 @@ MAIL_FROM = "MOGX <bonjour@mogx.fr>"
 # Pixel Meta (pubs) : l'identifiant du pixel (des chiffres, pas secret). Vide = pas de bannière cookies, rien n'est envoyé.
 META_PIXEL_ID = ""
 # Clé PUBLIQUE de l'anti-robot Cloudflare Turnstile (la clé secrète va dans les secrets : TURNSTILE_SECRET).
-TURNSTILE_SITE_KEY = ""
+TURNSTILE_SITE_KEY = "0x4AAAAAAGVWygja2rNZvY44"

@@ -16,7 +16,7 @@ const nb = (s) => s.replace(/ /g, " ");
 const faq = [
   ["Comment marche la note ?", "Une intelligence artificielle lit tes deux selfies et note 15 critères : peau, coupe, mâchoire, posture, tenue… Ta note et ton potentiel en sont tirés. C'est l'avis d'un logiciel sur deux photos, pas une vérité sur toi : une autre lumière peut donner une autre note."],
   ["Mes photos sont-elles gardées ?", "Non, jamais. Elles servent à l'analyse puis disparaissent. Personne chez MOGX ne les regarde. Tout est expliqué dans la page « Données du visage »."],
-  ["Je peux faire le quiz sans photo ?", "Oui. Tu dis « Pas maintenant » et ton plan est fait d'après tes réponses. Tu n'auras simplement pas de note."],
+  ["Je peux faire le quiz sans photo ?", "Oui. Tu touches « Continuer sans photo » et ton plan est fait d'après tes réponses. Tu n'auras simplement pas de note."],
   ["Combien ça coûte vraiment ?", `${P.intro} pour ${P.jours} jours, puis une 1re semaine obligatoire à ${P.renew}, puis ${P.renew} par semaine jusqu'à ce que tu arrêtes. Minimum à payer : ${P.min}. Le prix d'essai est réservé ${RESERVATION_MIN} minutes, une seule fois.`],
   ["Comment j'arrête ?", "Dans ton espace, « Résilier mon abonnement » : un clic. Pendant l'essai, la semaine d'engagement reste due, puis plus rien n'est prélevé."],
   ["Et si ça ne me plaît pas ?", `Suis ton plan au moins ${GUARANTEE.minDays} jours sur les ${GUARANTEE.ofDays} de ta 1re semaine payée : si tu n'es pas convaincu, elle t'est remboursée en un clic, dans les ${GUARANTEE.requestWithinDays} jours.`],

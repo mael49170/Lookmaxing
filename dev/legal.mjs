@@ -232,8 +232,8 @@ page("biometrie", "Données du visage", `
 <p>Nous ne faisons <b>rien d'autre</b> avec : pas d'identification, pas de recherche de ton visage ailleurs, pas de comparaison avec d'autres personnes ou avec des célébrités, pas d'entraînement d'IA, pas de publicité.</p>
 
 <h2>2. Ton accord</h2>
-<p>L'écran « Avant les photos, ton accord » explique ce traitement. En touchant « J'accepte, on continue », tu donnes ton consentement explicite. Nous enregistrons la date et la version du texte accepté. « Pas maintenant » est aussi simple et ne te prive d'aucune autre partie du service.</p>
-<p>Tu peux retirer ton accord à tout moment : revenir sur l'écran et choisir « Pas maintenant » efface tes notes ; tu peux aussi supprimer ton compte, ou nous écrire à ${E.email}.</p>
+<p>Sur l'écran des selfies, une phrase placée juste au-dessus du bouton explique ce traitement. En touchant « Prendre mes selfies », tu donnes ton consentement explicite. Nous enregistrons la date et la version du texte accepté. « Continuer sans photo », juste en dessous, est aussi simple et ne te prive d'aucune autre partie du service : ton plan est alors fait d'après tes réponses.</p>
+<p>Tu peux retirer ton accord à tout moment : supprimer ton compte efface tes notes ; tu peux aussi nous écrire à ${E.email}.</p>
 
 <h2>3. Qui voit tes photos</h2>
 <p>Tes photos sont réduites dans ton téléphone, puis envoyées une seule fois, de façon chiffrée, à notre prestataire d'intelligence artificielle, Anthropic, pour l'analyse. Elles ne servent pas à entraîner ses modèles. Anthropic les efface ensuite automatiquement de ses serveurs, dans un délai de 30 jours au plus, comme le prévoit son contrat ; seul un contenu signalé comme contraire à ses règles d'usage peut être gardé plus longtemps (jusqu'à 2 ans) pour des raisons de sécurité. Chez MOGX, tes photos ne sont jamais enregistrées.</p>
@@ -262,6 +262,9 @@ page("mentions-legales", "Mentions légales", `
 
 <h2>Hébergeur</h2>
 <p>Cloudflare, Inc.<br>101 Townsend St, San Francisco, CA 94107, États-Unis<br><a href="https://www.cloudflare.com" rel="noopener">cloudflare.com</a></p>
+
+<h2>Images</h2>
+<p>Les visages montrés sur la page d'accueil et dans le parcours sont des illustrations créées par intelligence artificielle. Ce ne sont ni des clients, ni des personnes réelles.</p>
 
 <h2>Propriété intellectuelle</h2>
 <p>Les textes, dessins, éléments graphiques et le nom MOGX sont la propriété de l'éditeur. Toute reproduction sans autorisation est interdite. Les polices Inter et Archivo sont utilisées sous licence SIL Open Font License.</p>

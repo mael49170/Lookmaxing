@@ -13,7 +13,6 @@ const ICON_CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" 
 // ---------- Dessins maison (aucune photo de vraie personne) ----------
 const ICON_CAM = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 const ICON_GALLERY = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="15" height="13" rx="2"/><path d="M7 2h12a2 2 0 0 1 2 2v11"/><path d="m3 15 4-4 5 5 2-2 4 4"/></svg>';
-const ICON_SHIELD = '<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--c-success)" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m8.5 12 2.5 2.5 4.5-5" stroke="var(--c-bg)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
 const AVATARS = {
   homme: `<svg class="avatar" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="var(--c-surface-alt)"/><path d="M11 46c1.5-8 6.5-11.5 13-11.5S35.5 38 37 46" fill="var(--c-accent-line)"/><ellipse cx="24" cy="22" rx="8.5" ry="10.5" fill="var(--c-gold)"/><path d="M15 20c-.5-7.5 4.5-11 9.5-11s10 3.5 8.5 11c-1.5-3.5-5.5-5-8.5-5S16.5 16.5 15 20z" fill="var(--c-text)"/></svg>`,
   femme: `<svg class="avatar" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="var(--c-surface-alt)"/><path d="M13 36c-3-9-2-26 11-26s14 17 11 26z" fill="var(--c-accent)"/><path d="M11 46c1.5-8 6.5-11.5 13-11.5S35.5 38 37 46" fill="var(--c-accent-line)"/><ellipse cx="24" cy="23" rx="8" ry="10" fill="var(--c-gold)"/><path d="M15.5 21c0-6.5 4-9.5 8.5-9.5s8.5 3 8.5 9.5c-3-2-6-5-8.5-5.5-1.5 2.5-4.5 4.5-8.5 5.5z" fill="var(--c-accent)"/></svg>`,
@@ -29,7 +28,16 @@ function bodyArt(id) {
   return `<svg class="body-art" viewBox="0 0 80 104" aria-hidden="true"><circle cx="${c}" cy="15" r="10" fill="var(--c-gold)"/><path d="M${c - 4} 24h8v6h-8z" fill="var(--c-gold)"/><path d="${arms}" stroke="var(--c-gold)" stroke-width="${mus ? 9 : be > 5 ? 9 : 7}" stroke-linecap="round" fill="none"/><path d="${torso}" fill="var(--c-gold)"/>${lines}</svg>`;
 }
 // Le profil (2e selfie), dessiné au trait avec quelques points « thermiques »
-const PROFILE_ART = `<svg class="mesh" viewBox="0 0 100 130" aria-hidden="true"><path d="M40 16C62 8 80 24 78 44l-1 8 8 13-8 3 2 8c0 6-4 8-8 8l1 7c0 8-8 12-16 12l-2 14H28l2-22C20 86 18 68 20 50c1-18 8-30 20-34Z" fill="none" stroke="var(--c-accent)" stroke-width="1.6" stroke-linejoin="round"/>${[[70, 46], [81, 64], [72, 84], [60, 98], [44, 60], [52, 40], [36, 80]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${1.6 + (i % 3) * 0.5}" fill="${["var(--c-gold)", "var(--c-warning)", "var(--c-accent)"][i % 3]}"/>`).join("")}</svg>`;
+const PROFILE_ART = `<svg class="profile-art" viewBox="0 0 100 130" aria-hidden="true"><defs>
+  <linearGradient id="pf-fill" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--c-bg)"/><stop offset="1" stop-color="var(--c-surface-alt)"/></linearGradient>
+  <linearGradient id="pf-rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--c-gold)"/><stop offset=".55" stop-color="var(--c-accent)"/><stop offset="1" stop-color="var(--c-heat-deep)"/></linearGradient>
+  <radialGradient id="pf-glow" cx="78%" cy="45%" r="45%"><stop offset="0" stop-color="var(--c-glow)" stop-opacity=".35"/><stop offset="1" stop-color="var(--c-glow)" stop-opacity="0"/></radialGradient></defs>
+  <rect width="100" height="130" fill="url(#pf-glow)"/>
+  <g transform="translate(-8 6)">
+  <path d="M30 130C28 112 21 97 21 77C21 41 35 15 56 15C71 15 79 25 79 39L80 47C81 51 87 56 89 59C90 61 87 62 83 63C83 65 85 67 84 69C83 70 81 71 82 73C83 75 82 77 80 78C80 82 80 86 77 89C73 92 67 92 63 93L65 130Z" fill="url(#pf-fill)"/>
+  <path d="M56 15C71 15 79 25 79 39L80 47C81 51 87 56 89 59C90 61 87 62 83 63C83 65 85 67 84 69C83 70 81 71 82 73C83 75 82 77 80 78C80 82 80 86 77 89C73 92 67 92 63 93L65 130" fill="none" stroke="url(#pf-rim)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 2.5px var(--c-glow))"/>
+  </g>
+</svg>`;
 // « Aujourd'hui / avec ton plan » : construit avec SES réponses, sans promesse de résultat
 const OUTCOME = {
   confiance: "Une assurance qui se travaille chaque jour", rencontres: "Une première impression soignée", invisible: "Une présence qu'on remarque",
@@ -93,6 +101,23 @@ const footer = (html) => `<div class="screen__footer"><div class="stack">${html}
 const echoHtml = (s) => { const t = s.echo ? s.echo(S.answers) : ""; return t ? `<p class="echo">${esc(t)}</p>` : ""; };
 const fr = (n) => String(n).replace(".", ",");
 
+// Noms des parties du plan (page de paiement)
+const MODULES = { peau: "Peau nette", cheveux: "Coupe et cheveux", corps: "Corps et énergie", style: "Style", presence: "Assurance et présence" };
+
+// ---------- Accords au féminin ----------
+// Les textes sont écrits au masculin ; pour une femme on accorde, et on retire ce qui ne la concerne pas (barbe).
+const FEM = [[/Je suis prêt\b/g, "Je suis prête"], [/senti mis de côté/g, "sentie mise de côté"], [/inquiet ou débordé/g, "inquiète ou débordée"],
+  [/pris au sérieux/g, "prise au sérieux"], [/maître de moi/g, "maîtresse de moi"], [/Nerveux,/g, "Nerveuse,"], [/coupe, barbe, sommeil/g, "coupe, sourcils, sommeil"]];
+const gx = (t) => (S.answers.genre === "femme" && typeof t === "string" ? FEM.reduce((x, [a, b]) => x.replace(a, b), t) : t);
+function genderize(s) {
+  if (S.answers.genre !== "femme") return s;
+  const out = { ...s };
+  for (const k of ["title", "lead", "cta", "eyebrow", "note", "confirm"]) if (out[k]) out[k] = gx(out[k]);
+  if (out.options) out.options = out.options.filter((x) => x.id !== "barbe").map((x) => ({ ...x, label: gx(x.label), ...(x.hint ? { hint: gx(x.hint) } : {}) }));
+  if (out.echo) { const e = out.echo; out.echo = (a) => gx(e(a)); }
+  return out;
+}
+
 // ---------- Écrans ----------
 const VIEWS = {
   landing() {
@@ -108,7 +133,6 @@ const VIEWS = {
           <span class="gcard__frame" aria-hidden="true"></span>
           <span class="gcard__foot"><span class="gcard__label">${label}</span><span class="gcard__go" aria-hidden="true">${ICON_GO}</span></span></label>`).join("")}
       </fieldset>
-      <p class="ai-note">Visages d'illustration créés par IA.</p>
       <nav class="mini-legal" aria-label="Informations"><a href="/infos/">Prix et infos</a><a href="/connexion/">Mon espace</a><a href="/cgv/">CGV</a><a href="/mentions-legales/">Mentions légales</a>${consentEnabled() ? '<button type="button" class="linklike" data-cookies>Cookies</button>' : ""}</nav>
     </main>`;
   },
@@ -152,23 +176,11 @@ const VIEWS = {
       ${s.lead ? `<p class="lead">${esc(s.lead)}</p>` : ""}
       ${s.steps ? `<ol class="steps-list">${s.steps.map(([e, b, t]) => `<li><span><b>${esc(b)}</b><span>${esc(t)}</span></span></li>`).join("")}</ol>` : ""}
       ${s.source ? `<p class="source">Source : ${esc(s.source)}</p>` : ""}
-      ${s.sources ? `<ul class="sources">${s.sources.map(([f, c]) => `<li><b>${esc(f)}</b><span>${esc(c)}</span></li>`).join("")}</ul>` : ""}
+      ${s.unis ? `<div class="unis" aria-label="Universités des chercheurs cités">${s.unis.map((u) => `<span>${esc(u)}</span>`).join("")}</div>` : ""}
+      ${s.sources ? `<ul class="sources">${s.sources.map(([f, u, c]) => c ? `<li><span class="sources__uni">${esc(u)}</span><b>${esc(f)}</b><span>${esc(c)}</span></li>` : `<li><b>${esc(f)}</b><span>${esc(u)}</span></li>`).join("")}</ul>` : ""}
+      ${s.fine ? `<p class="fine">${esc(s.fine)}</p>` : ""}
       ${echoHtml(s)}
       ${footer(`<button class="btn btn--primary" data-next>${esc(s.cta || "Continuer")}</button>`)}
-    </main>`;
-  },
-
-  consent() {
-    return `<main class="screen">${topbar()}
-      <h1 class="title" tabindex="-1">Avant les photos, ton accord.</h1>
-      <p class="lead">L'analyse lit la forme et les proportions de ton visage : ce sont des données biométriques. On a besoin de ton accord écrit.</p>
-      <div class="consent">
-        <h3>Ce qu'on en fait</h3><p>On mesure ton visage sur 2 photos pour calculer ta note et régler ton plan. Rien d'autre : pas d'identification, pas de comparaison avec d'autres personnes, pas d'entraînement d'IA.</p>
-        <h3>Qui les voit</h3><p>Notre prestataire d'IA (Anthropic), pour l'analyse seulement, sans s'en servir pour entraîner ses modèles. Personne chez MOGX ne les regarde.</p>
-        <h3>Combien de temps</h3><p>Tes photos ne sont jamais enregistrées. Tes notes sont gardées 30 jours si tu n'achètes pas, puis effacées.</p>
-        <h3>Si tu changes d'avis</h3><p>Dis non ici : tu auras quand même un plan, fait d'après tes réponses. <a href="/biometrie/" target="_blank" rel="noopener">Tout le détail</a>.</p>
-      </div>
-      ${footer(`<button class="btn btn--primary" data-consent="yes">J'accepte, on continue</button><button class="btn btn--ghost" data-consent="no">Pas maintenant</button>`)}
     </main>`;
   },
 
@@ -176,12 +188,11 @@ const VIEWS = {
     return `<main class="screen">${topbar()}
       <h1 class="title" tabindex="-1">2 selfies, et ton analyse démarre.</h1>
       <div class="examples">
-        <figure class="example"><div class="example__art">${faceMesh({ className: "mesh" })}</div><span class="example__num">1</span><figcaption>De face</figcaption></figure>
-        <figure class="example"><div class="example__art">${PROFILE_ART}</div><span class="example__num">2</span><figcaption>De profil</figcaption></figure>
+        <figure class="example"><div class="example__art example__art--photo"><img src="/img/carte-${S.answers.genre === "femme" ? "femme" : "homme"}.webp" alt="" width="600" height="800" decoding="async"><span class="frame" aria-hidden="true"></span></div><span class="example__num">1</span><figcaption>De face</figcaption></figure>
+        <figure class="example"><div class="example__art example__art--profile">${PROFILE_ART}<span class="frame" aria-hidden="true"></span></div><span class="example__num">2</span><figcaption>De profil</figcaption></figure>
       </div>
-      <ul class="tips"><li>Pleine lumière, face à une fenêtre</li><li>Sans lunettes ni casquette, expression neutre</li><li>Seul sur la photo</li></ul>
-      <p class="safe">${ICON_SHIELD}<span>Tes selfies ne sont vus par personne et ne sont jamais enregistrés.</span></p>
-      ${footer(`<button class="btn btn--primary" data-next>${ICON_CAM} Prendre mes selfies</button><button class="btn btn--ghost" data-noscan>Continuer sans photo</button>`)}
+      <ul class="tips"><li>Pleine lumière, face à une fenêtre</li><li>Sans lunettes ni casquette, expression neutre</li><li>${S.answers.genre === "femme" ? "Seule" : "Seul"} sur la photo</li></ul>
+      ${footer(`<p class="consent-line">En touchant « Prendre mes selfies », tu acceptes que notre IA analyse ton visage sur ces 2 photos pour calculer ta note. Jamais enregistrées, vues par personne. <a href="/biometrie/" target="_blank" rel="noopener">Détails</a></p><button class="btn btn--primary" data-selfies>${ICON_CAM} Prendre mes selfies</button><button class="btn btn--ghost" data-noscan>Continuer sans photo</button>`)}
     </main>`;
   },
 
@@ -296,7 +307,7 @@ const VIEWS = {
 
   hero_message(s) {
     const first = (S.answers.difficultes || [])[0] || "progresser";
-    const [title, lead] = S11_TEXT[first] || S11_TEXT.progresser;
+    const [title, lead] = (S11_TEXT[first] || S11_TEXT.progresser).map(gx);
     return `<main class="screen"><div class="hero">${topbar()}
         <p class="eyebrow">D'après tes réponses</p>
         <h1 class="title" tabindex="-1">${esc(title)}</h1>
@@ -349,7 +360,8 @@ const VIEWS = {
     const lines = priceLines(o, trial);
     const lock = '<svg class="lock" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 10V8a6 6 0 1 1 12 0v2h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 1 0-8 0v2Z"/></svg>';
     const row = (f, kind) => `<div class="hidden-row"><span class="hidden-row__name" style="width:${Math.min(70, 18 + f.len * 2.6)}%" aria-hidden="true">${lock}</span><span class="sr-only">Critère caché jusqu'au paiement :</span><b class="hidden-row__note hidden-row__note--${kind}">${f.note}</b></div>`;
-    const days = (from) => (t.plan || []).slice(from, from + 7).map((txt, k) => `<div class="day"><span>Jour ${from + k + 1}</span><b>${esc(txt)}</b></div>`).join("");
+    // faux texte flouté (le vrai contenu n'est jamais envoyé avant le paiement), de la longueur du vrai
+    const blurText = (len) => Array.from({ length: Math.max(4, Math.round(Math.min(len, 170) / 6)) }, (_, k) => "xxxxxxxxxx".slice(0, 3 + ((k * 7) % 6))).join(" ");
     return `<main class="screen screen--sales">
       <div class="brand">MOGX</div>
       ${t.scanned ? `
@@ -364,10 +376,12 @@ const VIEWS = {
       : `<h1 class="title title--hero" tabindex="-1">Ton plan de 28 jours est prêt.</h1>
       <p class="lead">Fait d'après tes réponses, dans l'ordre de ce qui te pèse le plus.</p>`}
       <button class="btn btn--primary" data-gopay>Débloquer mon résultat</button>
-      <section class="block"><h2 class="block__title">Ton plan, jour par jour</h2><p class="block__lead">Ton vrai plan, fait pour toi. Les 2 premières semaines :</p>
-        <div class="week"><span class="week__label">Semaine 1</span><div class="days">${days(0)}</div></div>
-        <div class="week"><span class="week__label">Semaine 2</span><div class="days">${days(7)}</div></div>
-        <div class="week week--locked" aria-hidden="true"><span class="week__label">Semaines 3 et 4</span><div class="days">${Array.from({ length: 7 }, (_, k) => `<div class="day"><span>Jour ${15 + k}</span><b>████</b></div>`).join("")}</div><span class="week__lock">${lock} Dans ton plan complet</span></div>
+      <section class="block"><h2 class="block__title">Ton programme de 28 jours</h2><p class="block__lead">Fait pour toi, dans l'ordre de ce qui te fera gagner le plus. Le détail se débloque avec ton accès.</p>
+        ${(t.modules || []).map((m, i) => `<div class="module${i === 0 ? " module--first" : ""}">
+          <div class="module__head"><span class="module__name">${esc(MODULES[m.domain] || m.domain)}</span><span class="module__count">${m.count} action${m.count > 1 ? "s" : ""}</span></div>
+          ${m.keys.length ? `<ul class="module__keys">${m.keys.map((k) => `<li><b>${esc(k.title)}</b><span class="blurline" aria-hidden="true">${blurText(k.len)}</span><span class="sr-only">Détail caché jusqu'au paiement.</span></li>`).join("")}</ul>` : ""}
+        </div>`).join("")}
+        ${t.habits ? `<p class="module__habits">${lock}<span>Et chaque jour, ${t.habits} habitude${t.habits > 1 ? "s" : ""} à cocher, avec un rappel le matin si tu veux.</span></p>` : ""}
       </section>
       <section class="block"><h2 class="block__title">Ce que tu débloques</h2>
         <ul class="includes">
@@ -552,7 +566,7 @@ async function runProjection() {
 // ---------- Rendu et événements ----------
 function render() {
   const s = SCREENS[S.i];
-  const view = s.id === "age" && S.answers.age === "-18" ? VIEWS.stop() : (VIEWS[s.type] || VIEWS.info)(s);
+  const view = s.id === "age" && S.answers.age === "-18" ? VIEWS.stop() : (VIEWS[s.type] || VIEWS.info)(genderize(s));
   app.innerHTML = view;
   history.replaceState(null, "", location.pathname + location.search);
   if (S.history.length) history.pushState({ i: S.i }, "");
@@ -579,9 +593,10 @@ app.addEventListener("click", async (e) => {
   if (t.hasAttribute("data-cookies")) return reopenConsent();
   if (t.hasAttribute("data-confirm")) { syncQuiz(); return next(); }
   if (t.hasAttribute("data-multi")) { syncQuiz(); return next(); }
-  if (t.dataset.consent) {
-    S.consent = t.dataset.consent === "yes";
-    api("scan-consent", { agree: S.consent }).catch(() => {});
+  // accord pour l'analyse du visage : donné en touchant « Prendre mes selfies » (phrase juste au-dessus du bouton)
+  if (t.hasAttribute("data-selfies")) {
+    S.consent = true;
+    api("scan-consent", { agree: true }).catch(() => {});
     return next();
   }
   if (t.hasAttribute("data-noscan")) {
