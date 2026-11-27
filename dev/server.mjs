@@ -17,6 +17,8 @@ if (existsSync(varsFile)) {
     if (m) env[m[1]] = m[2];
   }
 }
+// Pour un essai ponctuel sans toucher à .dev.vars : DEV_SET_CLE=valeur node dev/server.mjs (ex. DEV_SET_META_PIXEL_ID=123)
+for (const [k, v] of Object.entries(process.env)) if (k.startsWith("DEV_SET_")) env[k.slice(8)] = v;
 env.DB = localD1(env.LOCAL_DB_FILE ? join(root, env.LOCAL_DB_FILE) : ":memory:");
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".woff2": "font/woff2", ".json": "application/json", ".txt": "text/plain; charset=utf-8" };
 

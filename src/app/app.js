@@ -1,6 +1,7 @@
 // Espace membre : le rapport (S28) et le plan du jour (S29).
 import { GROUPS } from "/shared/factors.js";
-import { euros } from "/shared/plans.js";
+import { euros, OFFERS } from "/shared/plans.js";
+import { initConsent, track } from "/shared/consent.js";
 
 const app = document.getElementById("app");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -153,7 +154,19 @@ app.addEventListener("change", async (e) => {
 
 try {
   me = await api("me");
-  if (new URLSearchParams(location.search).get("bienvenue")) { history.replaceState(null, "", "/app/"); welcome(); }
+  if (new URLSearchParams(location.search).get("bienvenue")) {
+    history.replaceState(null, "", "/app/");
+    welcome();
+    // pour les pubs Meta : l'achat, avec le vrai montant payé aujourd'hui (seulement si la personne a accepté les cookies)
+    const cfg = await fetch("/api/config").then((r) => r.json()).catch(() => ({}));
+    initConsent(cfg.pixel);
+    const sub = me.subscription;
+    if (sub) {
+      const value = (sub.in_trial ? OFFERS[sub.offer]?.intro ?? 0 : sub.renew_cents) / 100;
+      track("Purchase", { value, currency: "EUR" });
+      if (sub.in_trial) track("StartTrial", { value, currency: "EUR" });
+    }
+  }
   else render();
 } catch (err) {
   if (err.status === 401) location.href = "/connexion/";

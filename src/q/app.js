@@ -3,6 +3,7 @@ import { SCREENS, S11_TEXT, DIFFICULTES, profile, PROFILE_DIMS } from "/shared/q
 import { OFFERS, DEFAULT_OFFER, euros, priceLines, guaranteeText } from "/shared/plans.js";
 import { FACTORS } from "/shared/factors.js";
 import { faceMesh } from "/q/mesh.js";
+import { initConsent, track, setAsideConsent, reopenConsent, consentEnabled } from "/shared/consent.js";
 
 const app = document.getElementById("app");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -64,6 +65,7 @@ const trackStep = (step) => api("track", { step, variant: S.variant, source: S.u
 // ---------- Navigation ----------
 const visible = (s) => !(s.skipIf && s.skipIf({ consent: S.consent, scan: S.scan }));
 function go(index, { push = true } = {}) {
+  setAsideConsent(); // continuer sans répondre à la bannière cookies n'est pas un accord : rien n'est envoyé
   if (push) S.history.push(S.i);
   S.i = index;
   while (S.i < SCREENS.length - 1 && !visible(SCREENS[S.i])) S.i++;
@@ -107,7 +109,7 @@ const VIEWS = {
           <span class="gcard__foot"><span class="gcard__label">${label}</span><span class="gcard__go" aria-hidden="true">${ICON_GO}</span></span></label>`).join("")}
       </fieldset>
       <p class="ai-note">Visages d'illustration créés par IA.</p>
-      <nav class="mini-legal" aria-label="Informations"><a href="/infos/">Prix et infos</a><a href="/connexion/">Mon espace</a><a href="/cgv/">CGV</a><a href="/mentions-legales/">Mentions légales</a></nav>
+      <nav class="mini-legal" aria-label="Informations"><a href="/infos/">Prix et infos</a><a href="/connexion/">Mon espace</a><a href="/cgv/">CGV</a><a href="/mentions-legales/">Mentions légales</a>${consentEnabled() ? '<button type="button" class="linklike" data-cookies>Cookies</button>' : ""}</nav>
     </main>`;
   },
 
@@ -574,6 +576,7 @@ app.addEventListener("click", async (e) => {
     return back();
   }
   if (t.hasAttribute("data-next")) return next();
+  if (t.hasAttribute("data-cookies")) return reopenConsent();
   if (t.hasAttribute("data-confirm")) { syncQuiz(); return next(); }
   if (t.hasAttribute("data-multi")) { syncQuiz(); return next(); }
   if (t.dataset.consent) {
@@ -643,6 +646,7 @@ async function chooseSingle(input, advance) {
   if (scr.confirm) { app.querySelector("[data-confirm]").disabled = false; return; }
   if (!advance) return;
   syncQuiz();
+  if (s.type === "landing") track("ViewContent", { content_name: "quiz" });
   // la question du genre est sur l'accueil : on saute l'écran genre
   setTimeout(() => (s.type === "landing" ? go(2) : next()), 250);
 }
@@ -713,6 +717,8 @@ async function loadPaywall() {
     api("config", null, { method: "GET" }).catch(() => ({})),
   ]);
   S.pw = { teaser, offer, stripeKey: config.stripeKey || "", waiverOnSite: !config.waiverInStripe, support: config.support || "" };
+  const o = OFFERS[DEFAULT_OFFER];
+  track("InitiateCheckout", { value: (offer.trial ? o.intro : o.renew) / 100, currency: "EUR" });
   save(); render();
 }
 let timerTick = null;
@@ -757,3 +763,5 @@ async function pay(btn) {
 // Si l'onglet a été rechargé pendant l'analyse, les photos sont perdues : on propose de les reprendre
 if (S.scan === "running") { S.scan = "failed"; S.scanError = "La page a été rechargée pendant l'analyse."; }
 render();
+// Pixel Meta (seulement après accord) : réglé par META_PIXEL_ID dans wrangler.toml
+api("config", null, { method: "GET" }).then((c) => { initConsent(c.pixel); if (consentEnabled() && SCREENS[S.i].type === "landing") render(); }).catch(() => {});

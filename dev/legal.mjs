@@ -191,11 +191,12 @@ page("confidentialite", "Politique de confidentialité", `
   <tr><td>Anthropic, PBC</td><td>Analyse des photos par intelligence artificielle, au moment du scan seulement</td><td>États-Unis</td></tr>
   <tr><td>Stripe</td><td>Paiement</td><td>Union européenne (Irlande) et États-Unis</td></tr>
   <tr><td>Resend</td><td>Envoi des e-mails</td><td>États-Unis</td></tr>
+  <tr><td>Meta Platforms Ireland</td><td>Mesure de nos publicités (Facebook, Instagram), <b>seulement si tu acceptes les cookies de mesure</b></td><td>Irlande et États-Unis</td></tr>
 </table></div>
-<p>Pour les prestataires situés hors de l'Union européenne, le transfert est encadré par les garanties prévues par le RGPD : décision d'adéquation (cadre de protection des données UE–États-Unis) ou clauses contractuelles types de la Commission européenne. ${todo("vérifier, pour chaque prestataire, la garantie applicable dans son contrat de sous-traitance (DPA)")}</p>
-<p>Nous ne vendons pas tes données et ne les partageons avec aucun annonceur.</p>
+<p>Pour les prestataires situés hors de l'Union européenne, le transfert est encadré par les garanties prévues par le RGPD : décision d'adéquation (cadre de protection des données UE–États-Unis) ou clauses contractuelles types de la Commission européenne. Chacun de ces prestataires a intégré à ses conditions un contrat de sous-traitance des données (« DPA ») conforme à l'article 28 du RGPD.</p>
+<p>Nous ne vendons pas tes données. Aucune photo, aucune note et aucune réponse au quiz n'est envoyée à Meta.</p>
 
-<h2>5. Cookies et stockage</h2>
+<h2 id="cookies">5. Cookies et stockage</h2>
 <p>MOGX n'utilise que des cookies nécessaires au service, qui ne demandent pas ton accord :</p>
 <ul>
   <li><code>lm_q</code> : ton questionnaire en cours (30 jours) ;</li>
@@ -203,7 +204,8 @@ page("confidentialite", "Politique de confidentialité", `
   <li><code>lm_d</code> : identifiant de l'appareil, pour réserver l'essai une seule fois et limiter les abus (1 an) ;</li>
   <li>la protection anti-robot de Cloudflare (Turnstile), au moment du scan.</li>
 </ul>
-<p>Tes réponses en cours sont aussi gardées dans l'onglet de ton navigateur (stockage de session), effacé à la fermeture de l'onglet. Aucun cookie publicitaire ni de mesure d'audience tierce n'est utilisé aujourd'hui. Si cela change, un bandeau te demandera ton accord avant.</p>
+<p>Tes réponses en cours sont aussi gardées dans l'onglet de ton navigateur (stockage de session), effacé à la fermeture de l'onglet. </p>
+<p><b>Avec ton accord seulement</b> : le pixel de Meta (cookies <code>_fbp</code> et <code>_fbc</code>, 3 mois) nous dit si tu es venu par une de nos pubs et si tu as commencé ou payé ton abonnement (avec le montant), pour mesurer et améliorer nos publicités. Rien n'est chargé ni envoyé à Meta avant que tu touches « Accepter » ; « Refuser » est tout aussi simple. Ton choix est gardé 6 mois, et tu peux le changer à tout moment avec le lien « Cookies » en bas de l'accueil. Meta et MOGX sont responsables ensemble de cette mesure ; Meta en explique l'usage dans sa propre politique (facebook.com/privacy/policy).</p>
 
 <h2>6. Tes droits</h2>
 <p>Tu peux à tout moment accéder à tes données, les corriger, les faire effacer, les récupérer (portabilité), t'opposer à un traitement, en limiter l'usage, retirer ton consentement et donner des directives pour après ton décès.</p>

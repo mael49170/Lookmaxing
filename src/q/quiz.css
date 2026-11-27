@@ -238,3 +238,12 @@
 .welcome__ok { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--c-success) 16%, transparent); color: var(--c-success); border: 1px solid color-mix(in srgb, var(--c-success) 45%, transparent); }
 .welcome .btn { margin-top: var(--sp-4); }
 .ai-note { margin: 0; text-align: center; color: var(--c-text-muted); font-size: var(--fs-xs); }
+
+/* Bannière cookies (pixel Meta) : Refuser et Accepter au même niveau */
+.cookie-bar { position: fixed; z-index: 50; left: var(--sp-3); right: var(--sp-3); bottom: calc(var(--sp-3) + env(safe-area-inset-bottom)); max-width: 520px; margin: 0 auto; display: grid; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--c-border); border-radius: var(--r-xl); background: var(--c-surface); color: var(--c-text); font-size: var(--fs-sm); line-height: 1.45; box-shadow: 0 20px 50px -20px var(--c-scrim); }
+.cookie-bar p { margin: 0; color: var(--c-text-muted); }
+.cookie-bar b { color: var(--c-text); }
+.cookie-bar a { color: var(--c-text); }
+.cookie-bar__btns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+.cookie-bar__btns .btn { min-height: var(--size-tap); font-size: var(--fs-base); }
+.linklike { appearance: none; border: 0; background: none; padding: 0; font: inherit; color: var(--c-text-muted); text-decoration: underline; cursor: pointer; min-height: var(--size-tap); }
