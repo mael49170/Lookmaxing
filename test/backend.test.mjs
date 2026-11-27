@@ -39,7 +39,7 @@ async function member(env, email, opts = {}) {
 }
 
 test("connexion par code, et un client ne voit que ses données", async () => {
-  const env = { DB: localD1(), DEV_SHOW_CODE: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_SHOW_CODE: "1" };
   await member(env, "a@example.com"); await member(env, "b@example.com");
   const A = client(env), B = client(env);
   let r = await A(authStart, "auth-start", { body: { email: "inconnu@example.com" } });
@@ -63,7 +63,7 @@ test("connexion par code, et un client ne voit que ses données", async () => {
 });
 
 test("lien de connexion : une seule fois, sans e-mail dans l'adresse", async () => {
-  const env = { DB: localD1(), DEV_SHOW_CODE: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_SHOW_CODE: "1" };
   await member(env, "c@example.com");
   const logs = []; const orig = console.log; console.log = (m) => logs.push(String(m));
   await client(env)(authStart, "auth-start", { body: { email: "c@example.com" } });
@@ -78,7 +78,7 @@ test("lien de connexion : une seule fois, sans e-mail dans l'adresse", async () 
 });
 
 test("suppression : refusée tant que l'abonnement court, puis tout est effacé", async () => {
-  const env = { DB: localD1(), DEV_SHOW_CODE: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_SHOW_CODE: "1" };
   await member(env, "d@example.com");
   const D = client(env);
   const s = await D(authStart, "auth-start", { body: { email: "d@example.com" } });
@@ -91,7 +91,7 @@ test("suppression : refusée tant que l'abonnement court, puis tout est effacé"
 });
 
 test("déconnexion de tous les appareils", async () => {
-  const env = { DB: localD1(), DEV_SHOW_CODE: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_SHOW_CODE: "1" };
   await member(env, "e@example.com");
   const one = client(env), two = client(env);
   for (const c of [one, two]) { const s = await c(authStart, "auth-start", { body: { email: "e@example.com" } }); await c(authVerify, "auth-verify", { body: { email: "e@example.com", code: s.data.devCode } }); }
@@ -150,7 +150,7 @@ async function signed(secret, event) {
 
 test("webhook Stripe : signature, une seule fois par événement, membre créé, e-mail de bienvenue unique", async () => {
   const { calls, fetchImpl } = fakeStripe();
-  const env = { DB: localD1(), STRIPE_SECRET_KEY: "sk_test_x", STRIPE_WEBHOOK_SECRET: "whsec_t", RESEND_API_KEY: "re_x", FETCH: fetchImpl };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", STRIPE_SECRET_KEY: "sk_test_x", STRIPE_WEBHOOK_SECRET: "whsec_t", RESEND_API_KEY: "re_x", FETCH: fetchImpl };
   const d = await db(env);
   await d.prepare("INSERT INTO quizzes (id, answers, created_at, updated_at) VALUES ('q9', '{\"difficultes\":[\"peau\"]}', 1, 1)").run();
   await d.prepare("INSERT INTO leads (quiz_id, email, email_key, created_at) VALUES ('q9', 'g@example.com', 'g@example.com', 1)").run();
@@ -178,7 +178,7 @@ test("webhook Stripe : signature, une seule fois par événement, membre créé,
 
 test("tâches du jour : secret, nettoyage, rappel une fois par jour, relances limitées, désinscription", async () => {
   const { calls, fetchImpl } = fakeStripe();
-  const env = { DB: localD1(), CRON_SECRET: "s3cret", RESEND_API_KEY: "re_x", UNSUB_SECRET: "u", FETCH: fetchImpl };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", CRON_SECRET: "s3cret", RESEND_API_KEY: "re_x", UNSUB_SECRET: "u", FETCH: fetchImpl };
   const d = await db(env);
   const C = client(env);
   assert.equal((await C(cron, "cron", { headers: { authorization: "Bearer faux" } })).status, 401);
@@ -206,7 +206,7 @@ test("tâches du jour : secret, nettoyage, rappel une fois par jour, relances li
 });
 
 test("résilier pendant les 3 jours : la semaine d'engagement reste due, puis tout s'arrête ; suppression après", async () => {
-  const env = { DB: localD1(), DEV_SHOW_CODE: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_SHOW_CODE: "1" };
   const trialEnd = now() + 2 * DAY;
   await member(env, "k@example.com", { current_period_end: trialEnd, trial_end: trialEnd });
   const K = client(env);
@@ -236,7 +236,7 @@ test("résilier chez Stripe pendant l'essai : cancel_at à la fin de la semaine 
     const base = { id: "sub_9", status: "trialing", trial_end: trialEnd, current_period_end: trialEnd, cancel_at_period_end: false, metadata: { offer: "semaine" } };
     return new Response(JSON.stringify(init.method === "POST" ? { ...base, cancel_at: Number(body.cancel_at) } : base), { status: 200 });
   };
-  const env = { DB: localD1(), DEV_SHOW_CODE: "1", STRIPE_SECRET_KEY: "sk_test_x", FETCH: fetchImpl };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_SHOW_CODE: "1", STRIPE_SECRET_KEY: "sk_test_x", FETCH: fetchImpl };
   const d = await db(env);
   const c = await createMember(d, { quiz: null, email: "m@example.com", emailKey: "m@example.com", subscription: { id: "sub_9", ...offerSnapshot("semaine"), status: "active", current_period_end: trialEnd * 1000, trial_end: trialEnd * 1000 } });
   const M = client(env);
@@ -257,7 +257,7 @@ test("signature Stripe trop vieille refusée", async () => {
 });
 
 test("durées de conservation promises : e-mail sans achat et vieux comptes effacés après 3 ans", async () => {
-  const env = { DB: localD1(), CRON_SECRET: "s" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", CRON_SECRET: "s" };
   const d = await db(env);
   const old = now() - 3 * 365 * DAY - DAY;
   await d.prepare("INSERT INTO quizzes (id, answers, created_at, updated_at) VALUES ('vieux', '{}', ?, ?), ('recent', '{}', ?, ?)").bind(old, old, now(), now()).run();
@@ -278,4 +278,20 @@ test("config : la clé publiable n'est donnée que si elle est du même mode que
   assert.equal((await get({ STRIPE_SECRET_KEY: "sk_test_a", STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "", "test + live : paiement par la page Stripe");
   assert.equal((await get({ STRIPE_SECRET_KEY: "sk_live_a", STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "pk_live_b");
   assert.equal((await get({ STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "");
+});
+
+test("sécurité : ancien formulaire e-mail fermé, compteur limité aux vrais écrans, erreurs internes cachées", async () => {
+  const lead = await import("../functions/api/lead.js");
+  const track = await import("../functions/api/track.js");
+  const { handle } = await import("../lib/http.js");
+  const env = { DB: localD1() };
+  const req = (body) => new Request("https://x.fr/api", { method: "POST", body: JSON.stringify(body), headers: { "content-type": "application/json" } });
+  assert.equal((await lead.onRequestPost({ request: req({ email: "victime@exemple.fr", optin: true }), env })).status, 410);
+  await track.onRequestPost({ request: req({ step: "nimportequoi-" + Date.now() }), env });
+  await track.onRequestPost({ request: req({ step: "genre" }), env });
+  const steps = (await env.DB.prepare("SELECT step FROM funnel").all()).results.map((r) => r.step);
+  assert.deepEqual(steps, ["genre"]);
+  const boom = handle(async () => { throw new Error("détail interne SECRET-123 refusé par Stripe"); });
+  const r = await boom({});
+  assert.equal(r.status, 500); assert.ok(!(await r.text()).includes("SECRET-123"));
 });

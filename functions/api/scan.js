@@ -22,7 +22,7 @@ export const onRequestPost = handle(async ({ request, env }) => {
   const ip = clientIp(request);
   if (await checkTurnstile(env, body.turnstile, ip) !== "ok") throw new HttpError(403, "Vérification anti-robot à refaire.");
   if (!(await hit(d, "scan-ip:" + quiz.ip_hash, scansPerIp(env), DAY))) throw new HttpError(429, "Trop d'analyses depuis cette connexion aujourd'hui. Continue sans scan ou réessaie demain.");
-  const r = await runScan(env, images);
+  const r = await runScan(env, images, { genre: quiz.gender || "" });
   if (!r.ok) {
     await track(d, "scan_" + r.problem, { variant: quiz.variant, source: quiz.utm_source });
     return json({ ok: false, problem: r.problem, message: r.message });

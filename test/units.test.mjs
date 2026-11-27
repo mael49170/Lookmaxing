@@ -170,3 +170,10 @@ test("e-mail de bienvenue : le récapitulatif obligatoire (prix, renouvellement,
   assert.ok(!/Satisfait ou remboursé/.test(html));
   assert.match(m.text, /16,99/, "la version texte garde aussi le récapitulatif");
 });
+
+test("plan pour une femme : jamais de tâche barbe", async () => {
+  const { buildPlan } = await import("../lib/plan.js");
+  for (const a of [{ genre: "femme" }, { genre: "femme", difficultes: ["cheveux", "visage"] }]) {
+    assert.ok(!buildPlan(a).days.some((d) => d.tasks.includes("barbe_trait")));
+  }
+});

@@ -1,0 +1,17 @@
+# En-têtes de sécurité (Cloudflare Pages), sur toutes les pages
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+
+/app/*
+  X-Robots-Tag: noindex
+/connexion/*
+  X-Robots-Tag: noindex
+/essai-paiement/*
+  X-Robots-Tag: noindex
+/design/*
+  X-Robots-Tag: noindex

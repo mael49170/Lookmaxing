@@ -96,7 +96,7 @@ page("cgv", "Conditions générales de vente", `
 <p>Le prix d'essai de ${P.intro} est réservé pendant ${RESERVATION_MIN} minutes à partir de l'affichage de la page de paiement, comme l'indique le compteur de cette page. Il n'est proposé qu'une fois par appareil. Une fois ce délai passé, l'abonnement démarre directement au prix de ${P.renew} par semaine, sans essai et sans engagement au-delà de la semaine payée. Le compteur est réel : il ne repart pas à zéro.</p>
 
 <h2 id="commande">4. Commande et paiement</h2>
-<p>Tu réponds au questionnaire, tu indiques ton adresse e-mail, puis tu paies sur un formulaire sécurisé de notre prestataire de paiement Stripe (carte bancaire, Apple Pay, Google Pay). Avant de payer, tu acceptes les présentes conditions et tu demandes expressément l'accès immédiat à ton résultat (article 6).</p>
+<p>Tu réponds au questionnaire, puis tu paies sur un formulaire sécurisé de notre prestataire de paiement Stripe (carte bancaire, Apple Pay, Google Pay), où tu indiques ton adresse e-mail : ton compte est créé avec elle. Avant de payer, tu acceptes les présentes conditions et tu demandes expressément l'accès immédiat à ton résultat (article 6).</p>
 <p>Ton compte est créé automatiquement avec l'adresse e-mail utilisée au paiement. Un e-mail récapitule ton achat, le prix, l'engagement et la façon de résilier. Stripe t'envoie un reçu pour chaque prélèvement.</p>
 <p>Si un prélèvement échoue, Stripe peut le retenter pendant quelques jours. Tu en es prévenu par e-mail. Sans paiement, l'abonnement peut être interrompu.</p>
 
@@ -164,20 +164,20 @@ page("confidentialite", "Politique de confidentialité", `
   <tr><td>Deux photos de ton visage, et les mesures qui en sont tirées</td><td>Calculer tes notes. Détail dans la <a href="/biometrie/">politique sur les données du visage</a>.</td><td>Ton consentement explicite (article 9 du RGPD)</td></tr>
   <tr><td>Tes notes (15 critères, note, potentiel)</td><td>Ton rapport, ton plan</td><td>Exécution du contrat</td></tr>
   <tr><td>Ton adresse e-mail</td><td>Ton compte, la connexion par code, les e-mails liés au service</td><td>Exécution du contrat</td></tr>
-  <tr><td>Ton adresse e-mail (si tu as coché la case)</td><td>Conseils et offres par e-mail, 2 relances au plus</td><td>Ton consentement, retirable en un clic</td></tr>
+  <tr><td>Ton adresse e-mail (si tu as dit oui au rappel)</td><td>Le rappel de tes actions du jour, chaque matin</td><td>Ton consentement, retirable en un clic</td></tr>
   <tr><td>Tes tâches cochées</td><td>Le suivi, la garantie « satisfait ou remboursé »</td><td>Exécution du contrat</td></tr>
   <tr><td>Paiements (gérés par Stripe ; nous ne voyons jamais ton numéro de carte)</td><td>Encaisser, rembourser, facturer</td><td>Exécution du contrat et obligations comptables</td></tr>
   <tr><td>Adresse IP sous forme chiffrée, identifiant de l'appareil (cookie)</td><td>Limiter les abus, réserver l'essai une seule fois, sécurité</td><td>Intérêt légitime (lutte contre la fraude)</td></tr>
   <tr><td>Source de la visite (lien publicitaire), écrans vus (compteurs sans donnée personnelle)</td><td>Savoir quelles publicités et quels écrans marchent</td><td>Intérêt légitime</td></tr>
+  <tr><td>Cookies de mesure de Meta (si tu les acceptes)</td><td>Mesurer et améliorer nos publicités (voir 5)</td><td>Ton consentement, retirable à tout moment</td></tr>
 </table></div>
 <p>Nous ne prenons aucune décision te concernant sur la seule base d'un traitement automatique, au-delà du calcul de tes notes, qui n'a aucune conséquence juridique pour toi.</p>
 
 <h2>3. Combien de temps on garde tes données</h2>
 <ul>
   <li><b>Photos :</b> jamais enregistrées (ni sur nos serveurs, ni dans nos journaux).</li>
-  <li><b>Questionnaire sans e-mail :</b> 90 jours.</li>
+  <li><b>Questionnaire sans achat :</b> 90 jours.</li>
   <li><b>Notes si tu n'achètes pas :</b> 30 jours, puis effacées automatiquement.</li>
-  <li><b>E-mail laissé sans achat :</b> 3 ans après ton dernier contact avec nous, ou jusqu'à ta désinscription s'il ne sert qu'aux offres.</li>
   <li><b>Compte client :</b> tant que ton compte existe, puis 3 ans après la fin de ton dernier abonnement. Tu peux le supprimer toi-même, à tout moment, une fois l'abonnement terminé.</li>
   <li><b>Factures :</b> 10 ans, conservées par Stripe (obligation comptable).</li>
   <li><b>Codes de connexion :</b> 15 minutes. <b>Sessions :</b> 90 jours.</li>
@@ -211,7 +211,7 @@ page("confidentialite", "Politique de confidentialité", `
 <p>Tu peux à tout moment accéder à tes données, les corriger, les faire effacer, les récupérer (portabilité), t'opposer à un traitement, en limiter l'usage, retirer ton consentement et donner des directives pour après ton décès.</p>
 <ul>
   <li>Effacer ton compte : depuis ton espace, « Supprimer mon compte et mes données » (après la fin de ton abonnement).</li>
-  <li>Ne plus recevoir d'offres : le lien en bas de chaque e-mail.</li>
+  <li>Ne plus recevoir les rappels : le lien en bas de chaque e-mail.</li>
   <li>Tout le reste : écris à ${E.email}. Nous répondons sous un mois.</li>
 </ul>
 <p>Si tu estimes que tes droits ne sont pas respectés, tu peux saisir la CNIL (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).</p>

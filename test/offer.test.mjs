@@ -38,7 +38,7 @@ async function toPaywall(call, email, { scan = false } = {}) {
 }
 
 test("réservation : 15 minutes, jamais remise à zéro, par e-mail ET par téléphone", async () => {
-  const d = await db({ DB: localD1() });
+  const d = await db({ DB: localD1(), LEADS_ENABLED: "1" });
   const a = await reservation(d, { emailKey: "a@x.fr", device: "dev1dev1dev1dev1" });
   assert.equal(a.trial, true);
   assert.ok(Math.abs(a.expires_at - (now() + 15 * 60e3)) < 2000);
@@ -51,7 +51,7 @@ test("réservation : 15 minutes, jamais remise à zéro, par e-mail ET par tél�
 });
 
 test("le serveur décide de l'essai au paiement : après 15 minutes, plus d'essai à 0,99 €", async () => {
-  const env = { DB: localD1(), DEV_FAKE_PAY: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_FAKE_PAY: "1" };
   const call = client(env);
   await toPaywall(call, "b@example.com");
   let r = await call(offerApi, "offer", { method: "GET" });
@@ -69,7 +69,7 @@ test("le serveur décide de l'essai au paiement : après 15 minutes, plus d'essa
 });
 
 test("aperçu avant paiement : vraies notes, noms des critères cachés, vrai plan", async () => {
-  const env = { DB: localD1(), DEV_FAKE_SCAN: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_FAKE_SCAN: "1" };
   const call = client(env);
   await toPaywall(call, "c@example.com", { scan: true });
   const r = await call(teaser, "teaser", { method: "GET" });
@@ -107,7 +107,7 @@ test("paiement dans la page : Stripe en mode intégré, sans essai si la réserv
 });
 
 test("garantie : refusée avant 5 jours cochés, remboursée après, une seule fois", async () => {
-  const env = { DB: localD1() };
+  const env = { DB: localD1(), LEADS_ENABLED: "1" };
   const d = await db(env);
   const start = now() - 6 * DAY; // la 1re semaine payée a commencé il y a 6 jours
   const c = await createMember(d, { quiz: null, email: "g@example.com", emailKey: "g@example.com", subscription: { id: "essai_g", ...offerSnapshot("semaine"), status: "active", current_period_end: start + 7 * DAY, trial_end: start } });
@@ -138,7 +138,7 @@ test("garantie chez Stripe : rembourse la 1re facture de la semaine, puis arrêt
     if (u.pathname.startsWith("/v1/subscriptions/")) return ok({ id: "sub_g", status: "canceled", current_period_end: 1, metadata: { offer: "semaine" } });
     return ok({});
   };
-  const env = { DB: localD1(), STRIPE_SECRET_KEY: "sk_test_x", FETCH: fetchImpl };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", STRIPE_SECRET_KEY: "sk_test_x", FETCH: fetchImpl };
   const d = await db(env);
   const start = now() - 6 * DAY;
   const c = await createMember(d, { quiz: null, email: "h@example.com", emailKey: "h@example.com", subscription: { id: "sub_g", ...offerSnapshot("semaine"), status: "active", current_period_end: start + 7 * DAY, trial_end: start } });

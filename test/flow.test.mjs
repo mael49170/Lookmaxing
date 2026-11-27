@@ -29,7 +29,7 @@ function client(env) {
 }
 
 test("parcours complet avec scan", async () => {
-  const env = { DB: localD1(), DEV_FAKE_SCAN: "1", DEV_FAKE_PAY: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_FAKE_SCAN: "1", DEV_FAKE_PAY: "1" };
   const call = client(env);
   let r = await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" }, variant: "a", utm: { source: "meta" } } });
   assert.equal(r.status, 200); assert.ok(r.data.id);
@@ -78,7 +78,7 @@ test("parcours complet avec scan", async () => {
 });
 
 test("moins de 18 ans : rien n'est gardé", async () => {
-  const env = { DB: localD1() };
+  const env = { DB: localD1(), LEADS_ENABLED: "1" };
   const call = client(env);
   await call(quiz, "quiz", { body: { answers: { genre: "homme" } } });
   assert.equal((await env.DB.prepare("SELECT COUNT(*) AS n FROM quizzes").first()).n, 1);
@@ -88,7 +88,7 @@ test("moins de 18 ans : rien n'est gardé", async () => {
 });
 
 test("refus du scan : plan sans note, et les notes déjà faites sont effacées", async () => {
-  const env = { DB: localD1(), DEV_FAKE_SCAN: "1", DEV_FAKE_PAY: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_FAKE_SCAN: "1", DEV_FAKE_PAY: "1" };
   const call = client(env);
   await call(quiz, "quiz", { body: { answers: { genre: "femme", age: "18-24" } } });
   await call(consent, "scan-consent", { body: { agree: true } });
@@ -116,12 +116,12 @@ async function scansUntilBlocked(env, max) {
   return max;
 }
 test("limite de scans par connexion : 10 par défaut, réglable", async () => {
-  assert.equal(await scansUntilBlocked({ DB: localD1(), DEV_FAKE_SCAN: "1" }, 12), 10);
-  assert.equal(await scansUntilBlocked({ DB: localD1(), DEV_FAKE_SCAN: "1", SCANS_PER_IP: "2" }, 5), 2);
+  assert.equal(await scansUntilBlocked({ DB: localD1(), LEADS_ENABLED: "1", DEV_FAKE_SCAN: "1" }, 12), 10);
+  assert.equal(await scansUntilBlocked({ DB: localD1(), LEADS_ENABLED: "1", DEV_FAKE_SCAN: "1", SCANS_PER_IP: "2" }, 5), 2);
 });
 
 test("un seul scan payant par quiz", async () => {
-  const env = { DB: localD1(), DEV_FAKE_SCAN: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_FAKE_SCAN: "1" };
   const call = client(env);
   await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" } } });
   await call(consent, "scan-consent", { body: { agree: true } });
@@ -132,7 +132,7 @@ test("un seul scan payant par quiz", async () => {
 });
 
 test("sans paiement d'essai ni Stripe, le paiement est fermé", async () => {
-  const env = { DB: localD1() };
+  const env = { DB: localD1(), LEADS_ENABLED: "1" };
   const call = client(env);
   await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" } } });
   await call(lead, "lead", { body: { email: "c@example.com" } });
@@ -143,7 +143,7 @@ test("sans paiement d'essai ni Stripe, le paiement est fermé", async () => {
 });
 
 test("e-mail demandé seulement au paiement : le compte est créé avec l'adresse donnée au paiement", async () => {
-  const env = { DB: localD1(), DEV_FAKE_PAY: "1" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", DEV_FAKE_PAY: "1" };
   const call = client(env);
   await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" } } });
   const r = await call(checkout, "checkout", { body: { offer: "semaine", waiver: true } });

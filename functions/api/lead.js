@@ -4,7 +4,9 @@ import { currentQuiz, emailKey } from "../../lib/identity.js";
 import { OFFERS, DEFAULT_OFFER } from "../../src/shared/plans.js";
 
 // POST { email, optin } -> garde l'e-mail (la case marketing est décochée par défaut) et renvoie les offres
+// Fermé depuis le 27/11/2026 (l'e-mail est demandé au paiement) : rouvert seulement avec LEADS_ENABLED=1.
 export const onRequestPost = handle(async ({ request, env }) => {
+  if (env.LEADS_ENABLED !== "1") throw new HttpError(410, "Ce formulaire n'est plus utilisé.");
   const body = await readJson(request, 2_000);
   const email = String(body.email || "").trim();
   const key = emailKey(email);
