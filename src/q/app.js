@@ -19,7 +19,14 @@ const AVATARS = {
 };
 // Silhouettes de corps, dessinées (demi-largeurs : épaules, taille, ventre)
 const BODY = { musclee: [26, 15, 0, true], mince: [17, 12, 0], moyenne: [21, 17, 2], enrobee: [23, 21, 9] };
+// Photos (créées par IA, fournies par Maël) : on les utilise dès qu'elles existent, sinon le dessin.
+// Silhouettes : seulement quand les 4 photos du genre sont là (sinon le mélange photo / dessin fait bricolé).
+const PHOTOS = new Set(["profil-homme", "morpho-homme-musclee", "morpho-homme-moyenne"]);
+const genreKey = () => (S.answers.genre === "femme" ? "femme" : "homme");
+const morphoPhotos = () => ["musclee", "mince", "moyenne", "enrobee"].every((m) => PHOTOS.has(`morpho-${genreKey()}-${m}`));
+const profileArt = () => (PHOTOS.has(`profil-${genreKey()}`) ? `<img src="/img/profil-${genreKey()}.webp" alt="" width="600" height="800" decoding="async">` : PROFILE_ART);
 function bodyArt(id) {
+  if (morphoPhotos()) return `<img class="body-photo" src="/img/morpho-${genreKey()}-${id}.webp" alt="" width="480" height="480" decoding="async">`;
   const [sh, wa, be, mus] = BODY[id] || BODY.moyenne;
   const c = 40;
   const torso = `M${c - sh} 34 C${c - sh} 28 ${c + sh} 28 ${c + sh} 34 C${c + sh + 1} 56 ${c + wa + be} 74 ${c + wa} 100 L${c - wa} 100 C${c - wa - be} 74 ${c - sh - 1} 56 ${c - sh} 34Z`;
@@ -191,7 +198,7 @@ const VIEWS = {
       <h1 class="title" tabindex="-1">2 selfies, et ton analyse démarre.</h1>
       <div class="examples">
         <figure class="example"><div class="example__art example__art--photo"><img src="/img/carte-${S.answers.genre === "femme" ? "femme" : "homme"}.webp" alt="" width="600" height="800" decoding="async"><span class="frame" aria-hidden="true"></span></div><span class="example__num">1</span><figcaption>De face</figcaption></figure>
-        <figure class="example"><div class="example__art example__art--profile">${PROFILE_ART}<span class="frame" aria-hidden="true"></span></div><span class="example__num">2</span><figcaption>De profil</figcaption></figure>
+        <figure class="example"><div class="example__art example__art--profile">${profileArt()}<span class="frame" aria-hidden="true"></span></div><span class="example__num">2</span><figcaption>De profil</figcaption></figure>
       </div>
       <p class="lead">Un selfie de toi, bien éclairé, sans lunettes ni casquette.</p>
       ${footer(`<p class="consent-line">En touchant « Prendre mes selfies », tu acceptes que notre IA analyse ton visage sur ces 2 photos pour calculer ta note. Jamais enregistrées, vues par personne. <a href="/biometrie/" target="_blank" rel="noopener">Détails</a></p><button class="btn btn--primary" data-selfies>${ICON_CAM} Prendre mes selfies</button><button class="btn btn--ghost" data-noscan>Continuer sans photo</button>`)}
@@ -225,7 +232,7 @@ const VIEWS = {
         <video id="cam-video" playsinline muted autoplay></video>
         <svg class="cam__oval" viewBox="0 0 100 133" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><ellipse cx="50" cy="60" rx="${k === "face" ? 29 : 31}" ry="42"/></svg>
         <span class="cam__step">${k === "face" ? "1/2" : "2/2"} · ${k === "face" ? "De face" : "De profil"}</span>
-        <div class="cam__example" aria-hidden="true">${k === "face" ? `<img src="/img/carte-${S.answers.genre === "femme" ? "femme" : "homme"}.webp" alt="">` : PROFILE_ART}</div>
+        <div class="cam__example" aria-hidden="true">${k === "face" ? `<img src="/img/carte-${genreKey()}.webp" alt="">` : profileArt()}</div>
         <label class="cam__gallery"><input type="file" accept="image/*" data-shot="${k}" aria-label="Choisir une photo ${name} dans ta galerie">${ICON_GALLERY}</label>
         <button class="cam__shutter" data-shoot aria-label="Prendre la photo ${name}"></button>
       </div>
