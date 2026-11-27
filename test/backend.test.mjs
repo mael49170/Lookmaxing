@@ -271,3 +271,11 @@ test("durées de conservation promises : e-mail sans achat et vieux comptes effa
   assert.equal((await d.prepare("SELECT COUNT(*) AS n FROM leads").first()).n, 1);
   assert.ok(await d.prepare("SELECT 1 FROM customers WHERE id = ?").bind(kept.id).first(), "un client actif n'est jamais effacé");
 });
+
+test("config : la clé publiable n'est donnée que si elle est du même mode que la clé secrète", async () => {
+  const config = await import("../functions/api/config.js");
+  const get = async (env) => (await config.onRequestGet({ request: new Request("https://x.fr/api/config"), env })).json();
+  assert.equal((await get({ STRIPE_SECRET_KEY: "sk_test_a", STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "", "test + live : paiement par la page Stripe");
+  assert.equal((await get({ STRIPE_SECRET_KEY: "sk_live_a", STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "pk_live_b");
+  assert.equal((await get({ STRIPE_PUBLISHABLE_KEY: "pk_live_b" })).stripeKey, "");
+});
