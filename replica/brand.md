@@ -18,7 +18,7 @@ Le mieux : déposer la marque à l'INPI (environ 190 € pour 1 classe, 40 € p
 - **mogx.app** existe : appli anglaise de suivi de routine looksmaxxing « gamifiée » (même créneau). Aucune marque à son nom trouvée.
 - Recherche INPI « MOGX » (France, UE et internationales visant la France) : **une seule marque**, EM019173300 « mogX » (verbale), Konrad Knoblauch GmbH (Allemagne), enregistrée le 08/11/2025, jusqu'au 15/04/2035, classes 6, 12, 19, 20, 25, 35, 37, 39, 40, 41, toutes liées aux **camping-cars et vans aménagés** (dont classe 25 : vêtements ; classe 41 : stages tout-terrain, événements autour du camping). Lue sur euipo.europa.eu.
 - Conclusion : pas de conflit pour une appli (classes 9, 42, 44 libres ; classe 41 à limiter au coaching en ligne). **Interdit : vendre des vêtements « MOGX »** (classe 25 prise).
-- Décision proposée : déposer MOGX à l'INPI au plus vite (premier déposant), classes 9, 41, 42, 44, avec des libellés étroits (ci-dessous) pour ne pas chevaucher la classe 41 de Knoblauch.
+- **Décision de Maël (27/11/2026) : on démarre sans dépôt**, à faire dès les premières ventes. Proposition d'origine : déposer MOGX à l'INPI au plus vite (premier déposant), classes 9, 41, 42, 44, avec des libellés étroits (ci-dessous) pour ne pas chevaucher la classe 41 de Knoblauch.
 
 ### Libellés pour le dépôt INPI (à coller dans le formulaire)
 - **Classe 9** : logiciels d'application téléchargeables pour téléphones mobiles ; applications logicielles téléchargeables ; logiciels téléchargeables d'analyse d'images.
