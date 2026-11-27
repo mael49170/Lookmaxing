@@ -316,3 +316,7 @@
 .live__dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c-success); box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-success) 60%, transparent); animation: livepulse 1.6s ease-out infinite; }
 @keyframes livepulse { to { box-shadow: 0 0 0 10px transparent; } }
 @media (prefers-reduced-motion: reduce) { .live__dot { animation: none; } }
+.paybox { display: grid; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--c-accent-line); border-radius: var(--r-xl); background: radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--c-glow) 12%, transparent), transparent 70%), var(--c-surface); }
+.terms-line { margin: 0; color: var(--c-text-muted); font-size: var(--fs-xs); line-height: 1.45; text-align: center; }
+.paybox__trust { margin: 0; color: var(--c-text-muted); font-size: var(--fs-xs); text-align: center; }
+.paybox__trust a { color: var(--c-text); }

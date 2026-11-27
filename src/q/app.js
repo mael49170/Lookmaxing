@@ -371,6 +371,25 @@ const VIEWS = {
     const row = (f, kind) => `<div class="hidden-row"><span class="hidden-row__name" style="width:${Math.min(70, 18 + f.len * 2.6)}%" aria-hidden="true">${lock}</span><span class="sr-only">Critère caché jusqu'au paiement :</span><b class="hidden-row__note hidden-row__note--${kind}">${f.note}</b></div>`;
     // faux texte flouté (le vrai contenu n'est jamais envoyé avant le paiement), de la longueur du vrai
     const blurText = (len) => Array.from({ length: Math.max(4, Math.round(Math.min(len, 170) / 6)) }, (_, k) => "xxxxxxxxxx".slice(0, 3 + ((k * 7) % 6))).join(" ");
+    // Ordre (27/11/2026, inspiré du concurrent) : l'envie d'abord (ton analyse), l'offre, le paiement TOUT DE SUITE,
+    // puis les preuves (forces, freins, programme) avec un bouton après chaque partie, et la réassurance à la fin.
+    // Le prix de renouvellement reste juste au-dessus du bouton de paiement (loi, et règles Stripe pour les essais).
+    const payBlock = `<section class="block paybox" id="pay">
+        <h2 class="block__title">${trial ? `Ton essai à ${esc(euros(o.intro))}` : "Ton accès complet"}</h2>
+        ${trial ? "" : `<p class="block__lead">La réservation de l'essai à ${esc(euros(o.intro))} est terminée pour toi.</p>`}
+        <div class="offer offer--single">
+          <span class="offer__main"><span class="offer__name">${esc(o.label)}</span><span class="offer__renew">${trial ? `${o.trialDays} jours pour tout débloquer` : "1re semaine"}</span></span>
+          <span class="offer__price">${esc(euros(trial ? o.intro : o.renew))}<span class="offer__day">aujourd'hui</span></span>
+        </div>
+        ${pw.stripeKey ? `<p class="terms-line">${esc(lines.full)}</p><div id="checkout" class="checkout"></div>` : `
+          ${pw.waiverOnSite ? `<label class="check"><input type="checkbox" id="waiver"><span>Je veux mon résultat tout de suite et je renonce à mon droit de rétractation de 14 jours une fois le résultat ouvert.</span></label>` : ""}
+          <p class="terms-line">${esc(lines.full)}</p>
+          <button class="btn btn--primary" data-pay>Débloquer mon résultat, ${esc(euros(trial ? o.intro : o.renew))}</button>`}
+        <div id="pay-error"></div>
+        <p class="paybox__trust">🔒 Paiement sécurisé par Stripe · Apple Pay, Google Pay ou carte · <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
+        <p class="paybox__trust">✅ Satisfait ou remboursé sur ta 1re semaine payée, sous conditions (<a href="#garantie">voir plus bas</a>)</p>
+      </section>`;
+    const cta = (label) => `<button class="btn btn--primary" data-gopay>${label}</button>`;
     return `<main class="screen screen--sales">
       <div class="brand">MOGX</div>
       ${t.scanned ? `
@@ -382,24 +401,22 @@ const VIEWS = {
           <div class="scanhero__row"><span>Ton max</span><b class="scanhero__max">${esc(fr(t.max))}<small>/10</small></b></div>
           <div class="scanhero__row"><span>À aller chercher</span><b class="scanhero__gain">+${esc(fr(t.gain))}</b></div>
         </div>
-      </section>`
-      : `<h1 class="title title--hero" tabindex="-1">Ton plan de 28 jours est prêt.</h1>
-      <p class="lead">Fait d'après tes réponses, dans l'ordre de ce qui te pèse le plus.</p>`}
+      </section>` : ""}
       <section class="pitch">
-        ${t.scanned ? `<h1 class="title title--hero" tabindex="-1">Tu peux monter jusqu'à ${esc(fr(t.max))}.</h1>` : ""}
+        <h1 class="title title--hero" tabindex="-1">${t.scanned ? `Tu peux monter jusqu'à ${esc(fr(t.max))}.` : "Ton plan de 28 jours est prêt."}</h1>
         <ul class="pitch__list">
           ${t.scanned ? "<li>Ta note et tes 15 critères, expliqués un par un</li><li>Tes forces, et ce qui te freine vraiment</li>" : "<li>Ton bilan d'après tes réponses</li>"}
-          <li>Ton plan de 28 jours, fait pour ${t.scanned ? "ton visage" : "toi"}</li>
+          <li>Ton plan de 28 jours, fait pour ${t.scanned ? "ton visage" : "toi"}, 5 à 10 minutes par jour</li>
+          <li>Résiliable en ligne en un clic</li>
         </ul>
-        ${pw.live >= 3 ? `<p class="live"><span class="live__dot" aria-hidden="true"></span><span><b class="live__n" data-count="${pw.live}">${pw.live}</b> personnes ont lancé leur analyse dans la dernière heure</span></p>` : ""}
         ${trial ? `<div class="reserved"><span class="reserved__icon" aria-hidden="true">🎁</span><span><b>Essai à ${esc(euros(o.intro))} réservé pour toi</b><span>Réservation : <b data-timer>--:--</b>, une seule fois</span></span></div>` : ""}
-        <button class="btn btn--primary" data-gopay>Obtenir mon rapport complet</button>
       </section>
+      ${payBlock}
       ${t.scanned ? `
       <section class="block"><h2 class="block__title">Tes points forts</h2><p class="block__lead">Ce qui joue déjà pour toi.</p>${t.strengths.map((f) => row(f, "hot")).join("")}</section>
       <section class="block"><h2 class="block__title">Ce qui te freine</h2><p class="block__lead">${t.holding} critère${t.holding > 1 ? "s" : ""} qui se travaille${t.holding > 1 ? "nt" : ""}. C'est là que sont tes points.</p>${t.weaknesses.map((f) => row(f, "low")).join("")}
         <p class="more">${lock} Les noms et le détail dans ton rapport complet</p></section>
-      <button class="btn btn--primary" data-gopay>Obtenir mon rapport complet</button>` : ""}
+      ${cta("Obtenir mon rapport complet")}` : ""}
       <section class="block"><h2 class="block__title">Ton programme de 28 jours</h2><p class="block__lead">Fait pour toi, dans l'ordre de ce qui te fera gagner le plus. Le détail se débloque avec ton accès.</p>
         ${(t.modules || []).map((m, i) => `<div class="module${i === 0 ? " module--first" : ""}">
           <div class="module__head"><span class="module__name">${esc(MODULES[m.domain] || m.domain)}</span><span class="module__count">${m.count} action${m.count > 1 ? "s" : ""}</span></div>
@@ -407,37 +424,16 @@ const VIEWS = {
         </div>`).join("")}
         ${t.habits ? `<p class="module__habits">${lock}<span>Et chaque jour, ${t.habits} habitude${t.habits > 1 ? "s" : ""} à cocher, avec un rappel le matin si tu veux.</span></p>` : ""}
       </section>
-      <button class="btn btn--primary" data-gopay>Obtenir mon plan</button>
-      <section class="block"><h2 class="block__title">Ce que tu débloques</h2>
-        <ul class="includes">
-          ${t.scanned ? "<li>Ta note, ton max et tes 15 critères, avec une phrase claire pour chacun</li>" : "<li>Ton bilan d'après tes réponses</li>"}
-          <li>Ton plan de 28 jours, 5 à 10 minutes par jour</li>
-          <li>Le suivi jour par jour, et un rappel chaque matin si tu veux</li>
-          <li>Résiliable en ligne en un clic${trial ? ", après l'engagement" : ""}</li>
-        </ul>
-      </section>
-      <section class="block block--guarantee">
+      ${cta("Obtenir mon plan")}
+      <section class="block block--guarantee" id="garantie">
         <div class="guarantee-head"><h2 class="block__title">Satisfait ou remboursé</h2>${seal()}</div>
         <p class="block__lead">${esc(guaranteeText(o))}</p>
         <p class="block__lead">Pas de justificatif à envoyer : ton suivi dans ton espace suffit. <a href="/cgv/#garantie" target="_blank" rel="noopener">Les conditions en détail</a></p>
       </section>
-      <section class="block" id="pay"><h2 class="block__title">${trial ? "Ton essai est réservé" : "Ton accès"}</h2>
-        ${trial ? "" : `<p class="block__lead">La réservation de l'essai à ${esc(euros(o.intro))} est terminée pour toi.</p>`}
-        <div class="offer offer--single">
-          <span class="offer__main"><span class="offer__name">${esc(o.label)}</span><span class="offer__renew">${esc(lines.today)}, ${esc(lines.then)}</span></span>
-          <span class="offer__price">${esc(euros(trial ? o.intro : o.renew))}<span class="offer__day">${trial ? `pour ${o.trialDays} jours` : "la 1re semaine"}</span></span>
-        </div>
-        <div class="terms" role="note"><p><b>Aujourd'hui : ${esc(lines.today)}.</b></p><p>Ensuite : ${esc(euros(o.renew))} par semaine, jusqu'à résiliation.</p><p>${esc(lines.minimum)}</p></div>
-        ${pw.stripeKey ? `<div id="checkout" class="checkout"></div>` : `
-          ${pw.waiverOnSite ? `<label class="check"><input type="checkbox" id="waiver"><span>Je veux accéder à mon résultat tout de suite. Je reconnais perdre mon droit de rétractation de 14 jours une fois le résultat ouvert.</span></label>` : ""}
-          <button class="btn btn--primary" data-pay>Débloquer mon résultat, ${esc(euros(trial ? o.intro : o.renew))}</button>`}
-        <div id="pay-error"></div>
-        <p class="legal">Apple Pay, Google Pay ou carte, paiement sécurisé par Stripe. <a href="/cgv/" target="_blank" rel="noopener">CGV</a></p>
-      </section>
+      ${cta(trial ? `Commencer pour ${esc(euros(o.intro))}` : "Obtenir mon accès")}
       <section class="block block--card">
         <h2 class="block__title">Tes infos sont en sécurité</h2>
-        <p class="block__lead">On ne vend ni ne partage tes données, à personne. Tes photos ne sont jamais enregistrées : elles servent à l'analyse, puis elles disparaissent.</p>
-        <p class="block__lead"><a href="/confidentialite/" target="_blank" rel="noopener">Comment on protège tes données</a></p>
+        <p class="block__lead">On ne vend ni ne partage tes données, à personne. Tes photos ne sont jamais enregistrées : elles servent à l'analyse, puis elles disparaissent. <a href="/confidentialite/" target="_blank" rel="noopener">En savoir plus</a></p>
       </section>
       ${pw.support ? `<section class="block block--card">
         <h2 class="block__title">Une question avant de payer ?</h2>
@@ -447,7 +443,7 @@ const VIEWS = {
       <div class="sticky-pay" role="region" aria-label="Paiement">
         <div class="sticky-pay__info">${trial
           ? `<span class="sticky-pay__timer" id="timer" aria-live="off">--:--</span><span class="sticky-pay__sub">essai à ${esc(euros(o.intro))} réservé</span>`
-          : `<span class="sticky-pay__timer">${esc(euros(o.renew))}</span><span class="sticky-pay__sub">par semaine</span>`}</div>
+          : `<span class="sticky-pay__timer">${esc(euros(o.renew))}</span><span class="sticky-pay__sub">la 1re semaine</span>`}</div>
         <button class="btn btn--primary" data-gopay>Débloquer</button>
       </div>
     </main>`;
@@ -603,7 +599,6 @@ function render() {
   if (s.type === "projection") runProjection();
   if (s.type === "building") runBuilding();
   if (s.type === "scanning") runScanning();
-  if (s.type === "paywall") countUp();
   if (s.type === "paywall") { if (!S.pw) loadPaywall().catch((e) => { app.querySelector("h1").textContent = e.message; }); else { startTimer(); mountCheckout(); } }
 }
 
@@ -752,24 +747,15 @@ function seal() {
 }
 // Charge tout ce que la page affiche (aperçu réel, réservation de l'essai, réglages), puis lance le minuteur et le paiement
 async function loadPaywall() {
-  const [teaser, offer, config, live] = await Promise.all([
+  const [teaser, offer, config] = await Promise.all([
     api("teaser", null, { method: "GET" }).catch(() => ({})),
     api("offer", null, { method: "GET" }),
     api("config", null, { method: "GET" }).catch(() => ({})),
-    api("live", null, { method: "GET" }).catch(() => ({})),
   ]);
-  S.pw = { teaser, offer, stripeKey: config.stripeKey || "", waiverOnSite: !config.waiverInStripe, support: config.support || "", live: live.lastHour || 0 };
+  S.pw = { teaser, offer, stripeKey: config.stripeKey || "", waiverOnSite: !config.waiverInStripe, support: config.support || "" };
   const o = OFFERS[DEFAULT_OFFER];
   track("InitiateCheckout", { value: (offer.trial ? o.intro : o.renew) / 100, currency: "EUR" });
   save(); render();
-}
-// le vrai chiffre de la dernière heure monte de 0 à sa valeur (animation seulement)
-function countUp() {
-  const el = document.querySelector("[data-count]");
-  if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const target = Number(el.dataset.count), t0 = performance.now();
-  const step = (t) => { const p = Math.min(1, (t - t0) / 1200); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); };
-  requestAnimationFrame(step);
 }
 let timerTick = null;
 function startTimer() {
