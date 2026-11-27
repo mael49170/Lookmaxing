@@ -19,13 +19,15 @@ test("note globale et potentiel", () => {
   assert.ok(Math.abs((potential(bone) - overall(bone)) - (potential(s) - overall(s))) <= 1);
 });
 
-test("résultat de l'IA : bornes, critères manquants, problèmes", () => {
+test("résultat de l'IA : bornes, critères manquants, problèmes", async () => {
   const crit = FACTORS.map((f) => ({ id: f.id, note: 150, phrase: "x" }));
   const r = toResult({ probleme: "aucun", criteres: crit });
   assert.ok(r.ok); assert.ok(r.factors.every((f) => f.note === 100));
   assert.equal(toResult({ probleme: "aucun", criteres: crit.slice(1) }).ok, false);
-  const m = toResult({ probleme: "semble_mineur", criteres: [] });
-  assert.equal(m.ok, false); assert.match(m.message, /adultes/);
+  const m = toResult({ probleme: "pas_de_visage", criteres: [] });
+  assert.equal(m.ok, false); assert.match(m.message, /visage/i);
+  const { SCAN_SCHEMA } = await import("../lib/prompts.js");
+  assert.ok(!JSON.stringify(SCAN_SCHEMA).includes("mineur"), "l'IA n'estime plus l'âge (faux « mineur » sur des adultes, 27/11/2026)");
 });
 
 test("coût d'un scan (Opus 5.5, ~4 600 jetons en entrée, ~2 300 en sortie)", () => {

@@ -107,7 +107,8 @@ const MODULES = { peau: "Peau nette", cheveux: "Coupe et cheveux", corps: "Corps
 // ---------- Accords au féminin ----------
 // Les textes sont écrits au masculin ; pour une femme on accorde, et on retire ce qui ne la concerne pas (barbe).
 const FEM = [[/Je suis prêt\b/g, "Je suis prête"], [/senti mis de côté/g, "sentie mise de côté"], [/inquiet ou débordé/g, "inquiète ou débordée"],
-  [/pris au sérieux/g, "prise au sérieux"], [/maître de moi/g, "maîtresse de moi"], [/Nerveux,/g, "Nerveuse,"], [/coupe, barbe, sommeil/g, "coupe, sourcils, sommeil"]];
+  [/pris au sérieux/g, "prise au sérieux"], [/maître de moi/g, "maîtresse de moi"], [/Nerveux,/g, "Nerveuse,"], [/coupe, barbe, sommeil/g, "coupe, sourcils, sommeil"],
+  [/Chemise, chino/g, "Chemisier, blazer"], [/Jogging, survêt/g, "Legging, jogging"], [/moins séduisant\b/g, "moins séduisante"]];
 const gx = (t) => (S.answers.genre === "femme" && typeof t === "string" ? FEM.reduce((x, [a, b]) => x.replace(a, b), t) : t);
 function genderize(s) {
   if (S.answers.genre !== "femme") return s;
@@ -115,6 +116,7 @@ function genderize(s) {
   for (const k of ["title", "lead", "cta", "eyebrow", "note", "confirm"]) if (out[k]) out[k] = gx(out[k]);
   if (out.options) out.options = out.options.filter((x) => x.id !== "barbe").map((x) => ({ ...x, label: gx(x.label), ...(x.hint ? { hint: gx(x.hint) } : {}) }));
   if (out.echo) { const e = out.echo; out.echo = (a) => gx(e(a)); }
+  if (out.sources) out.sources = out.sources.map(([f, ...rest]) => [gx(f), ...rest]);
   return out;
 }
 
@@ -191,7 +193,7 @@ const VIEWS = {
         <figure class="example"><div class="example__art example__art--photo"><img src="/img/carte-${S.answers.genre === "femme" ? "femme" : "homme"}.webp" alt="" width="600" height="800" decoding="async"><span class="frame" aria-hidden="true"></span></div><span class="example__num">1</span><figcaption>De face</figcaption></figure>
         <figure class="example"><div class="example__art example__art--profile">${PROFILE_ART}<span class="frame" aria-hidden="true"></span></div><span class="example__num">2</span><figcaption>De profil</figcaption></figure>
       </div>
-      <ul class="tips"><li>Pleine lumière, face à une fenêtre</li><li>Sans lunettes ni casquette, expression neutre</li><li>${S.answers.genre === "femme" ? "Seule" : "Seul"} sur la photo</li></ul>
+      <p class="lead">Un selfie de toi, bien éclairé, sans lunettes ni casquette.</p>
       ${footer(`<p class="consent-line">En touchant « Prendre mes selfies », tu acceptes que notre IA analyse ton visage sur ces 2 photos pour calculer ta note. Jamais enregistrées, vues par personne. <a href="/biometrie/" target="_blank" rel="noopener">Détails</a></p><button class="btn btn--primary" data-selfies>${ICON_CAM} Prendre mes selfies</button><button class="btn btn--ghost" data-noscan>Continuer sans photo</button>`)}
     </main>`;
   },
@@ -221,9 +223,9 @@ const VIEWS = {
       <h1 class="sr-only" tabindex="-1">Selfie ${name}</h1>
       <div class="cam">
         <video id="cam-video" playsinline muted autoplay></video>
-        <svg class="cam__oval" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true"><ellipse cx="50" cy="60" rx="32" ry="${k === "face" ? 40 : 42}"/></svg>
+        <svg class="cam__oval" viewBox="0 0 100 133" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><ellipse cx="50" cy="60" rx="${k === "face" ? 29 : 31}" ry="42"/></svg>
         <span class="cam__step">${k === "face" ? "1/2" : "2/2"} · ${k === "face" ? "De face" : "De profil"}</span>
-        <div class="cam__example" aria-hidden="true">${k === "face" ? faceMesh({ className: "mesh" }) : PROFILE_ART}</div>
+        <div class="cam__example" aria-hidden="true">${k === "face" ? `<img src="/img/carte-${S.answers.genre === "femme" ? "femme" : "homme"}.webp" alt="">` : PROFILE_ART}</div>
         <label class="cam__gallery"><input type="file" accept="image/*" data-shot="${k}" aria-label="Choisir une photo ${name} dans ta galerie">${ICON_GALLERY}</label>
         <button class="cam__shutter" data-shoot aria-label="Prendre la photo ${name}"></button>
       </div>

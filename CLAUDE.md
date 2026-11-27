@@ -13,7 +13,7 @@ Maël est cuisinier, pas développeur. **Toujours répondre en français**, dans
 
 - Aucune photo de visage enregistrée, nulle part (ni base, ni disque, ni logs).
 - Consentement biométrique avant la caméra, refus aussi simple que l'accord : depuis le 27/11/2026 (choix de Maël, moins de friction), plus d'écran séparé, une phrase juste au-dessus du bouton « Prendre mes selfies » (« Continuer sans photo » juste en dessous). Ne jamais retirer cette phrase.
-- Pas de moins de 18 ans.
+- Pas de moins de 18 ans : bloqué par l'âge déclaré dans le quiz. L'IA n'estime plus l'âge sur les photos (scan-v2, 27/11/2026 : elle prenait des 20 ans pour des mineurs).
 - Aucun faux avis, aucun chiffre inventé (notes, nombre de scans, « tendance »).
 - Prix TTC en euros, prix de renouvellement écrit au-dessus du bouton, résiliation en 3 clics.
 - Aucune clé secrète dans le code : Cloudflare (Variables and secrets) ou `.dev.vars` en local (jamais commité).
