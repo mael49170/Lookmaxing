@@ -7,7 +7,7 @@ export const onRequestGet = handle(async ({ env }) => {
   return json({
     base: Boolean(d),
     analyse: env.ANTHROPIC_API_KEY ? "claude" : env.DEV_FAKE_SCAN === "1" ? "essai" : "non",
-    paiement: env.STRIPE_SECRET_KEY ? (env.STRIPE_SECRET_KEY.startsWith("sk_live") ? "live" : "test") : env.DEV_FAKE_PAY === "1" ? "essai" : "non",
+    paiement: env.STRIPE_SECRET_KEY ? (/^(sk|rk)_live_/.test(env.STRIPE_SECRET_KEY) ? (env.STRIPE_SECRET_KEY.startsWith("rk_") ? "live (clé restreinte)" : "live") : "test") : env.DEV_FAKE_PAY === "1" ? "essai" : "non",
     webhook: Boolean(env.STRIPE_WEBHOOK_SECRET),
     emails: Boolean(env.RESEND_API_KEY),
     anti_robot: Boolean(env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET),
