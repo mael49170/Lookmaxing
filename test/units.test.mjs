@@ -161,3 +161,12 @@ test("accueil : à jour avec les prix, aucune fausse preuve", async () => {
   const quiz = readFileSync(new URL("../src/q/app.js", import.meta.url), "utf8");
   assert.match(quiz, /href="\/infos\/"/, "l'accueil du quiz doit mener aux prix et infos");
 });
+
+test("e-mail de bienvenue : le récapitulatif obligatoire (prix, renouvellement, résiliation) reste, la garantie n'y est plus", async () => {
+  const { welcomeMail } = await import("../lib/mail.js");
+  const m = welcomeMail("https://mogx.fr/api/auth-link?t=x", { offer: "semaine", trial: true });
+  const html = m.html.replace(/ /g, " ");
+  assert.match(html, /0,99 €/); assert.match(html, /16,99 €/); assert.match(html, /17,98 €/); assert.match(html, /Résilier mon abonnement/);
+  assert.ok(!/Satisfait ou remboursé/.test(html));
+  assert.match(m.text, /16,99/, "la version texte garde aussi le récapitulatif");
+});
