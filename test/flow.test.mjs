@@ -8,6 +8,7 @@ import * as consent from "../functions/api/scan-consent.js";
 import * as scan from "../functions/api/scan.js";
 import * as lead from "../functions/api/lead.js";
 import * as checkout from "../functions/api/checkout.js";
+import * as live from "../functions/api/live.js";
 import * as done from "../functions/api/checkout-done.js";
 import * as me from "../functions/api/me.js";
 import * as check from "../functions/api/plan-check.js";
@@ -156,4 +157,13 @@ test("e-mail demandé seulement au paiement : le compte est créé avec l'adress
   const m = await call(me, "me", { method: "GET" });
   assert.equal(m.data.email, "Nouveau@Example.com");
   assert.equal((await env.DB.prepare("SELECT COUNT(*) AS n FROM leads").first()).n, 0, "aucun e-mail gardé avant le paiement");
+});
+
+test("compteur de la dernière heure : le vrai nombre de quiz commencés, rien d'inventé", async () => {
+  const env = { DB: localD1() };
+  for (let i = 0; i < 4; i++) { const call = client(env); await call(quiz, "quiz", { body: { answers: { genre: "homme", age: "25-34" } } }); }
+  const r = await client(env)(live, "live", { method: "GET" });
+  assert.equal(r.data.lastHour, 4);
+  await env.DB.prepare("UPDATE quizzes SET created_at = created_at - 7200000").run();
+  assert.equal((await client(env)(live, "live", { method: "GET" })).data.lastHour, 0, "au-delà d'une heure, ça ne compte plus");
 });

@@ -391,6 +391,7 @@ const VIEWS = {
           ${t.scanned ? "<li>Ta note et tes 15 critères, expliqués un par un</li><li>Tes forces, et ce qui te freine vraiment</li>" : "<li>Ton bilan d'après tes réponses</li>"}
           <li>Ton plan de 28 jours, fait pour ${t.scanned ? "ton visage" : "toi"}</li>
         </ul>
+        ${pw.live >= 3 ? `<p class="live"><span class="live__dot" aria-hidden="true"></span><span><b class="live__n" data-count="${pw.live}">${pw.live}</b> personnes ont lancé leur analyse dans la dernière heure</span></p>` : ""}
         ${trial ? `<div class="reserved"><span class="reserved__icon" aria-hidden="true">🎁</span><span><b>Essai à ${esc(euros(o.intro))} réservé pour toi</b><span>Réservation : <b data-timer>--:--</b>, une seule fois</span></span></div>` : ""}
         <button class="btn btn--primary" data-gopay>Obtenir mon rapport complet</button>
       </section>
@@ -602,6 +603,7 @@ function render() {
   if (s.type === "projection") runProjection();
   if (s.type === "building") runBuilding();
   if (s.type === "scanning") runScanning();
+  if (s.type === "paywall") countUp();
   if (s.type === "paywall") { if (!S.pw) loadPaywall().catch((e) => { app.querySelector("h1").textContent = e.message; }); else { startTimer(); mountCheckout(); } }
 }
 
@@ -750,15 +752,24 @@ function seal() {
 }
 // Charge tout ce que la page affiche (aperçu réel, réservation de l'essai, réglages), puis lance le minuteur et le paiement
 async function loadPaywall() {
-  const [teaser, offer, config] = await Promise.all([
+  const [teaser, offer, config, live] = await Promise.all([
     api("teaser", null, { method: "GET" }).catch(() => ({})),
     api("offer", null, { method: "GET" }),
     api("config", null, { method: "GET" }).catch(() => ({})),
+    api("live", null, { method: "GET" }).catch(() => ({})),
   ]);
-  S.pw = { teaser, offer, stripeKey: config.stripeKey || "", waiverOnSite: !config.waiverInStripe, support: config.support || "" };
+  S.pw = { teaser, offer, stripeKey: config.stripeKey || "", waiverOnSite: !config.waiverInStripe, support: config.support || "", live: live.lastHour || 0 };
   const o = OFFERS[DEFAULT_OFFER];
   track("InitiateCheckout", { value: (offer.trial ? o.intro : o.renew) / 100, currency: "EUR" });
   save(); render();
+}
+// le vrai chiffre de la dernière heure monte de 0 à sa valeur (animation seulement)
+function countUp() {
+  const el = document.querySelector("[data-count]");
+  if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const target = Number(el.dataset.count), t0 = performance.now();
+  const step = (t) => { const p = Math.min(1, (t - t0) / 1200); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
 }
 let timerTick = null;
 function startTimer() {

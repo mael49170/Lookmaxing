@@ -14,7 +14,7 @@ Maël est cuisinier, pas développeur. **Toujours répondre en français**, dans
 - Aucune photo de visage enregistrée, nulle part (ni base, ni disque, ni logs).
 - Consentement biométrique avant la caméra, refus aussi simple que l'accord : depuis le 27/11/2026 (choix de Maël, moins de friction), plus d'écran séparé, une phrase juste au-dessus du bouton « Prendre mes selfies » (« Continuer sans photo » juste en dessous). Ne jamais retirer cette phrase.
 - Pas de moins de 18 ans : bloqué par l'âge déclaré dans le quiz. L'IA n'estime plus l'âge sur les photos (scan-v2, 27/11/2026 : elle prenait des 20 ans pour des mineurs).
-- Aucun faux avis, aucun chiffre inventé (notes, nombre de scans, « tendance »).
+- Aucun faux avis, aucun chiffre inventé (notes, nombre de scans, « tendance »). Compteur « N personnes ont lancé leur analyse dans la dernière heure » (27/11/2026) : vrai nombre de quiz commencés (`functions/api/live.js`), affiché à partir de 3, jamais d'adresse e-mail (même masquée) ; Maël voulait « 79 » écrit en dur avec des e-mails qui défilent : refusé (chiffre inventé, DGCCRF).
 - Prix TTC en euros, prix de renouvellement écrit au-dessus du bouton, résiliation en 3 clics.
 - Aucune clé secrète dans le code : Cloudflare (Variables and secrets) ou `.dev.vars` en local (jamais commité).
 - Vérifier le coût réel de chaque appel IA avant d'ajouter ou de changer une fonction.
@@ -33,7 +33,7 @@ Maël est cuisinier, pas développeur. **Toujours répondre en français**, dans
 - Le minimum (17,98 €), le prix à la semaine et l'engagement sont écrits juste au-dessus du bouton de paiement, sur la page Stripe et dans l'e-mail de bienvenue. Résilier pendant l'essai : la semaine d'engagement reste prélevée, puis plus rien.
 - Minuteur VRAI (décidé le 25/11/2026) : l'essai à 0,99 € est réservé 15 minutes, une seule fois par téléphone (`lib/offer.js`, vérifié par le serveur au paiement ; l'e-mail n'est connu qu'après). Ensuite : 16,99 € la semaine directement. Jamais de minuteur qui repart à zéro.
 - Garantie avec conditions (25/11/2026) : 1re semaine payée remboursée si le plan est coché au moins 5 jours sur 7, demande dans les 14 jours, une fois ; automatique depuis l'espace membre (`lib/guarantee.js`), et ça arrête l'abonnement.
-- Paiement dans notre page (Stripe intégré, Apple Pay / Google Pay) si `STRIPE_PUBLISHABLE_KEY` est réglée, sinon page Stripe.
+- Paiement dans notre page (Stripe intégré, Apple Pay / Google Pay) si `STRIPE_PUBLISHABLE_KEY` est réglée, sinon page Stripe. Stripe en mode LIVE depuis le 27/11/2026 (clé publiable dans wrangler.toml, clé secrète et webhook live dans Cloudflare).
 - Page de paiement : la photo (en mémoire seulement), le vrai max, les vraies notes avec les noms cachés, le vrai plan (2 semaines visibles). Refusé (DGCCRF, Meta) : faux compteurs de personnes, faux avis, avant/après d'inconnus, prix barrés fictifs, célébrités, produits de marque avec faux pourcentages.
 
 ## Nom et pages légales (25/11/2026)

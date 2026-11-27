@@ -71,6 +71,8 @@ test("textes : aucun faux chiffre de preuve sociale", () => {
   const files = ["src/q/app.js", "src/shared/questions.js", "src/app/app.js"].map((f) => readFileSync(new URL("../" + f, import.meta.url), "utf8")).join("\n");
   assert.ok(!/\b\d{2,3}[ ,.]?\d{3}\+? (scans|utilisateurs|clients)/i.test(files));
   assert.ok(!/le plus choisi|tendance|★/i.test(files));
+  assert.ok(!/\d+ personnes (se sont|ont)/i.test(files), "le compteur de la dernière heure vient du serveur, jamais un chiffre écrit en dur");
+  assert.ok(!/\*\*\*@/.test(files), "aucune adresse e-mail (même masquée) affichée");
 });
 
 test("appel à Claude : format de la requête, refus géré, aucune photo dans les journaux", async () => {

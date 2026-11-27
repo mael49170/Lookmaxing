@@ -311,3 +311,8 @@
 .reserved b { color: var(--c-text); }
 .reserved [data-timer] { color: var(--c-success); font-variant-numeric: tabular-nums; }
 .more { display: flex; gap: var(--sp-2); align-items: center; justify-content: center; margin: var(--sp-2) 0 0; color: var(--c-accent); font-weight: 700; font-size: var(--fs-sm); }
+.live { display: flex; gap: var(--sp-2); align-items: center; margin: 0; font-size: var(--fs-sm); color: var(--c-text-muted); }
+.live b { color: var(--c-text); font-variant-numeric: tabular-nums; }
+.live__dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c-success); box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-success) 60%, transparent); animation: livepulse 1.6s ease-out infinite; }
+@keyframes livepulse { to { box-shadow: 0 0 0 10px transparent; } }
+@media (prefers-reduced-motion: reduce) { .live__dot { animation: none; } }

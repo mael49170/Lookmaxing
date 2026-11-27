@@ -17,3 +17,5 @@ MAIL_FROM = "MOGX <bonjour@mogx.fr>"
 META_PIXEL_ID = ""
 # Clé PUBLIQUE de l'anti-robot Cloudflare Turnstile (la clé secrète va dans les secrets : TURNSTILE_SECRET).
 TURNSTILE_SITE_KEY = "0x4AAAAAAGVWygja2rNZvY44"
+# Clé PUBLIABLE Stripe (pas secrète) : paiement dans la page, Apple Pay / Google Pay. Mode LIVE depuis le 27/11/2026.
+STRIPE_PUBLISHABLE_KEY = "pk_live_51Ug0h3LqftZFCNTEim8wzBbIXP5eldQw6DnI9VNR32qBZuB9cAxTtoEzwVB9sspLZ0JnwHh3nci40iRhPh8Z6Js600fH9L75rt"
