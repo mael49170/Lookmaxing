@@ -14,7 +14,7 @@ SUPPORT_EMAIL = "contact@mogx.fr"
 MAIL_REPLY_TO = "contact@mogx.fr"
 MAIL_FROM = "MOGX <bonjour@mogx.fr>"
 # Pixel Meta (pubs) : l'identifiant du pixel (des chiffres, pas secret). Vide = pas de bannière cookies, rien n'est envoyé.
-META_PIXEL_ID = ""
+META_PIXEL_ID = "2248833219846255"
 # Clé PUBLIQUE de l'anti-robot Cloudflare Turnstile (la clé secrète va dans les secrets : TURNSTILE_SECRET).
 TURNSTILE_SITE_KEY = "0x4AAAAAAGVWygja2rNZvY44"
 # Clé PUBLIABLE Stripe (pas secrète) : paiement dans la page, Apple Pay / Google Pay. Mode LIVE depuis le 27/11/2026.
