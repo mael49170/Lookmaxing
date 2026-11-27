@@ -21,7 +21,7 @@ const AVATARS = {
 const BODY = { musclee: [26, 15, 0, true], mince: [17, 12, 0], moyenne: [21, 17, 2], enrobee: [23, 21, 9] };
 // Photos (créées par IA, fournies par Maël) : on les utilise dès qu'elles existent, sinon le dessin.
 // Silhouettes : seulement quand les 4 photos du genre sont là (sinon le mélange photo / dessin fait bricolé).
-const PHOTOS = new Set(["profil-homme", "morpho-homme-musclee", "morpho-homme-moyenne", "morpho-homme-mince", "morpho-homme-enrobee"]);
+const PHOTOS = new Set(["profil-homme", "morpho-homme-musclee", "morpho-homme-moyenne", "morpho-homme-mince", "morpho-homme-enrobee", "morpho-femme-musclee", "morpho-femme-mince", "morpho-femme-moyenne", "morpho-femme-enrobee"]);
 const genreKey = () => (S.answers.genre === "femme" ? "femme" : "homme");
 const morphoPhotos = () => ["musclee", "mince", "moyenne", "enrobee"].every((m) => PHOTOS.has(`morpho-${genreKey()}-${m}`));
 const profileArt = () => (PHOTOS.has(`profil-${genreKey()}`) ? `<img src="/img/profil-${genreKey()}.webp" alt="" width="600" height="800" decoding="async">` : PROFILE_ART);
