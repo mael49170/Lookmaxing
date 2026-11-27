@@ -320,3 +320,5 @@
 .terms-line { margin: 0; color: var(--c-text-muted); font-size: var(--fs-xs); line-height: 1.45; text-align: center; }
 .paybox__trust { margin: 0; color: var(--c-text-muted); font-size: var(--fs-xs); text-align: center; }
 .paybox__trust a { color: var(--c-text); }
+.rescan { display: grid; gap: var(--sp-4); padding-top: var(--sp-4); }
+.rescan .btn, .welcome a.btn { text-decoration: none; }

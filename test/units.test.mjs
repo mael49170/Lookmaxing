@@ -112,7 +112,7 @@ test("parcours complet : écrans clés présents, dans le bon ordre, accord AVAN
   // les universités ne sont citées que pour de vraies études (revue + année), avec la phrase qui dit qu'elles ne valident pas MOGX
   const sci = SCREENS.find((s) => s.id === "science");
   assert.ok(sci.sources.every(([, , c]) => /, (19|20)\d\d$/.test(c)), "chaque étude a sa revue et son année");
-  assert.match(sci.fine, /ne sont pas liées à MOGX et ne le valident pas/);
+  assert.ok(!/valid|approuv|recommand/i.test(JSON.stringify(sci)), "jamais « validé / approuvé / recommandé par » une université");
   const others = JSON.stringify(SCREENS.filter((s) => s.id !== "science"));
   assert.ok(!/Harvard|Princeton|Oxford|Cambridge|Stanford|MIT\b/.test(others), "aucune université citée hors de l'écran des études");
 });

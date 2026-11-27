@@ -18,7 +18,12 @@ async function api(path, body) {
 }
 
 function reportView(r) {
-  if (!r) return `<div class="alert">Pas de scan pour ce compte : ton plan a été fait d'après tes réponses.</div>`;
+  // pas encore d'analyse (photos refusées, ou analyse qui n'a pas marché avant le paiement) : on la propose ici
+  if (!r) return `<div class="rescan">
+      <h1 class="title" tabindex="-1">Ton analyse de visage t'attend.</h1>
+      <p class="lead">2 selfies, une minute, et tu as ta note, ton max et tes 15 critères. Ton plan s'appuie déjà sur tes réponses.</p>
+      <a class="btn btn--primary" href="/q/?analyse=1&g=${esc(me?.genre || "homme")}">Faire mon analyse</a>
+    </div>`;
   const verdict = { juste: "Tu avais vu juste.", mieux: "Tu t'es sous-estimé.", moins: "Tu étais un peu optimiste. Ton plan est là pour ça." }[r.verdict];
   const groups = Object.entries(GROUPS).map(([g, label]) => `<h2 class="section-title">${esc(label)}</h2>
     ${r.factors.filter((f) => f.group === g).map((f) => `<div class="factor"><span>${esc(f.label)}<small>${esc(f.phrase)}</small></span><b>${f.note}</b></div>`).join("")}`).join("");
@@ -84,7 +89,8 @@ function welcome() {
       <h1 class="title" tabindex="-1">Ton compte est créé.</h1>
       <p class="lead">Il est attaché à <b>${esc(me.email)}</b>. Pas de mot de passe : pour revenir, tu entres cette adresse et on t'envoie un code.</p>
       <p class="note">On vient de t'envoyer un e-mail avec ton lien d'accès direct et le récapitulatif de ton abonnement.</p>
-      <button class="btn btn--primary" data-welcome>${me.report ? "Voir ma note" : "Voir mon plan"}</button>
+      ${me.report ? `<button class="btn btn--primary" data-welcome>Voir ma note</button>`
+        : `<a class="btn btn--primary" href="/q/?analyse=1&g=${esc(me.genre || "homme")}">Faire mon analyse de visage</a><button class="btn btn--ghost" data-welcome>Voir mon plan d'abord</button>`}
     </section>`;
   app.querySelector("h1").focus();
 }
@@ -154,7 +160,8 @@ app.addEventListener("change", async (e) => {
 
 try {
   me = await api("me");
-  if (new URLSearchParams(location.search).get("bienvenue")) {
+  if (new URLSearchParams(location.search).get("analyse") && me.report) { history.replaceState(null, "", "/app/"); reveal(me.report); }
+  else if (new URLSearchParams(location.search).get("bienvenue")) {
     history.replaceState(null, "", "/app/");
     welcome();
     // pour les pubs Meta : l'achat, avec le vrai montant payé aujourd'hui (seulement si la personne a accepté les cookies)

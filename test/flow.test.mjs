@@ -16,7 +16,7 @@ const IMG = "data:image/jpeg;base64," + Buffer.from("faux jpeg ".repeat(200)).to
 
 function client(env) {
   const jar = {};
-  return async (mod, path, { method = "POST", body, query = "" } = {}) => {
+  const call = async (mod, path, { method = "POST", body, query = "" } = {}) => {
     const headers = { cookie: Object.entries(jar).map(([k, v]) => `${k}=${v}`).join("; ") };
     if (body) headers["content-type"] = "application/json";
     const request = new Request("http://localhost/api/" + path + query, { method, headers, body: body ? JSON.stringify(body) : undefined });
@@ -26,6 +26,8 @@ function client(env) {
     const data = res.headers.get("content-type")?.includes("json") ? await res.json() : null;
     return { status: res.status, data, location: res.headers.get("location") };
   };
+  call.jar = jar;
+  return call;
 }
 
 test("parcours complet avec scan", async () => {
@@ -156,4 +158,22 @@ test("e-mail demandé seulement au paiement : le compte est créé avec l'adress
   const m = await call(me, "me", { method: "GET" });
   assert.equal(m.data.email, "Nouveau@Example.com");
   assert.equal((await env.DB.prepare("SELECT COUNT(*) AS n FROM leads").first()).n, 0, "aucun e-mail gardé avant le paiement");
+});
+
+test("analyse refaite après le paiement, depuis un autre téléphone : rattachée au quiz du client", async () => {
+  const env = { DB: localD1(), DEV_FAKE_PAY: "1", DEV_FAKE_SCAN: "1" };
+  const phone1 = client(env);
+  await phone1(quiz, "quiz", { body: { answers: { genre: "femme", age: "25-34" } } });
+  const r = await phone1(checkout, "checkout", { body: { offer: "semaine", waiver: true } });
+  await phone1(done, "checkout-done", { method: "GET", query: new URL(r.data.url, "http://x").search + "&essai=1&email=f%40example.com" });
+  assert.equal((await phone1(me, "me", { method: "GET" })).data.report, null, "pas encore d'analyse");
+  // autre téléphone : seulement la session (pas de cookie de quiz)
+  const phone2 = client(env);
+  phone2.jar.lm_s = phone1.jar.lm_s;
+  assert.equal((await phone2(consent, "scan-consent", { body: { agree: true } })).status, 200);
+  const s = await phone2(scan, "scan", { body: { face: IMG, profil: IMG } });
+  assert.equal(s.status, 200); assert.ok(s.data.ok);
+  const m = await phone2(me, "me", { method: "GET" });
+  assert.ok(m.data.report && m.data.report.factors.length === 15, "le rapport apparaît dans l'espace");
+  assert.equal(m.data.genre, "femme");
 });

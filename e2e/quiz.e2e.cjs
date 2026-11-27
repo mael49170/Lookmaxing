@@ -176,15 +176,21 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     expect(/âge/.test(await h1(p)), "Espace ne valide pas (" + await h1(p) + ")");
   }, browser);
 
-  await test("F01-E5", "l'analyse échoue : message clair, reprendre les photos ou continuer sans", async (p) => {
+  await test("F01-E5", "l'analyse échoue avant le paiement : aucun message, on continue, l'analyse est proposée dans l'espace", async (p) => {
     await p.route("**/api/scan", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: false, problem: "pas_de_visage", message: "On ne trouve pas de visage sur une des photos." }) }));
     await runTo(p, "id:construction");
-    for (let k = 0; k < 3; k++) { await p.getByRole("dialog").waitFor({ timeout: 20000 }); await p.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
-    await p.getByRole("button", { name: "Continuer sans scan" }).waitFor({ timeout: 40000 });
-    expect(await p.getByRole("alert").filter({ hasText: "pas de visage" }).count(), "pas de message");
-    await p.getByRole("button", { name: "Reprendre les photos" }).click();
-    await p.waitForTimeout(400);
-    expect((await screenName(p)) === "photos" && await p.getByRole("button", { name: /^Prendre la photo de face/ }).count(), "pas revenu à la caméra");
+    // les 3 petites questions de l'écran (si elles ne sont pas déjà répondues)
+    for (let k = 0; k < 3; k++) { if (await p.getByRole("dialog").waitFor({ timeout: 8000 }).then(() => true, () => false)) await p.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
+    await p.locator("[data-tomail]:not([disabled])").waitFor({ timeout: 40000 });
+    expect(/Voir mon résultat/.test(await p.locator("[data-tomail]").textContent()), "le bouton n'invite pas à voir son résultat");
+    expect(!(await p.getByRole("alert").count()), "un message d'échec s'affiche encore");
+    expect(!(await p.getByText(/pas abouti|pas de visage/).count()), "le texte d'échec est encore là");
+    await p.locator("[data-tomail]").click();
+    await runTo(p, "offre");
+    expect(await p.getByText(/analyse de visage sur 15 critères, à faire dans ton espace/).count(), "l'analyse n'est pas proposée pour après le paiement");
+    await pay(p);
+    await p.getByRole("tab", { name: "Mon rapport" }).click();
+    expect(await p.getByRole("link", { name: "Faire mon analyse" }).count(), "pas de bouton pour faire l'analyse dans l'espace");
   }, browser);
 
   await test("F01-E6", "grand écran (1440 px) : pas de défilement horizontal, colonne centrée", async (p) => {
@@ -240,7 +246,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     expect(!(await p.getByText("?,?").count()), "notes affichées sans scan");
     await pay(p);
     await p.getByRole("tab", { name: "Mon rapport" }).click();
-    expect(await p.getByText(/Pas de scan pour ce compte/).count(), "rapport vide mal expliqué");
+    expect(await p.getByRole("link", { name: "Faire mon analyse" }).count(), "l'analyse n'est pas proposée dans l'espace");
   }, browser);
 
   await test("F03-H1", "moins de 18 ans : arrêt, rien de gardé", async (p) => {

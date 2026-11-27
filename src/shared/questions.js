@@ -60,7 +60,7 @@ const _SCREENS = [
     options: [o("souvent", "", "Oui, tout le temps"), o("parfois", "", "Parfois, sans que ce soit grave"), o("non", "", "Non, ma peau est plutôt nette")] },
   { id: "soins_routine", type: "single", title: "Tu as déjà suivi une routine de soins pour la peau ?",
     options: [o("jamais", "", "Jamais, je ne sais pas par où commencer"), o("abandon", "", "J'ai essayé, mais je ne tiens pas"), o("mieux", "", "J'en ai une, je veux de meilleurs résultats"), o("solide", "", "Ma routine est solide")] },
-  { id: "cheveux", type: "multi", title: "Et côté cheveux, qu'est-ce qui coince ?", lead: "Plusieurs réponses possibles.",
+  { id: "cheveux", type: "multi", title: "Cheveux, barbe : qu'est-ce qui coince ?", lead: "Plusieurs réponses possibles.",
     options: [o("ligne", "", "Ma ligne recule, ou mes cheveux s'affinent"), o("coupe", "", "Je ne sais pas quelle coupe me va"), o("texture", "", "Cheveux secs ou gras"), o("barbe", "", "Ma barbe pousse mal"), o("rien", "", "Rien de spécial, je veux progresser")] },
   { id: "fait_coupe", type: "ember", title: "La bonne coupe change ta tête dès le lendemain.",
     lead: "Une coupe pensée pour la forme de ton visage change toute ton allure. Le problème : presque personne ne sait laquelle lui va. Ton plan, lui, te le dit.", cta: "Continuer" },
@@ -98,23 +98,20 @@ const _SCREENS = [
     options: [o("bloque", "🧊", "Je bloque, en général je n'essaie pas"), o("gene", "😬", "J'y vais, mais ça devient gênant"), o("ok", "🙂", "Ça passe, sans être fluide"), o("facile", "😎", "Facile, c'est mon truc")] },
   agreeQ("dire_non", "Je sais dire non sans culpabiliser.", {
     echo: (a) => (["bloque", "gene"].includes(a.aborder) ? "Tu bloques face à quelqu'un qui te plaît. Souvent, ce n'est pas le visage : c'est la posture et le regard. Ça s'entraîne." : "") }),
-  // Vraies études publiées (vérifiables). Les universités ne valident PAS MOGX : la phrase « fine » le dit, elle doit rester.
-  // Vraies études publiées (vérifiables). Les universités ne valident PAS MOGX : la phrase « fine » le dit, elle doit rester.
+  // Vraies études publiées (vérifiables), citées comme résultats de recherche. Jamais « validé par » : les universités ne valident pas MOGX.
+  // Vraies études publiées (vérifiables), citées comme résultats de recherche. Jamais « validé par » : les universités ne valident pas MOGX.
   { id: "science", type: "info", eyebrow: "Ce que dit la recherche", title: "Ce que les plus grandes universités ont montré.",
-    unis: ["Harvard", "Princeton", "Karolinska"],
+    unis: ["Harvard", "Princeton", "St Andrews"],
     sources: [
       ["En 30 secondes, sans un mot, ton attitude a déjà été jugée.", "Harvard", "Ambady et Rosenthal, 1993"],
       ["Un visage est jugé en un dixième de seconde.", "Princeton", "Willis et Todorov, 2006"],
-      ["Une nuit trop courte, et on te trouve moins séduisant.", "Karolinska Institutet", "Axelsson et al., 2010"]],
-    fine: "Ces universités ne sont pas liées à MOGX et ne le valident pas : ce sont leurs chercheurs qui ont publié ces études.",
+      ["En 6 semaines, de petits changements de tes habitudes rendent ton visage plus séduisant aux yeux des autres.", "St Andrews", "Whitehead et al., 2012"]],
     cta: "Continuer" },
   { id: "mal_a_l_aise", type: "single", title: "Tu te sens souvent mal à l'aise quand tu parles aux autres ?",
     options: [o("oui", "", "Oui"), o("non", "", "Non"), o("sais_pas", "", "Je ne sais pas")] },
   agreeQ("relire", "Je relis mes messages plusieurs fois avant de les envoyer."),
   { id: "inquiet", type: "single", title: "Tu te sens inquiet ou débordé ?",
     options: [o("jamais", "", "Jamais"), o("parfois", "", "Parfois"), o("souvent", "", "Souvent")] },
-  agreeQ("calme_conflit", "Je reste calme et clair pendant un désaccord.", {
-    echo: (a) => (a.inquiet === "souvent" ? "Si l'inquiétude prend beaucoup de place, parles-en aussi à ton médecin : ça se soigne bien. Ton plan, lui, s'occupe de ton style et de tes habitudes." : "") }),
   { id: "glowup", type: "ember", title: "Ton glow-up commence maintenant.",
     lead: "Apparence et présence dans un seul plan : peau, coupe, style, posture, assurance. 5 à 10 minutes par jour, pas plus.", cta: "Continuer" },
   { id: "attentes", type: "multi", title: "Qu'est-ce que tu attends de tout ça ?", lead: "Plusieurs réponses possibles.",

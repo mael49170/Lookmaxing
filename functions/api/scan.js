@@ -14,7 +14,7 @@ export const onRequestPost = handle(async ({ request, env }) => {
   if (text.length > 4_500_000) throw new HttpError(413, "Photos trop lourdes.");
   let body;
   try { body = JSON.parse(text); } catch { throw new HttpError(400, "Envoi illisible."); }
-  const { d, quiz } = await currentQuiz(request, env);
+  const { d, quiz } = await currentQuiz(request, env, { preferCustomer: true });
   if (!quiz.scan_consent_at) throw new HttpError(403, "Il faut d'abord accepter l'analyse de tes photos.");
   const existing = await d.prepare("SELECT id FROM scans WHERE quiz_id = ?").bind(quiz.id).first();
   if (existing) return json({ ok: true, already: true });

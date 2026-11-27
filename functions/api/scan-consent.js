@@ -7,7 +7,7 @@ export const CONSENT_VERSION = "biometrie-v3"; // v3 (27/11/2026) : accord en un
 // POST { agree } -> enregistre (ou retire) le consentement biométrique, avec la version du texte accepté
 export const onRequestPost = handle(async ({ request, env }) => {
   const body = await readJson(request, 2_000);
-  const { d, quiz } = await currentQuiz(request, env);
+  const { d, quiz } = await currentQuiz(request, env, { preferCustomer: true });
   if (body.agree === true) {
     await d.prepare("UPDATE quizzes SET scan_consent_at = ?, scan_consent_version = ?, updated_at = ? WHERE id = ?").bind(now(), CONSENT_VERSION, now(), quiz.id).run();
     await track(d, "consentement_oui", { variant: quiz.variant, source: quiz.utm_source });

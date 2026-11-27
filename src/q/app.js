@@ -55,6 +55,15 @@ const OUTCOME = {
 // ---------- État (gardé dans l'onglet pour survivre à un rechargement) ----------
 const KEY = "lm_quiz_v1";
 let S = load() || fresh();
+// Analyse faite après le paiement, depuis l'espace : on ouvre directement l'écran des selfies
+{
+  const p = new URLSearchParams(location.search);
+  if (p.get("analyse") === "1") {
+    S = { ...fresh(), rescan: true, answers: { genre: p.get("g") === "femme" ? "femme" : "homme" } };
+    S.i = SCREENS.findIndex((x) => x.id === "selfies");
+    history.replaceState(null, "", location.pathname);
+  }
+}
 function fresh() {
   const p = new URLSearchParams(location.search);
   return {
@@ -114,7 +123,7 @@ const MODULES = { peau: "Peau nette", cheveux: "Coupe et cheveux", corps: "Corps
 // ---------- Accords au féminin ----------
 // Les textes sont écrits au masculin ; pour une femme on accorde, et on retire ce qui ne la concerne pas (barbe).
 const FEM = [[/Je suis prêt\b/g, "Je suis prête"], [/senti mis de côté/g, "sentie mise de côté"], [/inquiet ou débordé/g, "inquiète ou débordée"],
-  [/pris au sérieux/g, "prise au sérieux"], [/maître de moi/g, "maîtresse de moi"], [/Nerveux,/g, "Nerveuse,"], [/coupe, barbe, sommeil/g, "coupe, sourcils, sommeil"],
+  [/pris au sérieux/g, "prise au sérieux"], [/maître de moi/g, "maîtresse de moi"], [/Nerveux,/g, "Nerveuse,"], [/coupe, barbe, sommeil/g, "coupe, sourcils, sommeil"], [/^Cheveux, barbe : qu'est-ce qui coince \?$/, "Et côté cheveux, qu'est-ce qui coince ?"],
   [/Chemise, chino/g, "Chemisier, blazer"], [/Jogging, survêt/g, "Legging, jogging"], [/moins séduisant\b/g, "moins séduisante"]];
 const gx = (t) => (S.answers.genre === "femme" && typeof t === "string" ? FEM.reduce((x, [a, b]) => x.replace(a, b), t) : t);
 function genderize(s) {
@@ -284,7 +293,7 @@ const VIEWS = {
     </main>`;
     return `<main class="screen">${topbar()}
       <h1 class="title" tabindex="-1">Ton plan se construit d'après tes réponses.</h1>
-      <p class="lead">${S.scan === "failed" ? "L'analyse de tes photos n'a pas abouti : tu pourras la refaire juste avant ton résultat." : "On continue."}</p>
+      <p class="lead">Encore quelques questions, et ton plan est prêt.</p>
       ${footer(`<button class="btn btn--primary" data-next>Continuer</button>`)}
     </main>`;
   },
@@ -405,7 +414,7 @@ const VIEWS = {
       <section class="pitch">
         <h1 class="title title--hero" tabindex="-1">${t.scanned ? `Tu peux monter jusqu'à ${esc(fr(t.max))}.` : "Ton plan de 28 jours est prêt."}</h1>
         <ul class="pitch__list">
-          ${t.scanned ? "<li>Ta note et tes 15 critères, expliqués un par un</li><li>Tes forces, et ce qui te freine vraiment</li>" : "<li>Ton bilan d'après tes réponses</li>"}
+          ${t.scanned ? "<li>Ta note et tes 15 critères, expliqués un par un</li><li>Tes forces, et ce qui te freine vraiment</li>" : "<li>Ton analyse de visage sur 15 critères, à faire dans ton espace</li><li>Ton bilan d'après tes réponses</li>"}
           <li>Ton plan de 28 jours, fait pour ${t.scanned ? "ton visage" : "toi"}, 5 à 10 minutes par jour</li>
           <li>Résiliable en ligne en un clic</li>
         </ul>
@@ -572,6 +581,16 @@ function startScan() {
     .finally(() => { shots.face = shots.profil = null; save(); }); // on oublie les photos tout de suite
 }
 
+// Après le paiement : on attend la fin de l'analyse puis on retourne dans l'espace (ou on propose de reprendre les photos)
+async function finishRescan() {
+  const btn = app.querySelector(".screen__footer .btn--primary");
+  if (btn) { btn.setAttribute("aria-busy", "true"); btn.textContent = "Analyse en cours…"; }
+  if (scanPromise) await scanPromise;
+  if (S.scan === "done") { try { sessionStorage.removeItem(KEY); } catch {} location.href = "/app/?analyse=1"; return; }
+  app.querySelector(".lead").outerHTML = `<div class="alert" role="alert">${esc(S.scanError || "On n'a pas pu lire tes photos.")} Reprends-les en pleine lumière, de face puis de profil.</div>`;
+  if (btn) { btn.removeAttribute("aria-busy"); btn.textContent = "Reprendre les photos"; btn.removeAttribute("data-next"); btn.setAttribute("data-retake", ""); }
+}
+
 let projWaiting = false;
 async function runProjection() {
   if (S.scan === "running" && scanPromise && !projWaiting) {
@@ -610,6 +629,8 @@ app.addEventListener("click", async (e) => {
     if (s.id === "age" && S.answers.age === "-18") { delete S.answers.age; save(); return render(); }
     return back();
   }
+  if (S.rescan && t.hasAttribute("data-next") && SCREENS[S.i].type === "scanning") return finishRescan();
+  if (S.rescan && t.hasAttribute("data-noscan")) { location.href = "/app/"; return; }
   if (t.hasAttribute("data-next")) return next();
   if (t.hasAttribute("data-cookies")) return reopenConsent();
   if (t.hasAttribute("data-confirm")) { syncQuiz(); return next(); }
@@ -724,11 +745,8 @@ async function runBuilding() {
   if (face) { if (scanPromise) await scanPromise; await animate(0, 85, 100, 500); }
   if (SCREENS[S.i] !== s) return;
   const btn = app.querySelector("[data-tomail]");
-  if (S.scan === "failed") {
-    document.getElementById("build-error").innerHTML = `<div class="alert" role="alert">${esc(S.scanError || "L'analyse de tes photos n'a pas marché.")}</div>
-      <button class="btn btn--secondary" data-retake>Reprendre les photos</button>`;
-  }
-  btn.disabled = false; btn.removeAttribute("aria-busy"); btn.textContent = S.scan === "failed" ? "Continuer sans scan" : "Voir mon résultat";
+  // si l'analyse n'a pas marché : aucun message ici, la personne la refera dans son espace après le paiement
+  btn.disabled = false; btn.removeAttribute("aria-busy"); btn.textContent = "Voir mon résultat";
 }
 
 // ---------- Page de paiement ----------
