@@ -374,17 +374,31 @@ const VIEWS = {
     return `<main class="screen screen--sales">
       <div class="brand">MOGX</div>
       ${t.scanned ? `
-      <div class="duo">
-        <div class="duo__card">${scanPreview ? `<img src="${scanPreview}" alt="Ta photo">` : faceMesh({ className: "mesh" })}<span class="duo__tag">Aujourd'hui</span><span class="duo__lock">${lock}</span></div>
-        <div class="duo__card duo__card--hot"><span class="duo__label">Ton max</span><span class="duo__max">${esc(fr(t.max))}</span><span class="duo__gain">+${esc(fr(t.gain))} possible</span></div>
-      </div>
-      <h1 class="title title--hero" tabindex="-1">Tu peux monter jusqu'à ${esc(fr(t.max))}.</h1>
-      <p class="lead">Ta note actuelle, tes 15 critères et ton plan sont prêts. Il ne reste qu'à les débloquer.</p>
-      <section class="block"><h2 class="block__title">Tes points forts</h2><p class="block__lead">Ce qui joue déjà pour toi.</p>${t.strengths.map((f) => row(f, "hot")).join("")}</section>
-      <section class="block"><h2 class="block__title">Ce qui te freine</h2><p class="block__lead">${t.holding} critère${t.holding > 1 ? "s" : ""} qui se travaille${t.holding > 1 ? "nt" : ""}. C'est là que sont tes points.</p>${t.weaknesses.map((f) => row(f, "low")).join("")}</section>`
+      <section class="scanhero">
+        <h2 class="scanhero__title">Ton analyse est prête</h2>
+        <div class="scanhero__photo">${scanPreview ? `<img src="${scanPreview}" alt="Ta photo analysée">` : ""}${faceMesh({ className: "mesh scanhero__mesh" })}</div>
+        <div class="scanhero__rows">
+          <div class="scanhero__row"><span>Ta note aujourd'hui</span><b class="scanhero__locked">${lock}<i aria-hidden="true">?,?</i><span class="sr-only">cachée jusqu'au paiement</span></b></div>
+          <div class="scanhero__row"><span>Ton max</span><b class="scanhero__max">${esc(fr(t.max))}<small>/10</small></b></div>
+          <div class="scanhero__row"><span>À aller chercher</span><b class="scanhero__gain">+${esc(fr(t.gain))}</b></div>
+        </div>
+      </section>`
       : `<h1 class="title title--hero" tabindex="-1">Ton plan de 28 jours est prêt.</h1>
       <p class="lead">Fait d'après tes réponses, dans l'ordre de ce qui te pèse le plus.</p>`}
-      <button class="btn btn--primary" data-gopay>Débloquer mon résultat</button>
+      <section class="pitch">
+        ${t.scanned ? `<h1 class="title title--hero" tabindex="-1">Tu peux monter jusqu'à ${esc(fr(t.max))}.</h1>` : ""}
+        <ul class="pitch__list">
+          ${t.scanned ? "<li>Ta note et tes 15 critères, expliqués un par un</li><li>Tes forces, et ce qui te freine vraiment</li>" : "<li>Ton bilan d'après tes réponses</li>"}
+          <li>Ton plan de 28 jours, fait pour ${t.scanned ? "ton visage" : "toi"}</li>
+        </ul>
+        ${trial ? `<div class="reserved"><span class="reserved__icon" aria-hidden="true">🎁</span><span><b>Essai à ${esc(euros(o.intro))} réservé pour toi</b><span>Réservation : <b data-timer>--:--</b>, une seule fois</span></span></div>` : ""}
+        <button class="btn btn--primary" data-gopay>Obtenir mon rapport complet</button>
+      </section>
+      ${t.scanned ? `
+      <section class="block"><h2 class="block__title">Tes points forts</h2><p class="block__lead">Ce qui joue déjà pour toi.</p>${t.strengths.map((f) => row(f, "hot")).join("")}</section>
+      <section class="block"><h2 class="block__title">Ce qui te freine</h2><p class="block__lead">${t.holding} critère${t.holding > 1 ? "s" : ""} qui se travaille${t.holding > 1 ? "nt" : ""}. C'est là que sont tes points.</p>${t.weaknesses.map((f) => row(f, "low")).join("")}
+        <p class="more">${lock} Les noms et le détail dans ton rapport complet</p></section>
+      <button class="btn btn--primary" data-gopay>Obtenir mon rapport complet</button>` : ""}
       <section class="block"><h2 class="block__title">Ton programme de 28 jours</h2><p class="block__lead">Fait pour toi, dans l'ordre de ce qui te fera gagner le plus. Le détail se débloque avec ton accès.</p>
         ${(t.modules || []).map((m, i) => `<div class="module${i === 0 ? " module--first" : ""}">
           <div class="module__head"><span class="module__name">${esc(MODULES[m.domain] || m.domain)}</span><span class="module__count">${m.count} action${m.count > 1 ? "s" : ""}</span></div>
@@ -392,6 +406,7 @@ const VIEWS = {
         </div>`).join("")}
         ${t.habits ? `<p class="module__habits">${lock}<span>Et chaque jour, ${t.habits} habitude${t.habits > 1 ? "s" : ""} à cocher, avec un rappel le matin si tu veux.</span></p>` : ""}
       </section>
+      <button class="btn btn--primary" data-gopay>Obtenir mon plan</button>
       <section class="block"><h2 class="block__title">Ce que tu débloques</h2>
         <ul class="includes">
           ${t.scanned ? "<li>Ta note, ton max et tes 15 critères, avec une phrase claire pour chacun</li>" : "<li>Ton bilan d'après tes réponses</li>"}
@@ -756,7 +771,9 @@ function startTimer() {
     const left = S.pw.offer.expires_at - (Date.now() + skew);
     if (left <= 0) { clearInterval(timerTick); S.pw = null; save(); loadPaywall().catch(() => {}); return; }
     const m = Math.floor(left / 60e3), s = Math.floor((left % 60e3) / 1e3);
-    el.textContent = `${m}:${String(s).padStart(2, "0")}`;
+    const txt = `${m}:${String(s).padStart(2, "0")}`;
+    el.textContent = txt;
+    document.querySelectorAll("[data-timer]").forEach((x) => { x.textContent = txt; });
   };
   update(); timerTick = setInterval(update, 1000);
 }
