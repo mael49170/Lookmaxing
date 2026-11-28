@@ -415,7 +415,7 @@ const VIEWS = {
               </div>
             </div>
             <div class="pm pm--card">
-              <label class="pm__head"><input type="radio" name="pm" value="card"${S.pm === "wallet" ? "" : " checked"}><span class="pm__name">Carte bancaire</span><span class="pm__logos" aria-hidden="true"><i>VISA</i><i>Mastercard</i><i>CB</i></span></label>
+              <label class="pm__head"><input type="radio" name="pm" value="card"${S.pm === "wallet" ? "" : " checked"}><span class="pm__name">Carte bancaire</span><span class="pm__logos" aria-hidden="true"><i>VISA</i><i>MC</i><i>CB</i></span></label>
               <div class="pm__body">
                 <label class="cpay__field"><span>Ton e-mail (ton accès arrive dessus)</span><input id="pay-email" type="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.fr" value="${esc(S.payEmail || "")}"></label>
                 <div id="payel" class="cpay__card"><div class="skel"></div></div>
