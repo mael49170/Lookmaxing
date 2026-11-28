@@ -864,7 +864,7 @@ async function mountCheckout() {
         fetchClientSecret: async () => (await api("checkout", { offer: DEFAULT_OFFER, custom: true })).clientSecret,
         elementsOptions: { appearance: APPEARANCE, fonts: [{ family: "Inter", src: `url(${location.origin}/fonts/inter.woff2)`, weight: "100 900" }] },
       });
-      const card = checkout.createPaymentElement({ layout: "tabs", fields: { billingDetails: { email: "never" } } });
+      const card = checkout.createPaymentElement({ layout: "tabs", fields: { billingDetails: { email: "never", address: "if_required" } } });
       const express = checkout.createExpressCheckoutElement({ buttonHeight: 50, buttonType: { applePay: "plain", googlePay: "plain" }, buttonTheme: { applePay: "white", googlePay: "white" }, paymentMethods: { link: "never", amazonPay: "never", paypal: "never", klarna: "never" } });
       express.on("ready", ({ availablePaymentMethods }) => { const has = availablePaymentMethods && Object.values(availablePaymentMethods).some(Boolean); const or = document.getElementById("xpay-or"); if (or) or.hidden = !has; cpay.hasExpress = has; });
       express.on("confirm", async (ev) => {
