@@ -145,9 +145,9 @@ h1 { font-size: ${story ? 104 : 86}px; }
 .before::after { content: "?"; position: absolute; right: 10px; bottom: -70px; font-family: var(--font-display); font-weight: 800; font-size: 360px; line-height: 1; color: #18181b; }
 .bubble { position: relative; z-index: 1; padding: 20px 24px; border-radius: 26px 26px 26px 8px; background: var(--c-surface-alt); color: var(--c-text-muted); font-size: 27px; font-weight: 600; line-height: 1.25; }
 .after { display: flex; justify-content: center; align-items: ${story ? "flex-start" : "center"}; }
-.after .phone { zoom: ${story ? 0.86 : 0.76}; }
+.after .phone { zoom: ${story ? 0.68 : 0.76}; }
 .after .phone > .chip { position: absolute; z-index: 5; top: -26px; left: 50%; transform: translateX(-50%); font-size: 26px; white-space: nowrap; }
-${story ? `.before { flex-direction: row; flex-wrap: wrap; padding: 24px; gap: 14px; flex: none; } .before .chip { flex-basis: 100%; flex-grow: 0; } .before::after { font-size: 260px; bottom: -60px; } .bubble { font-size: 25px; padding: 16px 20px; } .bubble:nth-of-type(2) { order: 3; } .split { gap: 50px; } .storyurl { margin-top: 0; }` : ""}
+${story ? `.before { flex-direction: row; flex-wrap: wrap; padding: 24px; gap: 14px; flex: none; } .before .chip { flex-basis: 100%; flex-grow: 0; } .before::after { font-size: 260px; bottom: -60px; } .bubble { font-size: 25px; padding: 16px 20px; } .bubble:nth-of-type(2) { order: 3; } .split { gap: 50px; } .storyurl { position: absolute; left: 0; right: 0; bottom: 250px; }` : ""}
 `);
 }
 
@@ -167,10 +167,10 @@ function varB(h) {
   ${story ? `<div class="storyurl">mogx.fr <small>· visage créé par IA</small></div>` : cta("Commencer", "Visage créé par IA · photo jamais enregistrée")}
 </div>`, `
 .ad { gap: ${story ? 30 : 22}px; }
-h1 { font-size: ${story ? 112 : 92}px; }
+h1 { font-size: ${story ? 112 : 84}px; }
 .sub { font-size: ${story ? 32 : 30}px; }
 .fan { position: relative; flex: 1; min-height: 0; }
-.fan .phone { position: absolute; top: ${story ? 20 : 4}px; left: 50%; zoom: ${story ? 0.8 : 0.6}; }
+.fan .phone { position: absolute; top: ${story ? 20 : 4}px; left: 50%; zoom: ${story ? 0.8 : 0.68}; }
 .ph1 { transform: translateX(-50%) translateX(-330px) translateY(70px) rotate(-9deg) scale(.86); filter: brightness(.65); }
 .ph3 { transform: translateX(-50%) translateX(330px) translateY(70px) rotate(9deg) scale(.86); filter: brightness(.65); }
 .ph2 { transform: translateX(-50%); z-index: 2; }
@@ -198,7 +198,7 @@ function varC(h) {
     </div>
   </div>
 </div>`, `
-.ad--c { padding: 0; }
+.ad--c { padding: 0; background: var(--c-bg); }
 .hero { position: absolute; left: 50%; top: ${story ? -40 : -190}px; width: 1080px; aspect-ratio: 3 / 4; transform: translateX(-50%); }
 .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--c-bg) ${story ? 18 : 26}%, transparent ${story ? 45 : 50}%), linear-gradient(to bottom, var(--c-bg), transparent 22%); }
@@ -218,7 +218,57 @@ h1 { font-size: ${story ? 104 : 88}px; }
 `);
 }
 
-const VARIANTS = { "A-avant-apres": varA, "B-3-etapes": varB, "C-visage-maille": varC };
+// ——— Variante D : 2 cases côte à côte, le MÊME visage IA (aucune transformation) : sans analyse / avec MOGX ———
+function varD(g) { return (h) => {
+  const story = h > 1500;
+  const crit = g === "femme" ? ["Regard", "Qualité de peau", "Coiffure", "Teint"] : ["Mâchoire", "Qualité de peau", "Coiffure", "Barbe et sourcils"];
+  return page(h, `<div class="ad ad--d">
+  ${top}
+  <h1>Ce que les autres <em>voient de toi.</em></h1>
+  <div class="duo">
+    <div class="case case--before">
+      <div class="pic"><img src="${SRC}/img/carte-${g}.webp" alt=""><b class="qm">?</b></div>
+      <div class="lab"><span class="chip chip--grey">Avant</span><p>Tu devines.</p></div>
+    </div>
+    <div class="case case--after">
+      <div class="pic"><img src="${SRC}/img/carte-${g}.webp" alt="">${meshOn()}<div class="scanline"></div>
+        <div class="note"><span>Ta note</span><b><i>??</i><small>/100</small></b></div>
+      </div>
+      <div class="lab"><span class="chip chip--hot">Avec MOGX</span><p>Tu sais. <span>Et tu as ton plan.</span></p></div>
+      <div class="crits">${crit.map((c) => `<span>${c}</span>`).join("")}<span>+ 11 critères</span></div>
+    </div>
+  </div>
+  ${story ? `<div class="storyurl">mogx.fr <small>· même visage, créé par IA · aucune retouche</small></div>` : cta("Fais ton scan", "Même visage créé par IA · aucune retouche")}
+</div>`, `
+h1 { font-size: ${story ? 100 : 80}px; }
+.duo { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 24px; }
+.case { position: relative; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+.pic { position: relative; flex: none; height: ${story ? 640 : 540}px; border-radius: 34px; overflow: hidden; background: #000; }
+.pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.case--before .pic { border: 2px dashed var(--c-border); }
+.case--before .pic img { filter: grayscale(1) brightness(.55) contrast(.9) blur(1.5px); }
+.qm { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: ${story ? 300 : 260}px; color: rgba(246,243,239,.16); }
+.case--after .pic { border: 2px solid var(--c-accent); box-shadow: 0 0 60px -10px color-mix(in srgb, var(--c-glow) 80%, transparent); }
+.case--after .pic::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, color-mix(in srgb, var(--c-bg) 75%, transparent), transparent 35%); }
+.pic .mesh { position: absolute; z-index: 1; left: 24%; top: 21%; width: 53%; height: 45%; } .case--after .scanline { top: 42%; }
+.note { position: absolute; z-index: 3; left: 18px; right: 18px; bottom: 18px; display: flex; justify-content: space-between; align-items: baseline; padding: 12px 18px; border-radius: 18px; background: color-mix(in srgb, var(--c-bg) 80%, transparent); border: 1px solid var(--c-accent-line); }
+.note span { font-size: 18px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--c-text-muted); }
+.note b { font-family: var(--font-display); font-size: 40px; font-weight: 800; }
+.note b i { font-style: normal; filter: blur(8px); background: var(--heat); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.note b small { font-size: 18px; color: var(--c-text-muted); margin-left: 4px; }
+.lab { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.lab p { margin: 0; font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: ${story ? 44 : 36}px; }
+.case--before .lab p { color: var(--c-text-muted); }
+.lab p span { color: var(--c-accent-strong); }
+.crits { display: flex; flex-wrap: wrap; gap: 8px; }
+.crits span { font-size: 19px; font-weight: 700; padding: 8px 14px; border-radius: 999px; background: var(--c-surface); border: 1px solid var(--c-accent-line); }
+.lab .chip { font-size: 18px; } .lab p { flex-basis: 100%; } ${story ? ".storyurl { margin-top: 0; } .crits span { font-size: 21px; }" : ""}
+${story ? "" : ".case--before .lab { margin-bottom: 0; } .case--before::after { content: ''; }"}
+`);
+}; }
+
+const VARIANTS = {
+  "D-deux-cases-homme": varD("homme"), "D-deux-cases-femme": varD("femme"), "A-avant-apres": varA, "B-3-etapes": varB, "C-visage-maille": varC };
 const FORMATS = { fil: 1350, story: 1920 };
 
 const files = [];
