@@ -45,14 +45,15 @@ export function potential(scores) {
   return Math.max(overall(scores), Math.min(95, overall(raised(scores))));
 }
 
-// Les 3 premiers paliers, cumulés (décidé par Maël le 28/11/2026 : de gros résultats tout de suite) :
-// semaine 1 : tout ce qui change en une journée : vêtements, posture, coupe, barbe ou sourcils ;
-// semaine 2 : + la moitié de ce que la peau, le teint et les cernes peuvent gagner ;
-// semaine 3 : + peau, teint et cernes en entier, la moitié de la silhouette et de la mâchoire (dégonfler, double menton).
+// Les 3 premiers paliers, cumulés (décidé par Maël le 28/11/2026 : le plus gros résultat dès la 1re semaine, puis ça continue) :
+// semaine 1 : ce qui change en quelques jours : vêtements, posture, coupe, barbe ou sourcils, et la moitié de ce que
+//             la peau, le teint et les cernes peuvent gagner (routine, eau, sommeil) ;
+// semaine 2 : + peau, teint et cernes à 85 %, mâchoire à moitié (sel, sucre : visage qui dégonfle), silhouette au quart ;
+// semaine 3 : + peau, teint et cernes en entier, mâchoire aux trois quarts, silhouette à moitié.
 const STEPS = [
-  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1 },
   { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 0.5, peau_teint: 0.5, yeux: 0.5 },
-  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 1, peau_teint: 1, yeux: 1, corps: 0.5, machoire: 0.5 },
+  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 0.85, peau_teint: 0.85, yeux: 0.85, machoire: 0.5, corps: 0.25 },
+  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 1, peau_teint: 1, yeux: 1, machoire: 0.75, corps: 0.5 },
 ];
 export function earlyGains(scores) {
   const now = overall(scores), max = potential(scores);
