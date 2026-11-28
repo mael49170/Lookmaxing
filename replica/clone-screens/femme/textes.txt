@@ -13,7 +13,18 @@ Tu es…
 Homme
 Femme
 
-===== S03 age
+===== S03 etapes
+Comment ça se passe
+3 étapes, 3 minutes
+Tes réponses
+Tes objectifs, tes habitudes, ce qui te gêne.
+Deux selfies
+De face et de profil. Facultatif, jamais enregistrés.
+Ta note et ton plan
+Où tu en es, jusqu'où tu peux aller, et comment.
+C'est parti
+
+===== S04 age
 MOGX
 Quel âge as-tu ?
 
@@ -26,17 +37,6 @@ Moins de 18 ans
 35 à 44 ans
 45 à 54 ans
 55 ans et plus
-
-===== S04 etapes
-Comment ça se passe
-3 étapes, 3 minutes
-Tes réponses
-Tes objectifs, tes habitudes, ce qui te gêne.
-Deux selfies
-De face et de profil. Facultatif, jamais enregistrés.
-Ta note et ton plan
-Où tu en es, jusqu'où tu peux aller, et comment.
-C'est parti
 
 ===== S05 scan_intro
 15 critères passés au crible
@@ -97,17 +97,6 @@ L'analyse prend un peu de temps : elle se termine pendant que tu réponds aux qu
 
 Continuer
 
-===== S09 plan_intro
-Aujourd'hui
-?,?
-Ton max
-?,?
-Pendant que l'analyse finit, on construit ton plan.
-
-Tes réponses décident de ce qu'on attaque en premier. Encore 2 minutes.
-
-Continuer
-
 ===== S10 difficultes
 Qu'est-ce qui te pèse le plus en ce moment ?
 
@@ -134,7 +123,16 @@ Je manque d'aisance avec les gens
 Rien de grave, je veux juste progresser
 Continuer
 
-===== S11 objectifs
+===== S11 message
+D'après tes réponses
+
+Ta confiance va changer de camp.
+
+On attaque ce qui te freine le plus. Chaque jour, une action simple, que tu vois et que tu sens.
+
+Je suis prête
+
+===== S12 objectifs
 Qu'est-ce que tu veux obtenir ?
 
 Plusieurs réponses possibles.
@@ -156,15 +154,6 @@ Faire bonne impression au travail
 Être la meilleure version de moi
 Continuer
 
-===== S12 message
-D'après tes réponses
-
-Ta confiance va changer de camp.
-
-On attaque ce qui te freine le plus. Chaque jour, une action simple, que tu vois et que tu sens.
-
-Je suis prête
-
 ===== S13 mission
 Notre mission
 
@@ -172,7 +161,7 @@ Devenir la version de toi qu'on remarque.
 
 Pas de chirurgie, pas de régime miracle. Des gestes simples, chaque jour, sur ce qui change vraiment ton image. Dehors comme dedans.
 
-Tu as dit : « Manque de confiance ». C'est exactement là qu'on va aller chercher tes points.
+Tu veux : « Plus d'assurance ». C'est exactement ce que ton plan va aller chercher.
 
 Continuer
 
@@ -280,7 +269,20 @@ Ton plan travaille ces points chaque jour. Le résultat dépend de ta régularit
 
 Continuer
 
-===== S24 projection
+===== S24 ignore
+Tu t'es déjà sentie mise de côté à cause de ton physique ?
+Tu t'es déjà sentie mise de côté à cause de ton physique ?
+📵
+Oui, souvent
+Messages sans réponse, on me coupe la parole
+👻
+Parfois, je me sens transparente
+🤷
+Pas vraiment, mais je sens que je peux mieux faire
+😎
+Jamais, je veux juste passer un cap
+
+===== S25 projection
 D'après ton scan et tes réponses
 
 +17 points à gagner, dès ta 1re semaine.
@@ -303,7 +305,19 @@ Une estimation calculée seulement sur ce qui se travaille (peau, coupe, posture
 
 Je veux ces points
 
-===== S25 recap
+===== S26 compliments
+On te fait des compliments sur ton physique ?
+On te fait des compliments sur ton physique ?
+🦗
+Presque jamais
+🙃
+Rarement, surtout ma famille
+🙂
+Quand je fais un effort
+😌
+Assez souvent, j'en veux plus
+
+===== S27 recap
 Ton plan prend forme
 
 Il reste ce qu'une photo ne montre pas.
@@ -321,31 +335,6 @@ Assurance
 Regard, posture, aisance
 ENSUITE
 On continue
-
-===== S26 ignore
-Tu t'es déjà sentie mise de côté à cause de ton physique ?
-Tu t'es déjà sentie mise de côté à cause de ton physique ?
-📵
-Oui, souvent
-Messages sans réponse, on me coupe la parole
-👻
-Parfois, je me sens transparente
-🤷
-Pas vraiment, mais je sens que je peux mieux faire
-😎
-Jamais, je veux juste passer un cap
-
-===== S27 compliments
-On te fait des compliments sur ton physique ?
-On te fait des compliments sur ton physique ?
-🦗
-Presque jamais
-🙃
-Rarement, surtout ma famille
-🙂
-Quand je fais un effort
-😌
-Assez souvent, j'en veux plus
 
 ===== S28 groupe
 Quand tu parles en groupe, tu es plutôt…
@@ -451,7 +440,7 @@ PRINCETON
 Un visage est jugé en un dixième de seconde.
 Willis et Todorov, 2006
 ST ANDREWS
-6 semaines suffisent : changer ce que tu manges rend ton visage visiblement plus séduisant aux yeux des autres.
+Quelques détails de ton visage peuvent faire toute la différence dans la façon dont les autres te perçoivent.
 Whitehead et al., 2012
 Continuer
 

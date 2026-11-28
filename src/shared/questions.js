@@ -16,6 +16,8 @@ export const DIFFICULTES = [
   o("progresser", "🔥", "Rien de grave, je veux juste progresser"),
 ];
 
+const OBJECTIFS = [o("assurance", "😎", "Plus d'assurance"), o("relation", "💘", "Des rencontres, une relation"), o("respect", "🏆", "Être pris au sérieux"), o("miroir", "🪞", "Me plaire dans le miroir"), o("photos", "📸", "Être bien sur les photos"), o("travail", "🎯", "Faire bonne impression au travail"), o("meilleur", "👑", "Être la meilleure version de moi")];
+
 // Phrase de l'écran S11, selon la première difficulté choisie
 export const S11_TEXT = {
   confiance: ["Ta confiance va changer de camp.", "On attaque ce qui te freine le plus. Chaque jour, une action simple, que tu vois et que tu sens."],
@@ -37,24 +39,25 @@ const _SCREENS = [
   { id: "accueil", type: "landing" },
   { id: "genre", type: "single", title: "On commence : tu es…", lead: "Ton scan et ton plan sont faits pour toi.",
     options: [o("homme", "", "Un homme"), o("femme", "", "Une femme")], avatars: true },
-  { id: "age", type: "single", title: "Quel âge as-tu ?", lead: "Ça aide à lire ta peau et à régler ton plan.",
-    options: [o("-18", "", "Moins de 18 ans"), o("18-24", "", "18 à 24 ans"), o("25-34", "", "25 à 34 ans"), o("35-44", "", "35 à 44 ans"), o("45-54", "", "45 à 54 ans"), o("55+", "", "55 ans et plus")] },
   { id: "etapes", type: "info", eyebrow: "Comment ça se passe", title: "3 étapes, 3 minutes",
     steps: [["📋", "Tes réponses", "Tes objectifs, tes habitudes, ce qui te gêne."], ["📸", "Deux selfies", "De face et de profil. Facultatif, jamais enregistrés."], ["📈", "Ta note et ton plan", "Où tu en es, jusqu'où tu peux aller, et comment."]],
     cta: "C'est parti" },
+  { id: "age", type: "single", title: "Quel âge as-tu ?", lead: "Ça aide à lire ta peau et à régler ton plan.",
+    options: [o("-18", "", "Moins de 18 ans"), o("18-24", "", "18 à 24 ans"), o("25-34", "", "25 à 34 ans"), o("35-44", "", "35 à 44 ans"), o("45-54", "", "45 à 54 ans"), o("55+", "", "55 ans et plus")] },
   { id: "scan_intro", type: "info", eyebrow: "15 critères passés au crible", title: "On va lire ton visage comme les autres le lisent.", lead: "Les gens se font un avis en quelques secondes. On te montre lequel, critère par critère, et surtout ce qui se travaille.", cta: "Continuer" },
   // l'accord pour l'analyse du visage est donné sur l'écran des selfies (une phrase au-dessus du bouton), décidé par Maël le 27/11/2026
   { id: "selfies", type: "selfies" },
   { id: "photos", type: "photos", skipIf: (a) => !a.consent },
   { id: "analyse", type: "scanning", skipIf: (a) => !a.consent || a.scan === "idle" },
-  { id: "plan_intro", type: "plan_intro" },
+  { id: "plan_intro", type: "plan_intro", skipIf: (a) => a.consent && a.scan !== "idle" }, // après l'analyse, il ferait 2 messages d'affilée
   { id: "difficultes", type: "multi", title: "Qu'est-ce qui te pèse le plus en ce moment ?", lead: "Plusieurs réponses possibles.", options: DIFFICULTES },
-  { id: "objectifs", type: "multi", title: "Qu'est-ce que tu veux obtenir ?", lead: "Plusieurs réponses possibles.",
-    options: [o("assurance", "😎", "Plus d'assurance"), o("relation", "💘", "Des rencontres, une relation"), o("respect", "🏆", "Être pris au sérieux"), o("miroir", "🪞", "Me plaire dans le miroir"), o("photos", "📸", "Être bien sur les photos"), o("travail", "🎯", "Faire bonne impression au travail"), o("meilleur", "👑", "Être la meilleure version de moi")] },
   { id: "message", type: "hero_message", cta: "Je suis prêt" },
+  { id: "objectifs", type: "multi", title: "Qu'est-ce que tu veux obtenir ?", lead: "Plusieurs réponses possibles.",
+    options: OBJECTIFS },
   { id: "mission", type: "ember", eyebrow: "Notre mission", title: "Devenir la version de toi qu'on remarque.",
     lead: "Pas de chirurgie, pas de régime miracle. Des gestes simples, chaque jour, sur ce qui change vraiment ton image. Dehors comme dedans.", cta: "Continuer",
-    echo: (a) => { const d = DIFFICULTES.find((x) => x.id === (a.difficultes || [])[0]); return d && d.id !== "progresser" ? `Tu as dit : « ${d.label} ». C'est exactement là qu'on va aller chercher tes points.` : ""; } },
+    // reprend la question juste avant (objectifs), pour que le message change si la réponse change
+    echo: (a) => { const o = OBJECTIFS.find((x) => x.id === (a.objectifs || [])[0]); return o ? `Tu veux : « ${o.label} ». C'est exactement ce que ton plan va aller chercher.` : ""; } },
   // ----- Visage et corps -----
   { id: "peau_acne", type: "single", title: "Boutons, imperfections, teint irrégulier : ça te concerne ?",
     options: [o("souvent", "", "Oui, tout le temps"), o("parfois", "", "Parfois, sans que ce soit grave"), o("non", "", "Non, ma peau est plutôt nette")] },
@@ -85,13 +88,13 @@ const _SCREENS = [
   { id: "style", type: "single", title: "Tu t'habilles comment, la plupart du temps ?",
     options: [o("sweat", "👕", "Basique", "Jean, t-shirt, sweat"), o("streetwear", "🧢", "Streetwear", "Baskets, oversize, casquette"), o("sport", "🏃", "Sportswear", "Jogging, survêt, baskets"), o("noir", "🖤", "Tout en noir", "Simple et sombre"), o("chic", "👔", "Chic décontracté", "Chemise, chino, chaussures en cuir"), o("aucun", "🤷", "Je ne fais pas attention", "Je mets ce qui traîne")] },
   { id: "avant_apres", type: "contrast" },
-  { id: "projection", type: "projection", skipIf: (a) => !a.consent },
-  { id: "recap", type: "recap", cta: "On continue" },
   // ----- Présence -----
   { id: "ignore", type: "single", title: "Tu t'es déjà senti mis de côté à cause de ton physique ?",
     options: [o("oui", "📵", "Oui, souvent", "Messages sans réponse, on me coupe la parole"), o("parfois", "👻", "Parfois, je me sens transparent"), o("peu", "🤷", "Pas vraiment, mais je sens que je peux mieux faire"), o("jamais", "😎", "Jamais, je veux juste passer un cap")] },
+  { id: "projection", type: "projection", skipIf: (a) => !a.consent },
   { id: "compliments", type: "single", title: "On te fait des compliments sur ton physique ?",
     options: [o("jamais", "🦗", "Presque jamais"), o("famille", "🙃", "Rarement, surtout ma famille"), o("effort", "🙂", "Quand je fais un effort"), o("souvent", "😌", "Assez souvent, j'en veux plus")] },
+  { id: "recap", type: "recap", cta: "On continue" },
   { id: "groupe", type: "single", title: "Quand tu parles en groupe, tu es plutôt…",
     options: [o("assure", "", "À l'aise, on m'écoute"), o("neutre", "", "Je parle, sans vraiment marquer"), o("nerveux", "", "Nerveux, j'ai du mal à garder l'attention")],
     echo: (a) => (["jamais", "famille"].includes(a.compliments) ? "Peu de compliments, ça ne veut pas dire rien à mettre en valeur. Ça veut dire que personne ne l'a encore fait. On va s'en occuper." : "") },
@@ -117,7 +120,7 @@ const _SCREENS = [
     sources: [
       ["En 30 secondes, sans un mot, ton attitude a déjà été jugée.", "Harvard", "Ambady et Rosenthal, 1993"],
       ["Un visage est jugé en un dixième de seconde.", "Princeton", "Willis et Todorov, 2006"],
-      ["6 semaines suffisent : changer ce que tu manges rend ton visage visiblement plus séduisant aux yeux des autres.", "St Andrews", "Whitehead et al., 2012"]],
+      ["Quelques détails de ton visage peuvent faire toute la différence dans la façon dont les autres te perçoivent.", "St Andrews", "Whitehead et al., 2012"]],
     cta: "Continuer" },
   { id: "mal_a_l_aise", type: "single", title: "Tu te sens souvent mal à l'aise quand tu parles aux autres ?",
     options: [o("oui", "", "Oui"), o("non", "", "Non"), o("sais_pas", "", "Je ne sais pas")] },

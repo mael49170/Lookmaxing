@@ -193,3 +193,13 @@ test("plan pour une femme : jamais de tâche barbe", async () => {
     assert.ok(!p.days.some((d) => d.tasks.some((t) => /barbe/i.test(taskText(t, "femme")))), "le mot barbe dans un plan de femme");
   }
 });
+
+test("jamais deux messages d'affilée sans question (décidé par Maël le 28/11/2026)", () => {
+  const MSG = new Set(["info", "scanning", "plan_intro", "hero_message", "ember", "contrast", "projection", "recap", "profile", "teaser"]);
+  for (const ctx of [{ consent: true, scan: "running" }, { consent: false, scan: "idle" }])
+    for (const genre of ["homme", "femme"]) {
+      const seen = SCREENS.filter((s) => !(s.skipIf && s.skipIf({ ...ctx, genre })));
+      for (let i = 1; i < seen.length; i++)
+        assert.ok(!(MSG.has(seen[i].type) && MSG.has(seen[i - 1].type)), `${seen[i - 1].id} puis ${seen[i].id} (${genre}, photos ${ctx.consent})`);
+    }
+});

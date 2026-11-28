@@ -153,10 +153,23 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   }, browser);
 
   await test("F01-E2", "retour arrière du navigateur : écran précédent, réponses gardées", async (p) => {
-    await runTo(p, "id:objectifs");
+    await runTo(p, "id:message");
     await p.goBack(); await p.waitForTimeout(300);
     expect((await screenName(p)) === "difficultes", "pas revenu aux difficultés (écran " + (await screenName(p)) + ")");
     expect(await p.getByRole("checkbox", { checked: true }).count() >= 1, "réponse perdue");
+  }, browser);
+
+  await test("F01-E6", "retour arrière puis autre réponse : le message suit la nouvelle réponse", async (p) => {
+    await runTo(p, "id:difficultes");
+    const boxes = p.getByRole("checkbox");
+    await boxes.nth(0).check({ force: true });
+    await p.getByRole("button", { name: "Continuer" }).click(); await p.waitForTimeout(400);
+    const before = await h1(p);
+    await p.goBack(); await p.waitForTimeout(400);
+    await boxes.nth(0).uncheck({ force: true }); await boxes.nth(2).check({ force: true });
+    await p.getByRole("button", { name: "Continuer" }).click(); await p.waitForTimeout(400);
+    const after = await h1(p);
+    expect((await screenName(p)) === "message" && before !== after, `message inchangé : « ${after} »`);
   }, browser);
 
   await test("F01-E3", "double clic sur Payer : une seule page de paiement demandée", async (p) => {
@@ -173,7 +186,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     await p.keyboard.press("ArrowDown"); await p.waitForTimeout(600);
     expect(/autres voient/.test(await h1(p)), "la flèche a validé toute seule");
     await p.keyboard.press("Space"); await p.waitForTimeout(600);
-    expect(/âge/.test(await h1(p)), "Espace ne valide pas (" + await h1(p) + ")");
+    expect(/3 étapes/.test(await h1(p)), "Espace ne valide pas (" + await h1(p) + ")");
   }, browser);
 
   await test("F01-E5", "l'analyse échoue avant le paiement : aucun message, on continue, l'analyse est proposée dans l'espace", async (p) => {
@@ -252,6 +265,8 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   await test("F03-H1", "moins de 18 ans : arrêt, rien de gardé", async (p) => {
     await p.getByRole("radio", { name: /Homme/ }).check({ force: true });
     await p.waitForTimeout(500);
+    await p.getByRole("button", { name: "C'est parti" }).click(); // écran « 3 étapes, 3 minutes »
+    await p.waitForTimeout(400);
     await p.getByText("Moins de 18 ans").click(); // un simple toucher (l'écran change aussitôt)
     await p.getByRole("heading", { name: "Réservé aux adultes" }).waitFor();
     const cookies = await p.context().cookies();
