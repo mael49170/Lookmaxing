@@ -45,15 +45,15 @@ export function potential(scores) {
   return Math.max(overall(scores), Math.min(95, overall(raised(scores))));
 }
 
-// Les 3 premiers paliers, cumulés (décidé par Maël le 28/11/2026 : le plus gros résultat dès la 1re semaine, puis ça continue) :
-// semaine 1 : ce qui change en quelques jours : vêtements, posture, coupe, barbe ou sourcils, et la moitié de ce que
-//             la peau, le teint et les cernes peuvent gagner (routine, eau, sommeil) ;
-// semaine 2 : + peau, teint et cernes à 85 %, mâchoire à moitié (sel, sucre : visage qui dégonfle), silhouette au quart ;
-// semaine 3 : + peau, teint et cernes en entier, mâchoire aux trois quarts, silhouette à moitié.
+// Les 3 premiers paliers, cumulés (décidé par Maël le 28/11/2026 : le plus gros chiffre en semaine 1, puis ça descend, ex. +7, +4, +3) :
+// semaine 1 : ce qui change en une journée : vêtements, posture, coupe, barbe ou sourcils ;
+// semaine 2 : + 60 % de ce que la peau, le teint et les cernes peuvent gagner, mâchoire au quart (visage qui dégonfle) ;
+// semaine 3 : + peau, teint et cernes en entier, mâchoire à moitié, silhouette à 40 %.
+const FAST = { tenue: 1, posture: 1, coiffure: 1, pilosite: 1 };
 const STEPS = [
-  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 0.5, peau_teint: 0.5, yeux: 0.5 },
-  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 0.85, peau_teint: 0.85, yeux: 0.85, machoire: 0.5, corps: 0.25 },
-  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 1, peau_teint: 1, yeux: 1, machoire: 0.75, corps: 0.5 },
+  FAST,
+  { ...FAST, peau_qualite: 0.6, peau_teint: 0.6, yeux: 0.6, machoire: 0.25 },
+  { ...FAST, peau_qualite: 1, peau_teint: 1, yeux: 1, machoire: 0.5, corps: 0.4 },
 ];
 export function earlyGains(scores) {
   const now = overall(scores), max = potential(scores);
