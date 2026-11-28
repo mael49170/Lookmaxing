@@ -1,0 +1,887 @@
+
+===== S01 accueil
+MOGX
+
+MOGX, TOP EN FRANCE
+
+Ce que les autres voient de toi
+en 3 secondes.
+
+Ta note sur 15 critères, et exactement quoi changer pour la faire monter.
+
+Tu es…
+Homme
+Femme
+
+===== S03 age
+MOGX
+Quel âge as-tu ?
+
+Ça aide à lire ta peau et à régler ton plan.
+
+Quel âge as-tu ?
+Moins de 18 ans
+18 à 24 ans
+25 à 34 ans
+35 à 44 ans
+45 à 54 ans
+55 ans et plus
+
+===== S04 etapes
+Comment ça se passe
+3 étapes, 3 minutes
+Tes réponses
+Tes objectifs, tes habitudes, ce qui te gêne.
+Deux selfies
+De face et de profil. Facultatif, jamais enregistrés.
+Ta note et ton plan
+Où tu en es, jusqu'où tu peux aller, et comment.
+C'est parti
+
+===== S05 scan_intro
+15 critères passés au crible
+On va lire ton visage comme les autres le lisent.
+
+Les gens se font un avis en quelques secondes. On te montre lequel, critère par critère, et surtout ce qui se travaille.
+
+Continuer
+
+===== S06 selfies
+2 selfies, et ton analyse démarre.
+1
+De face
+2
+De profil
+
+Un selfie de toi, bien éclairé, sans lunettes ni casquette.
+
+En touchant « Prendre mes selfies », tu acceptes que notre IA analyse ton visage sur ces 2 photos pour calculer ta note. Jamais enregistrées, vues par personne. Détails
+
+Prendre mes selfies
+Continuer sans photo
+
+===== S07 photos
+Selfie de face
+1/2 · De face
+
+Visage dans l'ovale, regard droit, pleine lumière.
+
+Continuer sans photo
+
+===== S07 photos
+Ton selfie de face : on le garde ?
+1/2 · De face
+C'est bon
+Je la reprends
+
+===== S07 photos
+Selfie de profil
+2/2 · De profil
+
+Tourne la tête sur le côté : on doit voir ton oreille.
+
+Continuer sans photo
+
+===== S07 photos
+Ton selfie de profil : on le garde ?
+2/2 · De profil
+C'est bon
+Je la reprends
+
+===== S08 analyse
+On lit ton visage.
+
+Lecture : Mâchoire…
+
+L'analyse prend un peu de temps : elle se termine pendant que tu réponds aux questions suivantes.
+
+Continuer
+
+===== S09 plan_intro
+Aujourd'hui
+?,?
+Ton max
+?,?
+Pendant que l'analyse finit, on construit ton plan.
+
+Tes réponses décident de ce qu'on attaque en premier. Encore 2 minutes.
+
+Continuer
+
+===== S10 difficultes
+Qu'est-ce qui te pèse le plus en ce moment ?
+
+Plusieurs réponses possibles.
+
+Qu'est-ce qui te pèse le plus en ce moment ?
+😞
+Manque de confiance
+💔
+Les rencontres ne marchent pas
+😶
+J'ai l'impression qu'on ne me voit pas
+🤔
+Je n'aime pas mon visage
+🏋️
+Mon poids ou ma silhouette
+😓
+Ma peau (boutons, cernes, rides)
+🥀
+Mes cheveux ou ma ligne de cheveux
+🗣️
+Je manque d'aisance avec les gens
+🔥
+Rien de grave, je veux juste progresser
+Continuer
+
+===== S11 objectifs
+Qu'est-ce que tu veux obtenir ?
+
+Plusieurs réponses possibles.
+
+Qu'est-ce que tu veux obtenir ?
+😎
+Plus d'assurance
+💘
+Des rencontres, une relation
+🏆
+Être prise au sérieux
+🪞
+Me plaire dans le miroir
+📸
+Être bien sur les photos
+🎯
+Faire bonne impression au travail
+👑
+Être la meilleure version de moi
+Continuer
+
+===== S12 message
+D'après tes réponses
+
+Ta confiance va changer de camp.
+
+On attaque ce qui te freine le plus. Chaque jour, une action simple, que tu vois et que tu sens.
+
+Je suis prête
+
+===== S13 mission
+Notre mission
+
+Devenir la version de toi qu'on remarque.
+
+Pas de chirurgie, pas de régime miracle. Des gestes simples, chaque jour, sur ce qui change vraiment ton image. Dehors comme dedans.
+
+Tu as dit : « Manque de confiance ». C'est exactement là qu'on va aller chercher tes points.
+
+Continuer
+
+===== S14 peau_acne
+Boutons, imperfections, teint irrégulier : ça te concerne ?
+Boutons, imperfections, teint irrégulier : ça te concerne ?
+Oui, tout le temps
+Parfois, sans que ce soit grave
+Non, ma peau est plutôt nette
+
+===== S15 soins_routine
+Tu as déjà suivi une routine de soins pour la peau ?
+Tu as déjà suivi une routine de soins pour la peau ?
+Jamais, je ne sais pas par où commencer
+J'ai essayé, mais je ne tiens pas
+J'en ai une, je veux de meilleurs résultats
+Ma routine est solide
+
+===== S16 cheveux
+Et côté cheveux, qu'est-ce qui coince ?
+
+Plusieurs réponses possibles.
+
+Et côté cheveux, qu'est-ce qui coince ?
+Ma ligne recule, ou mes cheveux s'affinent
+Je ne sais pas quelle coupe me va
+Cheveux secs ou gras
+Rien de spécial, je veux progresser
+Continuer
+
+===== S17 fait_coupe
+Des cheveux qui paraissent plus épais, c'est possible.
+
+La bonne coupe et le bon produit donnent de la densité à l'œil, dès le lendemain. Ton plan te dit lesquels, pour la forme de ton visage.
+
+Continuer
+
+===== S18 morpho
+Ta silhouette, c'est plutôt…
+
+Ça sert seulement à régler ton plan.
+
+Ta silhouette, c'est plutôt…
+Musclée
+Mince
+Moyenne
+Enrobée
+
+===== S19 sport
+Tu as un programme de sport en ce moment ?
+Tu as un programme de sport en ce moment ?
+Non, je ne fais pas de sport
+J'en fais, mais sans programme
+Oui, je suis un vrai programme
+
+===== S20 alimentation
+Tu manges équilibré, en général ?
+Tu manges équilibré, en général ?
+Presque jamais
+Parfois
+Presque toujours
+
+===== S21 style
+Tu t'habilles comment, la plupart du temps ?
+Tu t'habilles comment, la plupart du temps ?
+👕
+Basique
+Jean, t-shirt, sweat
+🧢
+Streetwear
+Baskets, oversize, casquette
+🏃
+Sportswear
+Legging, jogging, baskets
+🖤
+Tout en noir
+Simple et sombre
+👔
+Chic décontracté
+Chemisier, blazer, chaussures en cuir
+🤷
+Je ne fais pas attention
+Je mets ce qui traîne
+
+===== S22 avant_apres
+Ce que tu as coché. Et ce que ton plan travaille.
+Aujourd'hui
+Manque de confiance
+Les rencontres ne marchent pas
+Avec ton plan
+Une assurance qui se travaille chaque jour
+Une première impression soignée
+
+Ton plan travaille ces points chaque jour. Le résultat dépend de ta régularité.
+
+Continuer
+
+===== S23 projection
+D'après ton scan et tes réponses
+
++17 points à gagner, dès ta 1re semaine.
+SEMAINE 1
++4
+Style, coupe, sourcils
+SEMAINE 2
++4
+Posture, peau, teint
+SEMAINE 3
++4
+Mâchoire plus nette, silhouette
+SEMAINE 4 ET APRÈS
++5
+Jusqu'à ton max : +17 au total
+
+5 à 10 minutes par jour. Ta note de départ reste cachée jusqu'au résultat.
+
+Une estimation calculée seulement sur ce qui se travaille (peau, coupe, posture, style…), jamais sur l'ossature. Pas une promesse : ça dépend de toi.
+
+Je veux ces points
+
+===== S24 recap
+Ton plan prend forme
+
+Il reste ce qu'une photo ne montre pas.
+Visage
+D'après ton scan
+fait
+Corps
+Mince → plus tonique
+fait
+Habitudes
+Réglées pour que tu tiennes
+fait
+🧠
+Assurance
+Regard, posture, aisance
+ENSUITE
+On continue
+
+===== S25 ignore
+Tu t'es déjà sentie mise de côté à cause de ton physique ?
+Tu t'es déjà sentie mise de côté à cause de ton physique ?
+📵
+Oui, souvent
+Messages sans réponse, on me coupe la parole
+👻
+Parfois, je me sens transparente
+🤷
+Pas vraiment, mais je sens que je peux mieux faire
+😎
+Jamais, je veux juste passer un cap
+
+===== S26 compliments
+On te fait des compliments sur ton physique ?
+On te fait des compliments sur ton physique ?
+🦗
+Presque jamais
+🙃
+Rarement, surtout ma famille
+🙂
+Quand je fais un effort
+😌
+Assez souvent, j'en veux plus
+
+===== S27 groupe
+Quand tu parles en groupe, tu es plutôt…
+
+Peu de compliments, ça ne veut pas dire rien à mettre en valeur. Ça veut dire que personne ne l'a encore fait. On va s'en occuper.
+
+Quand tu parles en groupe, tu es plutôt…
+À l'aise, on m'écoute
+Je parle, sans vraiment marquer
+Nerveuse, j'ai du mal à garder l'attention
+
+===== S28 posture
+Ton langage du corps, tu le notes comment ?
+Ton langage du corps, tu le notes comment ?
+Bon : je sais me tenir et utiliser mes gestes
+Moyen : je pourrais avoir plus de présence
+Faible : j'ai souvent l'air mal à l'aise
+
+===== S29 regard
+Regarder les gens dans les yeux, c'est…
+Regarder les gens dans les yeux, c'est…
+Facile, ça m'aide à créer le lien
+Ça va, mais je me sens un peu gênée
+Difficile, je détourne vite le regard
+
+===== S30 personnalite
+Ce que tu dégages compte autant que ton visage.
+
+Assurance, regard, façon de parler : on lit tes réponses et tu reçois des exercices courts pour que ça se sente. En photo comme en vrai.
+
+Continuer
+
+===== S31 rencontrer
+Rencontrer de nouvelles personnes, ça te plaît ?
+Rencontrer de nouvelles personnes, ça te plaît ?
+Jamais
+Rarement
+Parfois
+Souvent
+Toujours
+
+===== S32 soirees
+Tu es d'accord avec cette phrase ?
+J'adore organiser des soirées avec plein d'amis.
+J'adore organiser des soirées avec plein d'amis.
+Pas d'accord
+Plutôt pas d'accord
+Je ne sais pas
+Plutôt d'accord
+D'accord
+
+===== S33 message_appel
+Tu préfères envoyer un message plutôt qu'appeler ?
+Tu préfères envoyer un message plutôt qu'appeler ?
+Jamais
+Rarement
+Parfois
+Souvent
+Toujours
+
+===== S34 confiance_info
+On va trouver ce qui vide ta confiance.
+
+Puis chaque jour, une petite action pour la remplir. Pas d'exploit : de la régularité. C'est elle qui change tout.
+
+Continuer
+
+===== S35 aborder
+Aborder quelqu'un qui te plaît, c'est comment pour toi ?
+Aborder quelqu'un qui te plaît, c'est comment pour toi ?
+🧊
+Je bloque, en général je n'essaie pas
+😬
+J'y vais, mais ça devient gênant
+🙂
+Ça passe, sans être fluide
+😎
+Facile, c'est mon truc
+
+===== S36 dire_non
+Tu es d'accord avec cette phrase ?
+Je sais dire non sans culpabiliser.
+
+Tu bloques face à quelqu'un qui te plaît. Souvent, ce n'est pas le visage : c'est la posture et le regard. Ça s'entraîne.
+
+Je sais dire non sans culpabiliser.
+Pas d'accord
+Plutôt pas d'accord
+Je ne sais pas
+Plutôt d'accord
+D'accord
+
+===== S37 science
+Ce que dit la recherche
+Ce que les plus grandes universités ont montré.
+HARVARD
+PRINCETON
+ST ANDREWS
+HARVARD
+En 30 secondes, sans un mot, ton attitude a déjà été jugée.
+Ambady et Rosenthal, 1993
+PRINCETON
+Un visage est jugé en un dixième de seconde.
+Willis et Todorov, 2006
+ST ANDREWS
+6 semaines suffisent : changer ce que tu manges rend ton visage visiblement plus séduisant aux yeux des autres.
+Whitehead et al., 2012
+Continuer
+
+===== S38 mal_a_l_aise
+Tu te sens souvent mal à l'aise quand tu parles aux autres ?
+Tu te sens souvent mal à l'aise quand tu parles aux autres ?
+Oui
+Non
+Je ne sais pas
+
+===== S39 relire
+Tu es d'accord avec cette phrase ?
+Je relis mes messages plusieurs fois avant de les envoyer.
+Je relis mes messages plusieurs fois avant de les envoyer.
+Pas d'accord
+Plutôt pas d'accord
+Je ne sais pas
+Plutôt d'accord
+D'accord
+
+===== S40 inquiet
+Tu te sens inquiète ou débordée ?
+Tu te sens inquiète ou débordée ?
+Jamais
+Parfois
+Souvent
+
+===== S41 glowup
+Ton glow-up commence maintenant.
+
+Apparence et présence dans un seul plan : peau, coupe, style, posture, assurance. 5 à 10 minutes par jour, pas plus.
+
+Continuer
+
+===== S42 attentes
+Qu'est-ce que tu attends de tout ça ?
+
+Plusieurs réponses possibles.
+
+Qu'est-ce que tu attends de tout ça ?
+Plus d'assurance
+Plus de charme
+Plus de rencontres, de meilleurs rendez-vous
+Me sentir maîtresse de moi
+Arrêter de trop réfléchir
+Continuer
+
+===== S43 duree
+Combien de temps veux-tu y consacrer ?
+Combien de temps veux-tu y consacrer ?
+2 semaines
+1 mois
+2 à 3 mois
+6 mois
+Je ne sais pas encore
+
+===== S44 profil
+Ton profil, d'après tes réponses
+
+Posée, plutôt réservée.
+Ouverture aux autres
+33
+Aisance en face à face
+60
+Calme sous pression
+100
+Affirmation de soi
+50
+
+Ton plan commence par « ouverture aux autres » : c'est là que tu as le plus à gagner.
+
+Un résumé de tes réponses, pas un test psychologique.
+
+Assembler mon plan
+
+===== S45 construction
+MOGX
+On prépare ton rapport.
+Rapport de ton visage
+34 %
+Plan d'assurance
+0 %
+Programme peau
+0 %
+Conseils de style
+0 %
+Ton plan se prépare
+
+===== S46 apercu
+MOGX
+
+Aperçu de ton analyse
+
+Tu as plus de marge que tu ne crois.
+Ton point fort
+Harmonie du nez
+Points que tu peux gagner
++17
+Critères qui te freinent
+3
+Voir ma note
+
+===== S47 offre
+MOGX
+Ton analyse est prête
+Ta note aujourd'hui
+?,?
+cachée jusqu'au paiement
+Ton max
+75/100
+À aller chercher
++17points
+Dès la 1re semaine
++4points
+Tu peux monter jusqu'à 75/100.
+Ta note et tes 15 critères, expliqués un par un
+Tes forces, et ce qui te freine vraiment
+Ton plan de 28 jours, fait pour ton visage, 5 à 10 minutes par jour
+Résiliable en ligne en un clic
+🎁
+Essai à 0,99 € réservé pour toi
+Réservation : 15:00, une seule fois
+Ton essai à 0,99 €
+Accès complet
+3 jours pour tout débloquer
+0,99 €
+aujourd'hui
+Je veux mon résultat tout de suite et je renonce à mon droit de rétractation de 14 jours une fois le résultat ouvert.
+
+Aujourd'hui 0,99 € pour 3 jours, puis 16,99 € par semaine jusqu'à résiliation. Engagement minimum : les 3 jours puis 1 semaine (17,98 € au total). Résiliable en ligne en un clic ; la résiliation prend effet à la fin de l'engagement.
+
+Débloquer mon résultat, 0,99 €
+
+🔒 Paiement sécurisé par Stripe · Apple Pay, Google Pay ou carte · CGV
+
+✅ Satisfait ou remboursé sur ta 1re semaine payée, sous conditions (voir plus bas)
+
+Tes points forts
+
+Ce qui joue déjà pour toi.
+
+Critère caché jusqu'au paiement :
+77
+Critère caché jusqu'au paiement :
+76
+Critère caché jusqu'au paiement :
+67
+Ce qui te freine
+
+3 critères qui se travaillent. C'est là que sont tes points.
+
+Critère caché jusqu'au paiement :
+43
+Critère caché jusqu'au paiement :
+44
+Critère caché jusqu'au paiement :
+44
+
+Les noms et le détail dans ton rapport complet
+
+Obtenir mon rapport complet
+Ton programme de 28 jours
+
+Fait pour toi, dans l'ordre de ce qui te fera gagner le plus. Le détail se débloque avec ton accès.
+
+Peau nette
+4 semaines
+
+La plupart des imperfections viennent d'une peau mal nettoyée, agressée ou trop exposée au soleil. Une routine simple et régulière bat dix produits utilisés au hasard.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
+Détail caché jusqu'au paiement.
+
++ 3 gestes au quotidien
+
+La coupe qui te va
+4 semaines
+
+Une coupe choisie pour la forme de ton visage change toute ta tête, du jour au lendemain. C'est souvent le plus gros gain, et le plus rapide.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx
+Détail caché jusqu'au paiement.
+
++ 1 geste au quotidien
+
+Tes meilleures photos
+4 semaines
+
+Une même personne peut paraître très différente d'une photo à l'autre : lumière, angle, expression. On t'apprend les réglages qui te montrent sous ton meilleur jour.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Silhouette et énergie
+4 semaines
+
+Un corps qui bouge change le visage (moins gonflé), la posture et l'assurance. Pas besoin de salle : 3 séances de 20 minutes par semaine, qui montent un peu chaque semaine.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
+Détail caché jusqu'au paiement.
+
++ 2 gestes au quotidien
+
+Chaque jour, tes actions à cocher dans ton espace, avec un rappel le matin si tu veux.
+
+Obtenir mon plan
+Satisfait ou remboursé
+SATISFAIT OU REMBOURSÉ ✦ 1RE SEMAINE ✦
+14
+JOURS
+
+Suis ton plan au moins 5 jours sur les 7 de ta 1re semaine payée (cases cochées dans ton espace). Si ça ne te convient pas, ta 1re semaine (16,99 €) t'est remboursée en un clic, dans les 14 jours qui suivent son prélèvement.
+
+Pas de justificatif à envoyer : ton suivi dans ton espace suffit. Les conditions en détail
+
+Commencer pour 0,99 €
+Tes infos sont en sécurité
+
+On ne vend ni ne partage tes données, à personne. Tes photos ne sont jamais enregistrées : elles servent à l'analyse, puis elles disparaissent. En savoir plus
+
+Une question avant de payer ?
+
+Écris-nous, une vraie personne te répond.
+
+Écrire à aide@exemple.fr
+Prix et infos
+Mon espace
+CGV
+Confidentialité
+Mentions légales
+15:00
+essai à 0,99 € réservé
+Débloquer
+
+===== OFFRE
+MOGX
+Ton analyse est prête
+Ta note aujourd'hui
+?,?
+cachée jusqu'au paiement
+Ton max
+75/100
+À aller chercher
++17points
+Dès la 1re semaine
++4points
+Tu peux monter jusqu'à 75/100.
+Ta note et tes 15 critères, expliqués un par un
+Tes forces, et ce qui te freine vraiment
+Ton plan de 28 jours, fait pour ton visage, 5 à 10 minutes par jour
+Résiliable en ligne en un clic
+🎁
+Essai à 0,99 € réservé pour toi
+Réservation : 14:58, une seule fois
+Ton essai à 0,99 €
+Accès complet
+3 jours pour tout débloquer
+0,99 €
+aujourd'hui
+Je veux mon résultat tout de suite et je renonce à mon droit de rétractation de 14 jours une fois le résultat ouvert.
+
+Aujourd'hui 0,99 € pour 3 jours, puis 16,99 € par semaine jusqu'à résiliation. Engagement minimum : les 3 jours puis 1 semaine (17,98 € au total). Résiliable en ligne en un clic ; la résiliation prend effet à la fin de l'engagement.
+
+Débloquer mon résultat, 0,99 €
+
+🔒 Paiement sécurisé par Stripe · Apple Pay, Google Pay ou carte · CGV
+
+✅ Satisfait ou remboursé sur ta 1re semaine payée, sous conditions (voir plus bas)
+
+Tes points forts
+
+Ce qui joue déjà pour toi.
+
+Critère caché jusqu'au paiement :
+77
+Critère caché jusqu'au paiement :
+76
+Critère caché jusqu'au paiement :
+67
+Ce qui te freine
+
+3 critères qui se travaillent. C'est là que sont tes points.
+
+Critère caché jusqu'au paiement :
+43
+Critère caché jusqu'au paiement :
+44
+Critère caché jusqu'au paiement :
+44
+
+Les noms et le détail dans ton rapport complet
+
+Obtenir mon rapport complet
+Ton programme de 28 jours
+
+Fait pour toi, dans l'ordre de ce qui te fera gagner le plus. Le détail se débloque avec ton accès.
+
+Peau nette
+4 semaines
+
+La plupart des imperfections viennent d'une peau mal nettoyée, agressée ou trop exposée au soleil. Une routine simple et régulière bat dix produits utilisés au hasard.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
+Détail caché jusqu'au paiement.
+
++ 3 gestes au quotidien
+
+La coupe qui te va
+4 semaines
+
+Une coupe choisie pour la forme de ton visage change toute ta tête, du jour au lendemain. C'est souvent le plus gros gain, et le plus rapide.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx
+Détail caché jusqu'au paiement.
+
++ 1 geste au quotidien
+
+Tes meilleures photos
+4 semaines
+
+Une même personne peut paraître très différente d'une photo à l'autre : lumière, angle, expression. On t'apprend les réglages qui te montrent sous ton meilleur jour.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Silhouette et énergie
+4 semaines
+
+Un corps qui bouge change le visage (moins gonflé), la posture et l'assurance. Pas besoin de salle : 3 séances de 20 minutes par semaine, qui montent un peu chaque semaine.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
+Détail caché jusqu'au paiement.
+
++ 2 gestes au quotidien
+
+Chaque jour, tes actions à cocher dans ton espace, avec un rappel le matin si tu veux.
+
+Obtenir mon plan
+Satisfait ou remboursé
+SATISFAIT OU REMBOURSÉ ✦ 1RE SEMAINE ✦
+14
+JOURS
+
+Suis ton plan au moins 5 jours sur les 7 de ta 1re semaine payée (cases cochées dans ton espace). Si ça ne te convient pas, ta 1re semaine (16,99 €) t'est remboursée en un clic, dans les 14 jours qui suivent son prélèvement.
+
+Pas de justificatif à envoyer : ton suivi dans ton espace suffit. Les conditions en détail
+
+Commencer pour 0,99 €
+Tes infos sont en sécurité
+
+On ne vend ni ne partage tes données, à personne. Tes photos ne sont jamais enregistrées : elles servent à l'analyse, puis elles disparaissent. En savoir plus
+
+Une question avant de payer ?
+
+Écris-nous, une vraie personne te répond.
+
+Écrire à aide@exemple.fr
+Prix et infos
+Mon espace
+CGV
+Confidentialité
+Mentions légales
+14:58
+essai à 0,99 € réservé
+Débloquer

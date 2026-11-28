@@ -127,7 +127,8 @@ const onFace = (svg) => svg.replace("<svg ", '<svg preserveAspectRatio="none" ')
 // Les textes sont écrits au masculin ; pour une femme on accorde, et on retire ce qui ne la concerne pas (barbe).
 const FEM = [[/Je suis prêt\b/g, "Je suis prête"], [/senti mis de côté/g, "sentie mise de côté"], [/inquiet ou débordé/g, "inquiète ou débordée"],
   [/pris au sérieux/g, "prise au sérieux"], [/maître de moi/g, "maîtresse de moi"], [/Nerveux,/g, "Nerveuse,"], [/coupe, barbe, sommeil/g, "coupe, sourcils, sommeil"], [/^Cheveux, barbe : qu'est-ce qui coince \?$/, "Et côté cheveux, qu'est-ce qui coince ?"],
-  [/Chemise, chino/g, "Chemisier, blazer"], [/Jogging, survêt/g, "Legging, jogging"], [/moins séduisant\b/g, "moins séduisante"]];
+  [/Chemise, chino/g, "Chemisier, blazer"], [/Jogging, survêt/g, "Legging, jogging"], [/moins séduisant\b/g, "moins séduisante"],
+  [/je me sens transparent\b/g, "je me sens transparente"], [/un peu gêné(?!e)/g, "un peu gênée"]];
 const gx = (t) => (S.answers.genre === "femme" && typeof t === "string" ? FEM.reduce((x, [a, b]) => x.replace(a, b), t) : t);
 function genderize(s) {
   if (S.answers.genre !== "femme") return s;
@@ -345,7 +346,7 @@ const VIEWS = {
   },
 
   recap(s) {
-    const morpho = { mince: "Mince → plus de carrure", moyenne: "Moyenne → plus dessinée", musclee: "Musclée → plus nette", enrobee: "Enrobée → plus affinée" }[S.answers.morpho] || "D'après tes réponses";
+    const morpho = { mince: S.answers.genre === "femme" ? "Mince → plus tonique" : "Mince → plus de carrure", moyenne: "Moyenne → plus dessinée", musclee: "Musclée → plus nette", enrobee: "Enrobée → plus affinée" }[S.answers.morpho] || "D'après tes réponses";
     const step = (emoji, label, hint, done) => `<div class="step ${done ? "" : "step--next"}">${done ? `<span class="step__done" aria-hidden="true">${ICON_CHECK}</span>` : `<span class="option__emoji" aria-hidden="true">${emoji}</span>`}
       <span class="option__text"><span class="option__label">${label}</span><span class="option__hint">${esc(hint)}</span></span>${done ? '<span class="sr-only">fait</span>' : '<span class="step__tag">ENSUITE</span>'}</div>`;
     return `<main class="screen"><div class="hero">${topbar()}

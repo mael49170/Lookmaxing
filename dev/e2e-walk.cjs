@@ -1,11 +1,16 @@
 // Parcours complet du quiz en local (mode essai), avec une capture par écran dans replica/clone-screens/.
-// node dev/e2e-walk.cjs [variante a|b] [photos|sans]   (l'e-mail n'est plus demandé avant le paiement)
+// node dev/e2e-walk.cjs [variante a|b] [photos|sans] [homme|femme]   (l'e-mail n'est plus demandé avant le paiement)
+// En femme, les captures vont dans replica/clone-screens/femme/ et le texte de chaque écran dans textes.txt.
 // La caméra est simulée par Chromium (fausse vidéo), comme un vrai téléphone.
 const { chromium } = require("playwright");
 const path = require("path");
 (async () => {
   const variant = process.argv[2] || "a";
   const photos = process.argv[3] !== "sans";
+  const femme = process.argv[4] === "femme";
+  const dir = femme ? "replica/clone-screens/femme" : "replica/clone-screens";
+  require("fs").mkdirSync(dir, { recursive: true });
+  const texts = [];
   const b = await chromium.launch({ args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"] });
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, permissions: ["camera"], reducedMotion: "reduce" });
   const p = await ctx.newPage();
@@ -13,7 +18,7 @@ const path = require("path");
   p.on("console", (m) => m.type() === "error" && !/status of 4\d\d/.test(m.text()) && errs.push(m.text()));
   p.on("pageerror", (e) => errs.push(e.message));
   await p.goto(`http://localhost:8788/q/?v=${variant}&utm_source=test`, { waitUntil: "networkidle" });
-  const shot = (name) => p.screenshot({ path: path.join("replica/clone-screens", `${name}.png`) });
+  const shot = (name) => p.screenshot({ path: path.join(dir, `${name}.png`) });
   const cur = () => p.evaluate(async () => { const i = JSON.parse(sessionStorage.getItem("lm_quiz_v1") || "{}").i || 0; const s = (await import("/shared/questions.js")).SCREENS[i]; return { i, id: s.id, sid: s.sid, type: s.type }; });
   let last = "", same = 0;
   for (let n = 0; n < 90; n++) {
@@ -22,7 +27,7 @@ const path = require("path");
     const key = s.id + (await p.locator("[data-keep]").count()) + (await p.locator("[data-shoot]").count());
     if (key === last) { if (++same > 30) throw new Error("bloqué sur " + s.id); } else same = 0;
     last = key;
-    if (same === 0) { await shot(`${s.sid}-${s.id}${variant === "b" && s.i === 0 ? "-b" : ""}`); console.log(s.sid, s.id, "|", (await p.locator("h1").first().textContent().catch(() => "")).trim().slice(0, 70)); }
+    if (same === 0) { if (femme) texts.push(`\n===== ${s.sid} ${s.id}\n` + (await p.locator("main").first().innerText().catch(() => ""))); await shot(`${s.sid}-${s.id}${variant === "b" && s.i === 0 ? "-b" : ""}`); console.log(s.sid, s.id, "|", (await p.locator("h1").first().textContent().catch(() => "")).trim().slice(0, 70)); }
     if (s.id === "offre") break;
     if (s.id === "photos") {
       if (!photos) { await p.click("[data-noscan]"); continue; }
@@ -30,7 +35,7 @@ const path = require("path");
       if (await p.locator("[data-keep]").count()) { await p.click("[data-keep]"); continue; }
       throw new Error("caméra indisponible (écran de secours)");
     }
-    if (s.id === "accueil") { await p.locator("label.gcard").first().click(); continue; }
+    if (s.id === "accueil") { await p.locator("label.gcard").nth(femme ? 1 : 0).click(); continue; }
     if (s.id === "consentement") { await p.click(photos ? "[data-consent=yes]" : "[data-consent=no]"); continue; }
     if (s.id === "selfies" && !photos) { await p.click("[data-noscan]"); continue; }
     if (s.id === "construction") {
@@ -53,7 +58,8 @@ const path = require("path");
   }
   await p.waitForTimeout(1500);
   const end = await cur();
-  await p.screenshot({ path: `replica/clone-screens/${end.sid}-offre-full.png`, fullPage: true });
+  await p.screenshot({ path: `${dir}/${end.sid}-offre-full.png`, fullPage: true });
+  if (femme) { texts.push("\n===== OFFRE\n" + (await p.locator("main").first().innerText().catch(() => ""))); require("fs").writeFileSync(`${dir}/textes.txt`, texts.join("\n")); }
   console.log("erreurs console :", errs.length ? errs : "aucune");
   await b.close();
 })();

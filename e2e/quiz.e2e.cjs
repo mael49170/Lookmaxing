@@ -297,6 +297,25 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     expect(messages.some((m) => /prélevée le/.test(m)), "pas de message clair sur la suppression");
   }, browser);
 
+  await test("F07-H1", "parcours femme : textes au féminin, pas de barbe, programmes et rapport adaptés", async (p) => {
+    await p.locator("label.gcard").nth(1).click();
+    await runTo(p, "offre");
+    const offre = await p.textContent("main");
+    expect(!/barbe/i.test(offre), "la page de paiement parle de barbe");
+    await pay(p);
+    fs.mkdirSync("replica/clone-screens/femme", { recursive: true });
+    await p.screenshot({ path: "replica/clone-screens/femme/espace-rapport.png", fullPage: true });
+    const rapport = await p.textContent("main");
+    await p.getByRole("tab", { name: "Mon plan" }).click();
+    await p.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = true)));
+    await p.screenshot({ path: "replica/clone-screens/femme/espace-plan.png", fullPage: true });
+    const plan = await p.textContent("main");
+    for (const [where, txt] of [["rapport", rapport], ["plan", plan]]) {
+      expect(!/barbe|tondeuse|pomme d'Adam|moustache/i.test(txt), `l'espace (${where}) parle de barbe`);
+      expect(!/\b(convaincu|prêt à|seul face|gêné|transparent|réservé|Posé|Affirmé)\b/.test(txt), `masculin dans l'espace (${where})`);
+    }
+  }, browser);
+
   await browser.close();
   for (const [id, res, name] of results) console.log(`${res === "ok" ? "ok    " : "ÉCHEC "} ${id}  ${name}`);
   console.log(`\n${results.filter((r) => r[1] === "ok").length} / ${results.length} réussis`);

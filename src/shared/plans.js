@@ -11,7 +11,7 @@ export const RESERVATION_MIN = 15;
 // Garantie « satisfait ou remboursé », avec conditions (décidé par Maël le 25/11/2026), vérifiée par le site lui-même
 export const GUARANTEE = { minDays: 5, ofDays: 7, requestWithinDays: 14 };
 export const guaranteeText = (o = OFFERS.semaine) =>
-  `Suis ton plan au moins ${GUARANTEE.minDays} jours sur les ${GUARANTEE.ofDays} de ta 1re semaine payée (cases cochées dans ton espace). Si tu n'es pas convaincu, ta 1re semaine (${euros(o.renew)}) t'est remboursée en un clic, dans les ${GUARANTEE.requestWithinDays} jours qui suivent son prélèvement.`;
+  `Suis ton plan au moins ${GUARANTEE.minDays} jours sur les ${GUARANTEE.ofDays} de ta 1re semaine payée (cases cochées dans ton espace). Si ça ne te convient pas, ta 1re semaine (${euros(o.renew)}) t'est remboursée en un clic, dans les ${GUARANTEE.requestWithinDays} jours qui suivent son prélèvement.`;
 export const DEFAULT_OFFER = "semaine";
 export const CURRENCY = "eur";
 export const WEEK_MS = 7 * 864e5;

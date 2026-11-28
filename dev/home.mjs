@@ -19,7 +19,7 @@ const faq = [
   ["Je peux faire le quiz sans photo ?", "Oui. Tu touches « Continuer sans photo » et ton plan est fait d'après tes réponses. Tu n'auras simplement pas de note."],
   ["Combien ça coûte vraiment ?", `${P.intro} pour ${P.jours} jours, puis une 1re semaine obligatoire à ${P.renew}, puis ${P.renew} par semaine jusqu'à ce que tu arrêtes. Minimum à payer : ${P.min}. Le prix d'essai est réservé ${RESERVATION_MIN} minutes, une seule fois.`],
   ["Comment j'arrête ?", "Dans ton espace, « Résilier mon abonnement » : un clic. Pendant l'essai, la semaine d'engagement reste due, puis plus rien n'est prélevé."],
-  ["Et si ça ne me plaît pas ?", `Suis ton plan au moins ${GUARANTEE.minDays} jours sur les ${GUARANTEE.ofDays} de ta 1re semaine payée : si tu n'es pas convaincu, elle t'est remboursée en un clic, dans les ${GUARANTEE.requestWithinDays} jours.`],
+  ["Et si ça ne me plaît pas ?", `Suis ton plan au moins ${GUARANTEE.minDays} jours sur les ${GUARANTEE.ofDays} de ta 1re semaine payée : si ça ne te convient pas, elle t'est remboursée en un clic, dans les ${GUARANTEE.requestWithinDays} jours.`],
   ["C'est médical ?", "Non. MOGX propose des habitudes de soin, de style et d'assurance. Pas de chirurgie, pas de médicament, pas de diagnostic. Pour un souci de santé, vois ton médecin."],
 ];
 

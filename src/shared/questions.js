@@ -163,10 +163,10 @@ const FREQ_SCORE = { jamais: 0, rarement: 1, parfois: 2, souvent: 3, toujours: 4
 const pick = (map, v) => (v in map ? map[v] : null);
 const avg = (list) => { const l = list.filter((x) => x !== null); return l.length ? l.reduce((a, b) => a + b, 0) / l.length : null; };
 export const PROFILE_DIMS = {
-  ouverture: { label: "Ouverture aux autres", high: "Sociable", low: "plutôt réservé" },
+  ouverture: { label: "Ouverture aux autres", high: "Sociable", low: "plutôt réservé", lowF: "plutôt réservée" },
   aisance: { label: "Aisance en face à face", high: "À l'aise", low: "qui doute en face à face" },
-  calme: { label: "Calme sous pression", high: "Posé", low: "qui encaisse beaucoup de stress" },
-  affirmation: { label: "Affirmation de soi", high: "Affirmé", low: "qui dit oui trop facilement" },
+  calme: { label: "Calme sous pression", high: "Posé", highF: "Posée", low: "qui encaisse beaucoup de stress" },
+  affirmation: { label: "Affirmation de soi", high: "Affirmé", highF: "Affirmée", low: "qui dit oui trop facilement" },
 };
 export function profile(a = {}) {
   const raw = {
@@ -180,6 +180,7 @@ export function profile(a = {}) {
   if (dims.length < 2) return null;
   const sorted = [...dims].sort((x, y) => y.score - x.score);
   const hi = sorted[0], lo = sorted[sorted.length - 1];
-  const title = hi.score - lo.score < 15 ? "Équilibré" : `${hi.high}, ${lo.low}`;
+  const f = a.genre === "femme"; // accordé au féminin
+  const title = hi.score - lo.score < 15 ? (f ? "Équilibrée" : "Équilibré") : `${f ? hi.highF || hi.high : hi.high}, ${f ? lo.lowF || lo.low : lo.low}`;
   return { title, dims, strongest: hi.id, weakest: lo.id };
 }
