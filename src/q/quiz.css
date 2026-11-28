@@ -143,9 +143,9 @@
 .pm__head { display: flex; align-items: center; gap: var(--sp-3); min-height: 60px; padding: var(--sp-3) var(--sp-4); cursor: pointer; }
 .pm__head input { width: 22px; height: 22px; margin: 0; accent-color: var(--c-success); flex: none; }
 .pm__name { flex: 1; font-weight: 600; font-size: 17px; }
-.pm__badge { padding: 3px 9px; border-radius: 6px; background: #fff; color: #000; font-weight: 700; font-size: 14px; }
+.pm__badge { padding: 3px 9px; border-radius: 6px; background: var(--c-text); color: var(--c-bg); font-weight: 700; font-size: 14px; }
 .pm__logos { display: flex; gap: 4px; }
-.pm__logos i { font-style: normal; padding: 3px 6px; border-radius: 5px; background: #fff; color: #1a1f71; font-size: 10px; font-weight: 800; letter-spacing: .02em; }
+.pm__logos i { font-style: normal; padding: 3px 6px; border-radius: 5px; background: var(--c-text); color: var(--c-bg); font-size: 10px; font-weight: 800; letter-spacing: .02em; }
 .pm__body { display: none; flex-direction: column; gap: var(--sp-3); padding: 0 var(--sp-4) var(--sp-4); }
 .pm__total { display: flex; justify-content: space-between; align-items: baseline; font-size: 18px; font-weight: 600; }
 .pm__total b { font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums; }
