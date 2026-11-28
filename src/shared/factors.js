@@ -45,29 +45,29 @@ export function potential(scores) {
   return Math.max(overall(scores), Math.min(95, overall(raised(scores))));
 }
 
-// Les 3 premiers paliers, cumulés (décidé par Maël le 28/11/2026 : le plus gros chiffre en semaine 1, puis ça descend, ex. +7, +4, +3) :
-// semaine 1 : ce qui change en une journée : vêtements, posture, coupe, barbe ou sourcils ;
-// semaine 2 : + 60 % de ce que la peau, le teint et les cernes peuvent gagner, mâchoire au quart (visage qui dégonfle) ;
-// semaine 3 : + peau, teint et cernes en entier, mâchoire à moitié, silhouette à 40 %.
-const FAST = { tenue: 1, posture: 1, coiffure: 1, pilosite: 1 };
+// Les 3 premiers paliers, cumulés (décidé par Maël le 28/11/2026) : des résultats dès la 1re semaine, et presque
+// autant chaque semaine (écart faible, pour qu'il voie que chaque semaine compte), par ex. +7, +5, +5, puis le reste.
+// Les gestes rapides (vêtements, posture, coupe, barbe ou sourcils) se mettent en place sur 3 semaines,
+// la peau, le teint, les cernes, la mâchoire et la silhouette suivent.
 const STEPS = [
-  FAST,
-  { ...FAST, peau_qualite: 0.6, peau_teint: 0.6, yeux: 0.6, machoire: 0.25 },
-  { ...FAST, peau_qualite: 1, peau_teint: 1, yeux: 1, machoire: 0.5, corps: 0.4 },
+  { tenue: 0.7, posture: 0.4, coiffure: 0.5, pilosite: 0.4, peau_qualite: 0.15, peau_teint: 0.15, yeux: 0.15 },
+  { tenue: 0.9, posture: 0.7, coiffure: 0.8, pilosite: 0.7, peau_qualite: 0.45, peau_teint: 0.45, yeux: 0.45, machoire: 0.2, corps: 0.15 },
+  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 0.75, peau_teint: 0.75, yeux: 0.75, machoire: 0.45, corps: 0.35 },
 ];
 export function earlyGains(scores) {
   const now = overall(scores), max = potential(scores);
-  let prev = 0;
-  return STEPS.map((share) => {
+  const cum = STEPS.map((share) => {
     const t = {};
     for (const f of FACTORS) {
       const v = scores[f.id];
       if (!Number.isFinite(v)) continue;
       t[f.id] = share[f.id] ? Math.round(v + (Math.max(v, CEILING) - v) * f.changeable * share[f.id]) : v;
     }
-    prev = Math.max(prev, Math.min(overall(t), max) - now);
-    return Math.max(0, prev);
+    return Math.max(0, Math.min(overall(t), max) - now);
   });
+  // ce que chaque semaine ajoute ne remonte jamais (les arrondis pouvaient donner +6, +4, +5)
+  let prev = 0, last = Infinity;
+  return cum.map((c) => { const step = Math.min(Math.max(0, c - prev), last); last = step; prev += step; return prev; });
 }
 
 // Note sur 10 avec une décimale, pour l'affichage
