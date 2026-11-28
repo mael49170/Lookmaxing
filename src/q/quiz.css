@@ -128,7 +128,19 @@
 .week__lock { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: var(--sp-2); color: var(--c-accent); font-weight: 700; }
 .block--guarantee { padding: var(--sp-4); border: 1px solid var(--c-accent-line); border-radius: var(--r-md); background: linear-gradient(180deg, var(--c-accent-soft), var(--c-surface)); }
 .checkout { min-height: 120px; border-radius: var(--r-md); overflow: hidden; }
+/* Paiement dans la page, en sombre (28/11/2026) */
+.cpay { display: flex; flex-direction: column; gap: var(--sp-3); transition: opacity .2s; }
+.cpay--locked .cpay__express { opacity: .45; pointer-events: none; filter: grayscale(.4); }
+.cpay__express:empty { display: none; }
+.cpay__or { display: flex; align-items: center; gap: var(--sp-3); margin: 0; color: var(--c-text-muted); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .08em; }
+.cpay__or::before, .cpay__or::after { content: ""; flex: 1; height: 1px; background: var(--c-border); }
+.cpay__field { display: flex; flex-direction: column; gap: 6px; color: var(--c-text-muted); font-size: 15px; font-weight: 500; }
+.cpay__field input { width: 100%; min-height: 50px; padding: 14px; border-radius: var(--r-md); border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-text); font: inherit; font-size: 16px; }
+.cpay__field input:focus { outline: none; border-color: var(--c-accent); box-shadow: 0 0 0 3px rgba(255, 90, 31, .25); }
+.cpay__card { min-height: 160px; }
 .sticky-pay { position: fixed; z-index: 6; left: var(--sp-2); right: var(--sp-2); bottom: calc(var(--sp-2) + env(safe-area-inset-bottom)); max-width: calc(var(--size-content-max) - var(--sp-4)); margin: 0 auto; display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4); border-radius: var(--r-xl); background: var(--c-surface-alt); border: 1px solid var(--c-border); box-shadow: var(--shadow-sheet); }
+.sticky-pay { transition: transform .25s, opacity .25s; }
+.sticky-pay--away { transform: translateY(130%); opacity: 0; pointer-events: none; }
 .sticky-pay__info { flex: 1; display: flex; flex-direction: column; }
 .sticky-pay__timer { font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: var(--fs-xl); line-height: 1; font-variant-numeric: tabular-nums; }
 .sticky-pay__sub { color: var(--c-text-muted); font-size: var(--fs-xs); }

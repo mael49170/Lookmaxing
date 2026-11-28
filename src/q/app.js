@@ -1,6 +1,6 @@
 // Le quiz : un écran à la fois, décrit dans /shared/questions.js.
 import { SCREENS, S11_TEXT, DIFFICULTES, profile, PROFILE_DIMS } from "/shared/questions.js";
-import { OFFERS, DEFAULT_OFFER, euros, priceLines, guaranteeText } from "/shared/plans.js";
+import { OFFERS, DEFAULT_OFFER, euros, priceLines, guaranteeText, WAIVER_TEXT } from "/shared/plans.js";
 import { FACTORS } from "/shared/factors.js";
 import { faceMesh } from "/q/mesh.js";
 import { initConsent, track, setAsideConsent, reopenConsent, consentEnabled } from "/shared/consent.js";
@@ -401,7 +401,17 @@ const VIEWS = {
           <span class="offer__main"><span class="offer__name">${esc(o.label)}</span><span class="offer__renew">${trial ? `${o.trialDays} jours pour tout débloquer` : "1re semaine"}</span></span>
           <span class="offer__price">${esc(euros(trial ? o.intro : o.renew))}<span class="offer__day">aujourd'hui</span></span>
         </div>
-        ${pw.stripeKey ? `<p class="terms-line">${esc(lines.full)}</p><div id="checkout" class="checkout"></div>` : `
+        ${pw.stripeKey ? `
+          <p class="terms-line">${esc(lines.full)}</p>
+          <label class="check"><input type="checkbox" id="waiver"${S.waiver ? " checked" : ""}><span>${esc(WAIVER_TEXT).replace("les CGV", '<a href="/cgv/" target="_blank" rel="noopener">CGV</a>').replace("<a ", "les <a ")}</span></label>
+          <div class="cpay${S.waiver ? "" : " cpay--locked"}" id="cpay">
+            <div id="xpay" class="cpay__express"></div>
+            <p class="cpay__or" id="xpay-or" hidden><span>ou par carte</span></p>
+            <label class="cpay__field"><span>Ton e-mail (ton accès arrive dessus)</span><input id="pay-email" type="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.fr" value="${esc(S.payEmail || "")}"></label>
+            <div id="payel" class="cpay__card"><div class="skel"></div></div>
+          </div>
+          <button class="btn btn--primary" data-cpay>Débloquer mon résultat, ${esc(euros(trial ? o.intro : o.renew))}</button>
+          <div id="checkout" class="checkout" hidden></div>` : `
           ${pw.waiverOnSite ? `<label class="check"><input type="checkbox" id="waiver"><span>Je veux mon résultat tout de suite et je renonce à mon droit de rétractation de 14 jours une fois le résultat ouvert.</span></label>` : ""}
           <p class="terms-line">${esc(lines.full)}</p>
           <button class="btn btn--primary" data-pay>Débloquer mon résultat, ${esc(euros(trial ? o.intro : o.renew))}</button>`}
@@ -642,7 +652,7 @@ function render() {
   if (s.type === "projection") runProjection();
   if (s.type === "building") runBuilding();
   if (s.type === "scanning") runScanning();
-  if (s.type === "paywall") { if (!S.pw) loadPaywall().catch((e) => { app.querySelector("h1").textContent = e.message; }); else { startTimer(); mountCheckout(); } }
+  if (s.type === "paywall") { if (!S.pw) loadPaywall().catch((e) => { app.querySelector("h1").textContent = e.message; }); else { startTimer(); mountCheckout(); watchSticky(); } }
 }
 
 app.addEventListener("click", async (e) => {
@@ -677,12 +687,15 @@ app.addEventListener("click", async (e) => {
   if (t.dataset.sheet) return answerSheet(t.dataset.sheet, t.dataset.v === "1");
   if (t.hasAttribute("data-retake")) { S.consent = true; cam.step = "face"; cam.phase = "live"; shots.face = shots.profil = null; return goTo("photos"); }
   if (t.hasAttribute("data-pay")) return pay(t);
+  if (t.hasAttribute("data-cpay")) return payCustom(t);
   if (t.hasAttribute("data-gopay")) { const box = document.getElementById("pay"); box?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); box?.querySelector("h2")?.setAttribute("tabindex", "-1"); box?.querySelector("h2")?.focus({ preventScroll: true }); return; }
 });
 
 app.addEventListener("change", async (e) => {
   const input = e.target;
   const s = SCREENS[S.i];
+  if (input.id === "waiver") { S.waiver = input.checked; document.getElementById("cpay")?.classList.toggle("cpay--locked", !input.checked); if (input.checked) payErr(""); return; }
+  if (input.id === "pay-email") { S.payEmail = input.value.trim(); return; }
   if (input.dataset.shot) {
     const file = input.files?.[0];
     if (!file) return;
@@ -816,19 +829,102 @@ function startTimer() {
   };
   update(); timerTick = setInterval(update, 1000);
 }
+// La barre du bas (minuteur + « Débloquer ») se cache quand le bloc de paiement est à l'écran : elle ne cache plus le formulaire
+let stickyObs = null;
+function watchSticky() {
+  stickyObs?.disconnect();
+  const pay = document.getElementById("pay"), bar = document.querySelector(".sticky-pay");
+  if (!pay || !bar || !("IntersectionObserver" in window)) return;
+  stickyObs = new IntersectionObserver(([e]) => bar.classList.toggle("sticky-pay--away", e.isIntersecting), { threshold: 0.05 });
+  stickyObs.observe(pay);
+}
 let embedded = null;
+// Paiement dans notre page, en sombre (28/11/2026, comme le concurrent) : Stripe « Checkout Elements » (ui_mode custom,
+// js.stripe.com/basil). Apple Pay / Google Pay en haut, puis l'e-mail et la carte. Si ça ne charge pas : l'ancien formulaire Stripe.
+const APPEARANCE = {
+  theme: "night",
+  variables: { colorPrimary: "#ff5a1f", colorBackground: "#131315", colorText: "#f6f3ef", colorTextSecondary: "#a5a3ab", colorDanger: "#ff6b5e",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif", fontSizeBase: "16px", borderRadius: "12px", spacingUnit: "4px" },
+  rules: { ".Input": { border: "1px solid #29292d", boxShadow: "none", padding: "14px" }, ".Input:focus": { border: "1px solid #ff5a1f", boxShadow: "0 0 0 3px rgba(255,90,31,.25)" },
+    ".Label": { color: "#a5a3ab", fontWeight: "500" }, ".Tab": { border: "1px solid #29292d", backgroundColor: "#131315" } },
+};
+let cpay = null; // { checkout, card, express }
+const payErr = (msg) => { const b = document.getElementById("pay-error"); if (b) { b.innerHTML = msg ? `<div class="alert" role="alert">${esc(msg)}</div>` : ""; if (msg) b.scrollIntoView({ block: "center", behavior: "smooth" }); } };
+function loadStripeJs(src) {
+  if (window.Stripe) return Promise.resolve();
+  return new Promise((ok, ko) => { const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = ko; document.head.append(sc); });
+}
 async function mountCheckout() {
+  const host = document.getElementById("payel");
+  if (!host || !S.pw?.stripeKey) return mountEmbedded();
+  try {
+    if (!cpay) {
+      await loadStripeJs("https://js.stripe.com/basil/stripe.js");
+      const checkout = await window.Stripe(S.pw.stripeKey).initCheckout({
+        fetchClientSecret: async () => (await api("checkout", { offer: DEFAULT_OFFER, custom: true })).clientSecret,
+        elementsOptions: { appearance: APPEARANCE, fonts: [{ family: "Inter", src: `url(${location.origin}/fonts/inter.woff2)`, weight: "100 900" }] },
+      });
+      const card = checkout.createPaymentElement({ layout: "tabs", fields: { billingDetails: { email: "never" } } });
+      const express = checkout.createExpressCheckoutElement({ buttonHeight: 50, buttonType: { applePay: "plain", googlePay: "plain" }, buttonTheme: { applePay: "white", googlePay: "white" }, paymentMethods: { link: "never", amazonPay: "never", paypal: "never", klarna: "never" } });
+      express.on("ready", ({ availablePaymentMethods }) => { const has = availablePaymentMethods && Object.values(availablePaymentMethods).some(Boolean); const or = document.getElementById("xpay-or"); if (or) or.hidden = !has; cpay.hasExpress = has; });
+      express.on("confirm", async (ev) => {
+        if (!waiverOk()) return ev.paymentFailed?.({ reason: "fail" });
+        try { await keepWaiver(); } catch (e) { payErr(e.message); return ev.paymentFailed?.({ reason: "fail" }); }
+        const r = await checkout.confirm({ expressCheckoutConfirmEvent: ev });
+        if (r.type === "error") payErr(r.error.message);
+      });
+      cpay = { checkout, card, express, hasExpress: false };
+    }
+    host.innerHTML = "";
+    cpay.card.mount("#payel");
+    if (document.getElementById("xpay")) cpay.express.mount("#xpay");
+    const or = document.getElementById("xpay-or"); if (or) or.hidden = !cpay.hasExpress;
+  } catch (e) {
+    console.error("Paiement dans la page", e);
+    cpay = null;
+    return mountEmbedded(true);
+  }
+}
+// Secours : l'ancien formulaire Stripe (blanc), avec sa propre case de renonciation
+async function mountEmbedded(fallback = false) {
   const box = document.getElementById("checkout");
   if (!box || !S.pw?.stripeKey) return;
+  if (fallback) { document.getElementById("cpay")?.remove(); document.querySelector("[data-cpay]")?.remove(); document.getElementById("waiver")?.closest("label")?.remove(); box.hidden = false; }
   try {
-    if (!window.Stripe) await new Promise((ok, ko) => { const sc = document.createElement("script"); sc.src = "https://js.stripe.com/v3/"; sc.onload = ok; sc.onerror = ko; document.head.append(sc); });
+    await loadStripeJs("https://js.stripe.com/v3/");
     embedded?.destroy();
     embedded = await window.Stripe(S.pw.stripeKey).initEmbeddedCheckout({
       fetchClientSecret: async () => (await api("checkout", { offer: DEFAULT_OFFER, embedded: true })).clientSecret,
     });
     embedded.mount(box);
   } catch (e) {
-    document.getElementById("pay-error").innerHTML = `<div class="alert" role="alert">Le paiement ne s'affiche pas. Recharge la page.</div>`;
+    payErr("Le paiement ne s'affiche pas. Recharge la page.");
+  }
+}
+const waiverOk = () => {
+  if (document.getElementById("waiver")?.checked) return true;
+  payErr("Coche la case juste au-dessus pour recevoir ton résultat tout de suite.");
+  document.getElementById("waiver")?.focus();
+  return false;
+};
+// la preuve de la case cochée est gardée sur la session Stripe, juste avant le paiement
+const keepWaiver = () => api("checkout-waiver", { session: cpay.checkout.session().id });
+async function payCustom(btn) {
+  payErr("");
+  if (!waiverOk()) return;
+  if (!cpay) return payErr("Le paiement se charge encore. Réessaie dans une seconde.");
+  const email = (document.getElementById("pay-email")?.value || "").trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { payErr("Écris ton e-mail : ton accès arrive dessus."); document.getElementById("pay-email")?.focus(); return; }
+  btn.setAttribute("aria-busy", "true"); btn.disabled = true;
+  try {
+    const u = await cpay.checkout.updateEmail(email);
+    if (u.type === "error") throw new Error(u.error.message);
+    await keepWaiver();
+    const r = await cpay.checkout.confirm(); // Stripe renvoie vers /api/checkout-done (3-D Secure compris)
+    if (r.type === "error") throw new Error(r.error.message);
+  } catch (e) {
+    btn.removeAttribute("aria-busy"); btn.disabled = false;
+    payErr(e.message || "Le paiement n'est pas passé. Vérifie ta carte et réessaie.");
   }
 }
 

@@ -15,3 +15,5 @@
   X-Robots-Tag: noindex
 /design/*
   X-Robots-Tag: noindex
+/fonts/*
+  Access-Control-Allow-Origin: *

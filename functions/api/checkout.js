@@ -20,8 +20,10 @@ export const onRequestPost = handle(async ({ request, env }) => {
   await track(d, trial ? "paiement_ouvert" : "paiement_ouvert_sans_essai", { variant: quiz.variant, source: quiz.utm_source });
   if (env.STRIPE_SECRET_KEY) {
     const { createCheckout } = await import("../../lib/stripe.js");
-    const embedded = body.embedded === true && Boolean(env.STRIPE_PUBLISHABLE_KEY);
-    return json({ trial, ...(await createCheckout(env, request, { quiz, lead, offer, trial, embedded })), ...(embedded ? { publishableKey: env.STRIPE_PUBLISHABLE_KEY } : {}) });
+    // custom : le formulaire sombre dans notre page (28/11/2026) ; embedded : l'ancien formulaire blanc, gardé en secours
+    const custom = body.custom === true && Boolean(env.STRIPE_PUBLISHABLE_KEY);
+    const embedded = !custom && body.embedded === true && Boolean(env.STRIPE_PUBLISHABLE_KEY);
+    return json({ trial, ...(await createCheckout(env, request, { quiz, lead, offer, trial, embedded, custom })), ...(custom || embedded ? { publishableKey: env.STRIPE_PUBLISHABLE_KEY } : {}) });
   }
   // mode test : un faux formulaire de paiement (aucune carte), qui demande l'e-mail comme Stripe
   if (env.DEV_FAKE_PAY === "1") return json({ trial, url: `/essai-paiement/?offre=${offer}&t=${trial ? 1 : 0}` });

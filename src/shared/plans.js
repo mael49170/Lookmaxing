@@ -42,3 +42,7 @@ export function priceLines(o, trial = true) {
 
 // Date de fin de l'engagement, à partir de la fin de l'essai
 export const commitmentEnd = (trialEndMs, o) => trialEndMs + o.commitPeriods * WEEK_MS;
+
+// La case cochée sur la page de paiement (formulaire Stripe dans notre page) : acceptation des CGV et renonciation
+// au délai de 14 jours (contenu livré tout de suite, art. L221-28). Sa preuve est gardée sur la session Stripe.
+export const WAIVER_TEXT = "J'accepte les CGV et l'engagement minimum. Je veux mon résultat tout de suite et je renonce à mon droit de rétractation de 14 jours une fois le résultat ouvert.";

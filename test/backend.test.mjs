@@ -104,7 +104,7 @@ function fakeStripe() {
   const calls = [];
   const fetchImpl = async (url, init = {}) => {
     const u = new URL(url); const body = Object.fromEntries(new URLSearchParams(init.body || ""));
-    calls.push({ path: u.pathname, method: init.method, body, query: Object.fromEntries(u.searchParams) });
+    calls.push({ path: u.pathname, method: init.method, body, query: Object.fromEntries(u.searchParams), version: init.headers?.["stripe-version"] });
     const ok = (o) => new Response(JSON.stringify(o), { status: 200 });
     if (u.hostname === "api.resend.com") return ok({ id: "mail" });
     if (u.pathname === "/v1/prices" && init.method === "GET") return ok({ data: [] });
@@ -112,7 +112,8 @@ function fakeStripe() {
     if (u.pathname === "/v1/prices") return ok({ id: "price_" + body.lookup_key });
     if (u.pathname.startsWith("/v1/coupons/")) return new Response(JSON.stringify({ error: { code: "resource_missing" } }), { status: 404 });
     if (u.pathname === "/v1/coupons") return ok({ id: body.id });
-    if (u.pathname === "/v1/checkout/sessions") return ok({ url: "https://checkout.stripe.com/c/pay/test" });
+    if (u.pathname === "/v1/checkout/sessions") return ok({ url: "https://checkout.stripe.com/c/pay/test", client_secret: "cs_test_abc_secret_x" });
+    if (u.pathname.startsWith("/v1/checkout/sessions/cs_test_")) return ok({ id: u.pathname.split("/").pop(), client_reference_id: u.pathname.endsWith("autre") ? "q-autre" : "q1", metadata: { offer: "semaine" } });
     if (u.pathname.startsWith("/v1/subscriptions/")) return ok({ id: u.pathname.split("/").pop(), status: "past_due", cancel_at_period_end: false, current_period_end: Math.floor(Date.now() / 1000) + 86400, metadata: { offer: "semaine" } });
     return new Response("{}", { status: 404 });
   };
@@ -295,4 +296,22 @@ test("sécurité : ancien formulaire e-mail fermé, compteur limité aux vrais �
   const boom = handle(async () => { throw new Error("détail interne SECRET-123 refusé par Stripe"); });
   const r = await boom({});
   assert.equal(r.status, 500); assert.ok(!(await r.text()).includes("SECRET-123"));
+});
+
+test("paiement dans notre page (sombre) : session custom en API basil, case de renonciation gardée chez Stripe", async () => {
+  const { calls, fetchImpl } = fakeStripe();
+  const env = { STRIPE_SECRET_KEY: "sk_test_x", FETCH: fetchImpl };
+  const { recordWaiver } = await import("../lib/stripe.js");
+  const { WAIVER_TEXT } = await import("../src/shared/plans.js");
+  const r = await createCheckout(env, new Request("https://site.fr/api/checkout"), { quiz: { id: "q1" }, offer: "semaine", custom: true });
+  assert.equal(r.clientSecret, "cs_test_abc_secret_x");
+  const co = calls.find((c) => c.path === "/v1/checkout/sessions");
+  assert.equal(co.body.ui_mode, "custom"); assert.equal(co.version, "2025-03-31.basil");
+  assert.ok(!("consent_collection[terms_of_service]" in co.body), "la case est sur notre page");
+  assert.match(co.body.return_url, /checkout-done\?session_id=/);
+  await recordWaiver(env, { sessionId: "cs_test_abc", quiz: { id: "q1" }, text: WAIVER_TEXT });
+  const up = calls.find((c) => c.path === "/v1/checkout/sessions/cs_test_abc" && c.method === "POST");
+  assert.ok(up.body["metadata[waiver_at]"] && up.body["metadata[waiver_text]"].startsWith("J'accepte les CGV"));
+  assert.equal(up.body["metadata[offer]"], "semaine", "les autres infos de la session restent");
+  await assert.rejects(recordWaiver(env, { sessionId: "cs_test_autre", quiz: { id: "q1" }, text: "x" }), /ne correspond pas/);
 });
