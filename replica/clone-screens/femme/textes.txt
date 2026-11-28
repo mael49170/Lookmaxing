@@ -191,10 +191,20 @@ J'ai essayé, mais je ne tiens pas
 J'en ai une, je veux de meilleurs résultats
 Ma routine est solide
 
-===== S16 cheveux
+===== S16 maquillage
+Et le maquillage, pour toi, c'est…
+Et le maquillage, pour toi, c'est…
+Jamais ou presque
+Le minimum : mascara, baume
+Tous les jours, sans savoir si ça me met vraiment en valeur
+J'adore, je veux aller plus loin
+
+===== S17 cheveux
 Et côté cheveux, qu'est-ce qui coince ?
 
 Plusieurs réponses possibles.
+
+Bien choisi, le maquillage unifie ton teint et ouvre ton regard en 5 minutes. Ton plan te montre quoi mettre, et où, pour ton visage.
 
 Et côté cheveux, qu'est-ce qui coince ?
 Ma ligne recule, ou mes cheveux s'affinent
@@ -203,14 +213,14 @@ Cheveux secs ou gras
 Rien de spécial, je veux progresser
 Continuer
 
-===== S17 fait_coupe
+===== S18 fait_coupe
 Des cheveux qui paraissent plus épais, c'est possible.
 
 La bonne coupe et le bon produit donnent de la densité à l'œil, dès le lendemain. Ton plan te dit lesquels, pour la forme de ton visage.
 
 Continuer
 
-===== S18 morpho
+===== S19 morpho
 Ta silhouette, c'est plutôt…
 
 Ça sert seulement à régler ton plan.
@@ -221,21 +231,21 @@ Mince
 Moyenne
 Enrobée
 
-===== S19 sport
+===== S20 sport
 Tu as un programme de sport en ce moment ?
 Tu as un programme de sport en ce moment ?
 Non, je ne fais pas de sport
 J'en fais, mais sans programme
 Oui, je suis un vrai programme
 
-===== S20 alimentation
+===== S21 alimentation
 Tu manges équilibré, en général ?
 Tu manges équilibré, en général ?
 Presque jamais
 Parfois
 Presque toujours
 
-===== S21 style
+===== S22 style
 Tu t'habilles comment, la plupart du temps ?
 Tu t'habilles comment, la plupart du temps ?
 👕
@@ -257,7 +267,7 @@ Chemisier, blazer, chaussures en cuir
 Je ne fais pas attention
 Je mets ce qui traîne
 
-===== S22 avant_apres
+===== S23 avant_apres
 Ce que tu as coché. Et ce que ton plan travaille.
 Aujourd'hui
 Manque de confiance
@@ -270,19 +280,19 @@ Ton plan travaille ces points chaque jour. Le résultat dépend de ta régularit
 
 Continuer
 
-===== S23 projection
+===== S24 projection
 D'après ton scan et tes réponses
 
 +17 points à gagner, dès ta 1re semaine.
 SEMAINE 1
 +4
-Style, coupe, sourcils
+Maquillage, coupe, sourcils
 SEMAINE 2
 +4
-Posture, peau, teint
+Skincare, teint, posture
 SEMAINE 3
 +4
-Mâchoire plus nette, silhouette
+Visage plus net, silhouette
 SEMAINE 4 ET APRÈS
 +5
 Jusqu'à ton max : +17 au total
@@ -293,7 +303,7 @@ Une estimation calculée seulement sur ce qui se travaille (peau, coupe, posture
 
 Je veux ces points
 
-===== S24 recap
+===== S25 recap
 Ton plan prend forme
 
 Il reste ce qu'une photo ne montre pas.
@@ -312,7 +322,7 @@ Regard, posture, aisance
 ENSUITE
 On continue
 
-===== S25 ignore
+===== S26 ignore
 Tu t'es déjà sentie mise de côté à cause de ton physique ?
 Tu t'es déjà sentie mise de côté à cause de ton physique ?
 📵
@@ -325,7 +335,7 @@ Pas vraiment, mais je sens que je peux mieux faire
 😎
 Jamais, je veux juste passer un cap
 
-===== S26 compliments
+===== S27 compliments
 On te fait des compliments sur ton physique ?
 On te fait des compliments sur ton physique ?
 🦗
@@ -337,7 +347,7 @@ Quand je fais un effort
 😌
 Assez souvent, j'en veux plus
 
-===== S27 groupe
+===== S28 groupe
 Quand tu parles en groupe, tu es plutôt…
 
 Peu de compliments, ça ne veut pas dire rien à mettre en valeur. Ça veut dire que personne ne l'a encore fait. On va s'en occuper.
@@ -347,28 +357,28 @@ Quand tu parles en groupe, tu es plutôt…
 Je parle, sans vraiment marquer
 Nerveuse, j'ai du mal à garder l'attention
 
-===== S28 posture
+===== S29 posture
 Ton langage du corps, tu le notes comment ?
 Ton langage du corps, tu le notes comment ?
 Bon : je sais me tenir et utiliser mes gestes
 Moyen : je pourrais avoir plus de présence
 Faible : j'ai souvent l'air mal à l'aise
 
-===== S29 regard
+===== S30 regard
 Regarder les gens dans les yeux, c'est…
 Regarder les gens dans les yeux, c'est…
 Facile, ça m'aide à créer le lien
 Ça va, mais je me sens un peu gênée
 Difficile, je détourne vite le regard
 
-===== S30 personnalite
+===== S31 personnalite
 Ce que tu dégages compte autant que ton visage.
 
 Assurance, regard, façon de parler : on lit tes réponses et tu reçois des exercices courts pour que ça se sente. En photo comme en vrai.
 
 Continuer
 
-===== S31 rencontrer
+===== S32 rencontrer
 Rencontrer de nouvelles personnes, ça te plaît ?
 Rencontrer de nouvelles personnes, ça te plaît ?
 Jamais
@@ -377,7 +387,7 @@ Parfois
 Souvent
 Toujours
 
-===== S32 soirees
+===== S33 soirees
 Tu es d'accord avec cette phrase ?
 J'adore organiser des soirées avec plein d'amis.
 J'adore organiser des soirées avec plein d'amis.
@@ -387,7 +397,7 @@ Je ne sais pas
 Plutôt d'accord
 D'accord
 
-===== S33 message_appel
+===== S34 message_appel
 Tu préfères envoyer un message plutôt qu'appeler ?
 Tu préfères envoyer un message plutôt qu'appeler ?
 Jamais
@@ -396,14 +406,14 @@ Parfois
 Souvent
 Toujours
 
-===== S34 confiance_info
+===== S35 confiance_info
 On va trouver ce qui vide ta confiance.
 
 Puis chaque jour, une petite action pour la remplir. Pas d'exploit : de la régularité. C'est elle qui change tout.
 
 Continuer
 
-===== S35 aborder
+===== S36 aborder
 Aborder quelqu'un qui te plaît, c'est comment pour toi ?
 Aborder quelqu'un qui te plaît, c'est comment pour toi ?
 🧊
@@ -415,7 +425,7 @@ J'y vais, mais ça devient gênant
 😎
 Facile, c'est mon truc
 
-===== S36 dire_non
+===== S37 dire_non
 Tu es d'accord avec cette phrase ?
 Je sais dire non sans culpabiliser.
 
@@ -428,7 +438,7 @@ Je ne sais pas
 Plutôt d'accord
 D'accord
 
-===== S37 science
+===== S38 science
 Ce que dit la recherche
 Ce que les plus grandes universités ont montré.
 HARVARD
@@ -445,14 +455,14 @@ ST ANDREWS
 Whitehead et al., 2012
 Continuer
 
-===== S38 mal_a_l_aise
+===== S39 mal_a_l_aise
 Tu te sens souvent mal à l'aise quand tu parles aux autres ?
 Tu te sens souvent mal à l'aise quand tu parles aux autres ?
 Oui
 Non
 Je ne sais pas
 
-===== S39 relire
+===== S40 relire
 Tu es d'accord avec cette phrase ?
 Je relis mes messages plusieurs fois avant de les envoyer.
 Je relis mes messages plusieurs fois avant de les envoyer.
@@ -462,21 +472,21 @@ Je ne sais pas
 Plutôt d'accord
 D'accord
 
-===== S40 inquiet
+===== S41 inquiet
 Tu te sens inquiète ou débordée ?
 Tu te sens inquiète ou débordée ?
 Jamais
 Parfois
 Souvent
 
-===== S41 glowup
+===== S42 glowup
 Ton glow-up commence maintenant.
 
-Apparence et présence dans un seul plan : peau, coupe, style, posture, assurance. 5 à 10 minutes par jour, pas plus.
+Apparence et présence dans un seul plan : skincare, maquillage, coupe, style, assurance. 5 à 10 minutes par jour, pas plus.
 
 Continuer
 
-===== S42 attentes
+===== S43 attentes
 Qu'est-ce que tu attends de tout ça ?
 
 Plusieurs réponses possibles.
@@ -489,7 +499,7 @@ Me sentir maîtresse de moi
 Arrêter de trop réfléchir
 Continuer
 
-===== S43 duree
+===== S44 duree
 Combien de temps veux-tu y consacrer ?
 Combien de temps veux-tu y consacrer ?
 2 semaines
@@ -498,7 +508,7 @@ Combien de temps veux-tu y consacrer ?
 6 mois
 Je ne sais pas encore
 
-===== S44 profil
+===== S45 profil
 Ton profil, d'après tes réponses
 
 Posée, plutôt réservée.
@@ -517,7 +527,7 @@ Un résumé de tes réponses, pas un test psychologique.
 
 Assembler mon plan
 
-===== S45 construction
+===== S46 construction
 MOGX
 On prépare ton rapport.
 Rapport de ton visage
@@ -530,7 +540,7 @@ Conseils de style
 0 %
 Ton plan se prépare
 
-===== S46 apercu
+===== S47 apercu
 MOGX
 
 Aperçu de ton analyse
@@ -544,7 +554,7 @@ Critères qui te freinent
 3
 Voir ma note
 
-===== S47 offre
+===== S48 offre
 MOGX
 Ton analyse est prête
 Ta note aujourd'hui
@@ -607,19 +617,39 @@ Ton programme de 28 jours
 
 Fait pour toi, dans l'ordre de ce qui te fera gagner le plus. Le détail se débloque avec ton accès.
 
-Peau nette
+Un maquillage qui te met en valeur
 4 semaines
 
-La plupart des imperfections viennent d'une peau mal nettoyée, agressée ou trop exposée au soleil. Une routine simple et régulière bat dix produits utilisés au hasard.
+Bien fait, le maquillage ne cache pas ton visage : il unifie le teint, ouvre le regard et donne bonne mine. Le but : un rendu naturel en 5 minutes, avec peu de produits bien choisis pour toi.
 
 Semaine 1
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
 Détail caché jusqu'au paiement.
 Semaine 2
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
 Détail caché jusqu'au paiement.
 Semaine 3
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
+Détail caché jusqu'au paiement.
+
++ 2 gestes au quotidien
+
+Ta routine skincare
+4 semaines
+
+Une belle peau, c'est d'abord une peau bien démaquillée, hydratée et protégée du soleil. Une routine courte et régulière bat dix produits utilisés au hasard, et ton maquillage tient mieux sur une peau nette.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
 Détail caché jusqu'au paiement.
 Semaine 4
 xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
@@ -636,13 +666,13 @@ Semaine 1
 xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
 Détail caché jusqu'au paiement.
 Semaine 2
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx
 Détail caché jusqu'au paiement.
 Semaine 3
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
 Détail caché jusqu'au paiement.
 Semaine 4
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
 Détail caché jusqu'au paiement.
 
 + 1 geste au quotidien
@@ -664,25 +694,6 @@ Détail caché jusqu'au paiement.
 Semaine 4
 xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
 Détail caché jusqu'au paiement.
-Silhouette et énergie
-4 semaines
-
-Un corps qui bouge change le visage (moins gonflé), la posture et l'assurance. Pas besoin de salle : 3 séances de 20 minutes par semaine, qui montent un peu chaque semaine.
-
-Semaine 1
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
-Détail caché jusqu'au paiement.
-Semaine 2
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
-Détail caché jusqu'au paiement.
-Semaine 3
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
-Détail caché jusqu'au paiement.
-Semaine 4
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
-Détail caché jusqu'au paiement.
-
-+ 2 gestes au quotidien
 
 Chaque jour, tes actions à cocher dans ton espace, avec un rappel le matin si tu veux.
 
@@ -778,19 +789,39 @@ Ton programme de 28 jours
 
 Fait pour toi, dans l'ordre de ce qui te fera gagner le plus. Le détail se débloque avec ton accès.
 
-Peau nette
+Un maquillage qui te met en valeur
 4 semaines
 
-La plupart des imperfections viennent d'une peau mal nettoyée, agressée ou trop exposée au soleil. Une routine simple et régulière bat dix produits utilisés au hasard.
+Bien fait, le maquillage ne cache pas ton visage : il unifie le teint, ouvre le regard et donne bonne mine. Le but : un rendu naturel en 5 minutes, avec peu de produits bien choisis pour toi.
 
 Semaine 1
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
 Détail caché jusqu'au paiement.
 Semaine 2
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
 Détail caché jusqu'au paiement.
 Semaine 3
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
+Détail caché jusqu'au paiement.
+Semaine 4
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
+Détail caché jusqu'au paiement.
+
++ 2 gestes au quotidien
+
+Ta routine skincare
+4 semaines
+
+Une belle peau, c'est d'abord une peau bien démaquillée, hydratée et protégée du soleil. Une routine courte et régulière bat dix produits utilisés au hasard, et ton maquillage tient mieux sur une peau nette.
+
+Semaine 1
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+Détail caché jusqu'au paiement.
+Semaine 2
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
+Détail caché jusqu'au paiement.
+Semaine 3
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
 Détail caché jusqu'au paiement.
 Semaine 4
 xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx
@@ -807,13 +838,13 @@ Semaine 1
 xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
 Détail caché jusqu'au paiement.
 Semaine 2
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx
 Détail caché jusqu'au paiement.
 Semaine 3
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
 Détail caché jusqu'au paiement.
 Semaine 4
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx
+xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
 Détail caché jusqu'au paiement.
 
 + 1 geste au quotidien
@@ -835,25 +866,6 @@ Détail caché jusqu'au paiement.
 Semaine 4
 xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx
 Détail caché jusqu'au paiement.
-Silhouette et énergie
-4 semaines
-
-Un corps qui bouge change le visage (moins gonflé), la posture et l'assurance. Pas besoin de salle : 3 séances de 20 minutes par semaine, qui montent un peu chaque semaine.
-
-Semaine 1
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
-Détail caché jusqu'au paiement.
-Semaine 2
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx
-Détail caché jusqu'au paiement.
-Semaine 3
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx
-Détail caché jusqu'au paiement.
-Semaine 4
-xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx xxxxxxxx xxx xxxx xxxxx xxxxxx xxxxxxx
-Détail caché jusqu'au paiement.
-
-+ 2 gestes au quotidien
 
 Chaque jour, tes actions à cocher dans ton espace, avec un rappel le matin si tu veux.
 

@@ -87,7 +87,7 @@ const syncQuiz = () => api("quiz", { answers: S.answers, variant: S.variant, utm
 const trackStep = (step) => api("track", { step, variant: S.variant, source: S.utm.source }).catch(() => {});
 
 // ---------- Navigation ----------
-const visible = (s) => !(s.skipIf && s.skipIf({ consent: S.consent, scan: S.scan }));
+const visible = (s) => !(s.skipIf && s.skipIf({ consent: S.consent, scan: S.scan, genre: S.answers.genre }));
 function go(index, { push = true } = {}) {
   setAsideConsent(); // continuer sans répondre à la bannière cookies n'est pas un accord : rien n'est envoyé
   if (push) S.history.push(S.i);
@@ -128,7 +128,8 @@ const onFace = (svg) => svg.replace("<svg ", '<svg preserveAspectRatio="none" ')
 const FEM = [[/Je suis prêt\b/g, "Je suis prête"], [/senti mis de côté/g, "sentie mise de côté"], [/inquiet ou débordé/g, "inquiète ou débordée"],
   [/pris au sérieux/g, "prise au sérieux"], [/maître de moi/g, "maîtresse de moi"], [/Nerveux,/g, "Nerveuse,"], [/coupe, barbe, sommeil/g, "coupe, sourcils, sommeil"], [/^Cheveux, barbe : qu'est-ce qui coince \?$/, "Et côté cheveux, qu'est-ce qui coince ?"],
   [/Chemise, chino/g, "Chemisier, blazer"], [/Jogging, survêt/g, "Legging, jogging"], [/moins séduisant\b/g, "moins séduisante"],
-  [/je me sens transparent\b/g, "je me sens transparente"], [/un peu gêné(?!e)/g, "un peu gênée"]];
+  [/je me sens transparent\b/g, "je me sens transparente"], [/un peu gêné(?!e)/g, "un peu gênée"],
+  [/dans un seul plan : peau, coupe, style, posture, assurance\./g, "dans un seul plan : skincare, maquillage, coupe, style, assurance."]];
 const gx = (t) => (S.answers.genre === "femme" && typeof t === "string" ? FEM.reduce((x, [a, b]) => x.replace(a, b), t) : t);
 function genderize(s) {
   if (S.answers.genre !== "femme") return s;
@@ -294,7 +295,7 @@ const VIEWS = {
       <p class="eyebrow">D'après ton scan et tes réponses</p>
       <h1 class="title title--hero" tabindex="-1"><span class="big-gain">+${esc(t.gain)}</span> point${t.gain > 1 ? "s" : ""} à gagner${earlyOk(t) ? `, dès ta 1re semaine.` : "."}</h1>
       ${earlyOk(t) ? `<ol class="climb" aria-label="Ta progression estimée">
-        ${[["Semaine 1", `Style, coupe, ${S.answers.genre === "femme" ? "sourcils" : "barbe"}`], ["Semaine 2", "Posture, peau, teint"], ["Semaine 3", "Mâchoire plus nette, silhouette"]].map(([when, what], k) => `<li class="climb__step${k ? "" : " climb__step--first"}"><span class="climb__when">${when}</span><b class="climb__pts">+${esc(t.early[k] - (k ? t.early[k - 1] : 0))}</b><span class="climb__what">${what}</span><i class="climb__bar" style="--w:${Math.max(12, Math.round((100 * t.early[k]) / t.gain))}%;--d:${k * 0.25}s"></i></li>`).join("")}
+        ${(S.answers.genre === "femme" ? [["Semaine 1", "Maquillage, coupe, sourcils"], ["Semaine 2", "Skincare, teint, posture"], ["Semaine 3", "Visage plus net, silhouette"]] : [["Semaine 1", "Style, coupe, barbe"], ["Semaine 2", "Posture, peau, teint"], ["Semaine 3", "Mâchoire plus nette, silhouette"]]).map(([when, what], k) => `<li class="climb__step${k ? "" : " climb__step--first"}"><span class="climb__when">${when}</span><b class="climb__pts">+${esc(t.early[k] - (k ? t.early[k - 1] : 0))}</b><span class="climb__what">${what}</span><i class="climb__bar" style="--w:${Math.max(12, Math.round((100 * t.early[k]) / t.gain))}%;--d:${k * 0.25}s"></i></li>`).join("")}
         <li class="climb__step climb__step--max"><span class="climb__when">Semaine 4 et après</span><b class="climb__pts">+${esc(Math.max(0, t.gain - t.early[2]))}</b><span class="climb__what">Jusqu'à ton max : +${esc(t.gain)} au total</span><i class="climb__bar" style="--w:100%;--d:.75s"></i></li>
       </ol>` : ""}
       <p class="lead">5 à 10 minutes par jour. Ta note de départ reste cachée jusqu'au résultat.</p>

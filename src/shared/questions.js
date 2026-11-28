@@ -60,7 +60,10 @@ const _SCREENS = [
     options: [o("souvent", "", "Oui, tout le temps"), o("parfois", "", "Parfois, sans que ce soit grave"), o("non", "", "Non, ma peau est plutôt nette")] },
   { id: "soins_routine", type: "single", title: "Tu as déjà suivi une routine de soins pour la peau ?",
     options: [o("jamais", "", "Jamais, je ne sais pas par où commencer"), o("abandon", "", "J'ai essayé, mais je ne tiens pas"), o("mieux", "", "J'en ai une, je veux de meilleurs résultats"), o("solide", "", "Ma routine est solide")] },
+  { id: "maquillage", type: "single", title: "Et le maquillage, pour toi, c'est…", skipIf: (a) => a.genre !== "femme",
+    options: [o("jamais", "", "Jamais ou presque"), o("minimum", "", "Le minimum : mascara, baume"), o("doute", "", "Tous les jours, sans savoir si ça me met vraiment en valeur"), o("adore", "", "J'adore, je veux aller plus loin")] },
   { id: "cheveux", type: "multi", title: "Cheveux, barbe : qu'est-ce qui coince ?", lead: "Plusieurs réponses possibles.",
+    echo: (a) => ({ doute: "Bien choisi, le maquillage unifie ton teint et ouvre ton regard en 5 minutes. Ton plan te montre quoi mettre, et où, pour ton visage.", adore: "Ton plan va plus loin : la teinte exacte, le regard, la bonne mine, et une version soirée.", minimum: "Avec 2 ou 3 gestes de plus, bien placés, ton visage s'éclaire. Ton plan te les montre." }[a.maquillage] || ""),
     options: [o("ligne", "", "Ma ligne recule, ou mes cheveux s'affinent"), o("coupe", "", "Je ne sais pas quelle coupe me va"), o("texture", "", "Cheveux secs ou gras"), o("barbe", "", "Ma barbe pousse mal"), o("rien", "", "Rien de spécial, je veux progresser")] },
   { id: "fait_coupe", type: "ember",
     variant: (a) => {

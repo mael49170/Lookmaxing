@@ -310,6 +310,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     await p.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = true)));
     await p.screenshot({ path: "replica/clone-screens/femme/espace-plan.png", fullPage: true });
     const plan = await p.textContent("main");
+    expect(/skincare/i.test(plan), "pas de routine skincare dans le plan d'une femme");
     for (const [where, txt] of [["rapport", rapport], ["plan", plan]]) {
       expect(!/barbe|tondeuse|pomme d'Adam|moustache/i.test(txt), `l'espace (${where}) parle de barbe`);
       expect(!/\b(convaincu|prêt à|seul face|gêné|transparent|réservé|Posé|Affirmé)\b/.test(txt), `masculin dans l'espace (${where})`);

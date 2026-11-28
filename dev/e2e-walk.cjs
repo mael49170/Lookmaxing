@@ -48,7 +48,7 @@ const path = require("path");
     if (await radios.count()) {
       const opts = await radios.allTextContents();
       const k = opts.findIndex((t) => !/Moins de 18/.test(t));
-      await radios.nth(Math.min(opts.length - 1, k + (s.id === "morpho" ? 1 : 0))).click();
+      await radios.nth(Math.min(opts.length - 1, k + (s.id === "morpho" ? 1 : s.id === "maquillage" ? 2 : 0))).click();
       if (await p.locator("[data-confirm]").count()) { await p.waitForTimeout(100); await p.click("[data-confirm]"); }
       continue;
     }
