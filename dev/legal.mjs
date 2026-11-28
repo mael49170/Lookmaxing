@@ -78,7 +78,7 @@ page("cgv", "Conditions générales de vente", `
   <li>un questionnaire et, si tu l'acceptes, l'analyse automatique de deux photos de ton visage ;</li>
   <li>un rapport : une note, une estimation de ton potentiel et le détail de 15 critères ;</li>
   <li>un plan de 28 jours, des tâches quotidiennes et un suivi dans ton espace membre ;</li>
-  <li>si tu le demandes, un rappel quotidien par e-mail.</li>
+  <li>un rappel de tes actions du jour par e-mail, chaque matin (tu l'arrêtes en un clic, avec le lien en bas de chaque e-mail).</li>
 </ul>
 <p>Le service est réservé aux personnes majeures (18 ans et plus).</p>
 <p>Les notes sont l'avis d'un logiciel sur deux photos, avec une lumière et un angle donnés. Ce n'est ni une mesure, ni un diagnostic, ni un avis médical, psychologique ou esthétique professionnel. Une autre photo peut donner une autre note. Le plan propose des habitudes non médicales (soins, coupe, style, sport, posture, assurance). MOGX ne garantit aucun résultat physique, ni aucun effet sur ta vie sentimentale ou sociale : le résultat dépend notamment de ta régularité.</p>
@@ -164,7 +164,7 @@ page("confidentialite", "Politique de confidentialité", `
   <tr><td>Deux photos de ton visage, et les mesures qui en sont tirées</td><td>Calculer tes notes. Détail dans la <a href="/biometrie/">politique sur les données du visage</a>.</td><td>Ton consentement explicite (article 9 du RGPD)</td></tr>
   <tr><td>Tes notes (15 critères, note, potentiel)</td><td>Ton rapport, ton plan</td><td>Exécution du contrat</td></tr>
   <tr><td>Ton adresse e-mail</td><td>Ton compte, la connexion par code, les e-mails liés au service</td><td>Exécution du contrat</td></tr>
-  <tr><td>Ton adresse e-mail (si tu as dit oui au rappel)</td><td>Le rappel de tes actions du jour, chaque matin</td><td>Ton consentement, retirable en un clic</td></tr>
+  <tr><td>Ton adresse e-mail</td><td>Le rappel de tes actions du jour, chaque matin</td><td>L'exécution du contrat (le rappel fait partie de ton plan), arrêtable en un clic</td></tr>
   <tr><td>Tes tâches cochées</td><td>Le suivi, la garantie « satisfait ou remboursé »</td><td>Exécution du contrat</td></tr>
   <tr><td>Paiements (gérés par Stripe ; nous ne voyons jamais ton numéro de carte)</td><td>Encaisser, rembourser, facturer</td><td>Exécution du contrat et obligations comptables</td></tr>
   <tr><td>Adresse IP sous forme chiffrée, identifiant de l'appareil (cookie)</td><td>Limiter les abus, réserver l'essai une seule fois, sécurité</td><td>Intérêt légitime (lutte contre la fraude)</td></tr>

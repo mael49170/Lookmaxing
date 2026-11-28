@@ -445,7 +445,7 @@ const VIEWS = {
           <ul class="module__keys">${m.steps.map((len, k) => `<li><b>Semaine ${k + 1}</b><span class="blurline" aria-hidden="true">${blurText(len)}</span><span class="sr-only">Détail caché jusqu'au paiement.</span></li>`).join("")}</ul>
           ${m.daily ? `<p class="module__daily">${lock}<span>+ ${m.daily} geste${m.daily > 1 ? "s" : ""} au quotidien</span></p>` : ""}
         </div>`).join("")}
-        <p class="module__habits">${lock}<span>Chaque jour, tes actions à cocher dans ton espace, avec un rappel le matin si tu veux.</span></p>
+        <p class="module__habits">${lock}<span>Chaque jour, tes actions à cocher dans ton espace, avec un rappel chaque matin par e-mail.</span></p>
       </section>
       ${cta("Obtenir mon plan")}
       <section class="block block--guarantee" id="garantie">

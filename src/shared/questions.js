@@ -135,7 +135,7 @@ const _SCREENS = [
     options: [o("2s", "", "2 semaines"), o("1m", "", "1 mois"), o("3m", "", "2 à 3 mois"), o("6m", "", "6 mois"), o("nsp", "", "Je ne sais pas encore")] },
   { id: "profil", type: "profile" },
   { id: "construction", type: "building",
-    sheets: [{ id: "temps", title: "Tu peux donner 5 minutes par jour à ton plan ?" }, { id: "finir", title: "Tu vas au bout de ce que tu commences ?" }, { id: "rappel", title: "Un petit rappel chaque matin pour ne pas lâcher ?" }] },
+    sheets: [{ id: "temps", title: "Tu peux donner 5 minutes par jour à ton plan ?" }, { id: "finir", title: "Tu vas au bout de ce que tu commences ?" }] },
   { id: "apercu", type: "teaser", skipIf: (a) => a.scan !== "done" },
   { id: "offre", type: "paywall" },
 ];
@@ -144,7 +144,7 @@ export const SCREENS = _SCREENS.map((s, i) => ({ ...s, sid: "S" + String(i + 1).
 
 export const SCREEN_IDS = SCREENS.map((s) => s.id);
 export const QUESTION_SCREENS = SCREENS.filter((s) => s.type === "single" || s.type === "multi");
-export const SHEET_IDS = ["temps", "rappel", "finir"];
+export const SHEET_IDS = ["temps", "finir"]; // « rappel » retiré par Maël le 28/11/2026 : le rappel du matin est en marche par défaut
 
 // Contrôle côté serveur : ne garde que des réponses connues
 export function cleanAnswers(raw) {

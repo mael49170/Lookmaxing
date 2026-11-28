@@ -39,7 +39,7 @@ const path = require("path");
     if (s.id === "consentement") { await p.click(photos ? "[data-consent=yes]" : "[data-consent=no]"); continue; }
     if (s.id === "selfies" && !photos) { await p.click("[data-noscan]"); continue; }
     if (s.id === "construction") {
-      for (let k = 0; k < 3; k++) { await p.locator("[data-sheet]").first().waitFor({ timeout: 20000 }); if (k === 0) await shot(`${s.sid}-construction-question`); await p.locator("[data-sheet][data-v='1']").click(); }
+      for (let k = 0; k < 2; k++) { await p.locator("[data-sheet]").first().waitFor({ timeout: 20000 }); if (k === 0) await shot(`${s.sid}-construction-question`); await p.locator("[data-sheet][data-v='1']").click(); }
       await p.locator("[data-tomail]:not([disabled])").waitFor({ timeout: 40000 });
       await shot(`${s.sid}-construction-fin`); await p.click("[data-tomail]"); continue;
     }

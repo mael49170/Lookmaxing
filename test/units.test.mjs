@@ -47,7 +47,7 @@ test("photos : seulement des images, pas trop lourdes", () => {
 });
 
 test("réponses : seules les valeurs prévues passent", () => {
-  assert.deepEqual(cleanAnswers({ genre: "homme", difficultes: ["peau", "x"], pari: "nope", rappel: true }), { genre: "homme", difficultes: ["peau"], rappel: true });
+  assert.deepEqual(cleanAnswers({ genre: "homme", difficultes: ["peau", "x"], pari: "nope", temps: true }), { genre: "homme", difficultes: ["peau"], temps: true });
 });
 
 test("plan : 28 jours de protocoles, chaque tâche a un vrai texte, jamais 2 fois la même le même jour", async () => {

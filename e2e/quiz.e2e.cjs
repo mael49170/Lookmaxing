@@ -57,7 +57,7 @@ async function step(page, { photos = true } = {}) {
   if (!photos && await page.getByRole("button", { name: "Prendre mes selfies" }).count()) return page.getByRole("button", { name: "Continuer sans photo" }).click();
   if (await page.getByRole("button", { name: "On calcule ton potentiel" }).count()) return page.locator(".screen__footer .btn--primary:not([disabled])").waitFor({ timeout: 40000 });
   if (await page.getByRole("button", { name: /Ton plan se prépare|Voir mon résultat|Continuer sans scan/ }).count()) {
-    for (let k = 0; k < 3; k++) { await page.getByRole("dialog").waitFor({ timeout: 20000 }); await page.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
+    for (let k = 0; k < 2; k++) { await page.getByRole("dialog").waitFor({ timeout: 20000 }); await page.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
     await page.getByRole("button", { name: /Voir mon résultat|Continuer sans scan/ }).waitFor({ timeout: 40000 });
     return page.getByRole("button", { name: /Voir mon résultat|Continuer sans scan/ }).click();
   }
@@ -192,8 +192,8 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   await test("F01-E5", "l'analyse échoue avant le paiement : aucun message, on continue, l'analyse est proposée dans l'espace", async (p) => {
     await p.route("**/api/scan", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: false, problem: "pas_de_visage", message: "On ne trouve pas de visage sur une des photos." }) }));
     await runTo(p, "id:construction");
-    // les 3 petites questions de l'écran (si elles ne sont pas déjà répondues)
-    for (let k = 0; k < 3; k++) { if (await p.getByRole("dialog").waitFor({ timeout: 8000 }).then(() => true, () => false)) await p.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
+    // les 2 petites questions de l'écran (si elles ne sont pas déjà répondues)
+    for (let k = 0; k < 2; k++) { if (await p.getByRole("dialog").waitFor({ timeout: 8000 }).then(() => true, () => false)) await p.getByRole("dialog").getByRole("button", { name: "Oui" }).click(); }
     await p.locator("[data-tomail]:not([disabled])").waitFor({ timeout: 40000 });
     expect(/Voir mon résultat/.test(await p.locator("[data-tomail]").textContent()), "le bouton n'invite pas à voir son résultat");
     expect(!(await p.getByRole("alert").count()), "un message d'échec s'affiche encore");
