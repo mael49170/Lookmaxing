@@ -77,7 +77,11 @@ test("aperçu avant paiement : vraies notes, noms des critères cachés, vrai pl
   assert.equal(r.data.strengths.length, 3); assert.equal(r.data.weaknesses.length, 3);
   assert.ok(r.data.strengths.every((f) => Number.isInteger(f.note) && f.len > 0 && !("label" in f) && !("id" in f)), "aucun nom de critère dans les notes");
   assert.ok(r.data.strengths[0].note >= r.data.weaknesses[0].note);
-  assert.equal(r.data.plan.length, 14); assert.equal(r.data.planDays, 28);
+  assert.equal(r.data.planDays, 28); assert.equal(r.data.modules.length, 4);
+  assert.ok(r.data.modules.every((m) => m.title && m.why && m.steps.length === 4 && m.steps.every((n) => Number.isInteger(n))), "titres et pourquoi en clair, étapes seulement en longueur");
+  const { PROTOCOLS } = await import("../lib/protocols.js");
+  const json = JSON.stringify(r.data);
+  assert.ok(!PROTOCOLS.some((p) => (Array.isArray(p.weeks) ? p.weeks : Object.values(p.weeks).flat()).some((w) => json.includes(w.slice(0, 40)))), "le texte des étapes ne doit jamais partir avant le paiement");
   assert.ok(!("now" in r.data) && !JSON.stringify(r.data).includes("score_now"), "la note actuelle reste cachée");
 });
 

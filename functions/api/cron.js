@@ -16,6 +16,7 @@ export const onRequestPost = handle(async ({ request, env }) => {
 
   // 1. Nettoyage (politique biométrique) : notes sans achat après 30 jours, quiz sans e-mail après 90 jours
   out.notes_effacees = (await d.prepare("DELETE FROM scans WHERE delete_after < ?").bind(t).run()).meta.changes || 0;
+  await d.prepare("DELETE FROM scan_extras WHERE quiz_id NOT IN (SELECT quiz_id FROM scans)").run(); // la forme du visage part avec les notes
   out.quiz_effaces = (await d.prepare("DELETE FROM quizzes WHERE created_at < ? AND id NOT IN (SELECT quiz_id FROM leads) AND id NOT IN (SELECT quiz_id FROM customers WHERE quiz_id IS NOT NULL)").bind(t - 90 * DAY).run()).meta.changes || 0;
   // Durées promises dans la politique de confidentialité : e-mail sans achat effacé 3 ans après le dernier contact,
   // compte client effacé 3 ans après la fin de son dernier abonnement

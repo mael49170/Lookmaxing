@@ -45,12 +45,19 @@ test("réponses : seules les valeurs prévues passent", () => {
   assert.deepEqual(cleanAnswers({ genre: "homme", difficultes: ["peau", "x"], pari: "nope", rappel: true }), { genre: "homme", difficultes: ["peau"], rappel: true });
 });
 
-test("plan : 28 jours, tâches connues, jamais 2 fois la même tâche le même jour", () => {
-  const ids = new Set(TASKS.map((t) => t.id));
-  for (const a of [{}, { difficultes: ["peau"], temps: false }, { difficultes: ["poids", "cheveux"], morpho: "enrobee" }]) {
+test("plan : 28 jours de protocoles, chaque tâche a un vrai texte, jamais 2 fois la même le même jour", async () => {
+  const { taskText } = await import("../lib/plan.js");
+  for (const a of [{}, { difficultes: ["peau"], temps: false }, { difficultes: ["poids", "cheveux"], morpho: "enrobee", genre: "femme" }]) {
     const p = buildPlan(a, FACTORS.map((f, i) => ({ id: f.id, note: 40 + i })));
     assert.equal(p.days.length, PLAN_DAYS);
-    for (const d of p.days) { assert.ok(d.tasks.every((t) => ids.has(t))); assert.equal(new Set(d.tasks).size, d.tasks.length); }
+    assert.equal(p.protocols.length, 4);
+    for (const d of p.days) {
+      assert.ok(d.tasks.length >= 1);
+      assert.ok(d.tasks.every((t) => taskText(t, a.genre).length > 20), "tâche sans texte");
+      assert.equal(new Set(d.tasks).size, d.tasks.length);
+    }
+    // chaque protocole avance : ses 4 semaines apparaissent dans le plan
+    for (const id of p.protocols.slice(0, 3)) for (let w = 0; w < 4; w++) if (!["photos"].includes(id) || true) assert.ok(p.days.some((d) => d.tasks.includes(`p:${id}:w${w}`)), `semaine ${w + 1} de ${id} absente`);
   }
 });
 
@@ -127,10 +134,12 @@ test("profil : résumé des réponses, titre lisible", async () => {
 
 test("plan : les réponses détaillées choisissent les tâches", async () => {
   const { buildPlan } = await import("../lib/plan.js");
-  const first = (a) => buildPlan(a).days.slice(0, 4).flatMap((d) => d.tasks);
-  assert.ok(first({ relire: "daccord" }).includes("message_direct"));
-  assert.ok(first({ dire_non: "pas_daccord" }).includes("dire_non"));
-  assert.ok(first({ cheveux: ["coupe"] }).includes("coupe_photo"));
+  const protos = (a, f) => buildPlan(a, f).protocols;
+  assert.ok(protos({ relire: "daccord", dire_non: "pas_daccord" }).includes("assurance"));
+  assert.ok(protos({ cheveux: ["coupe"] }).includes("coupe"));
+  assert.equal(protos({ difficultes: ["visage"] })[0], "machoire", "1re difficulté = 1er protocole");
+  const weakJaw = FACTORS.map((f) => ({ id: f.id, note: f.id === "machoire" ? 20 : 80 }));
+  assert.equal(protos({}, weakJaw)[0], "machoire", "le critère le plus faible du scan passe en premier");
   const { cleanAnswers } = await import("../src/shared/questions.js");
   assert.deepEqual(cleanAnswers({ finir: true, sport: "jamais", soirees: "nimporte" }), { sport: "jamais", finir: true });
 });
@@ -174,6 +183,8 @@ test("e-mail de bienvenue : le récapitulatif obligatoire (prix, renouvellement,
 test("plan pour une femme : jamais de tâche barbe", async () => {
   const { buildPlan } = await import("../lib/plan.js");
   for (const a of [{ genre: "femme" }, { genre: "femme", difficultes: ["cheveux", "visage"] }]) {
-    assert.ok(!buildPlan(a).days.some((d) => d.tasks.includes("barbe_trait")));
+    const { taskText } = await import("../lib/plan.js");
+    const p = buildPlan(a, FACTORS.map((f) => ({ id: f.id, note: f.id === "pilosite" ? 10 : 80 })));
+    assert.ok(!p.days.some((d) => d.tasks.some((t) => /barbe/i.test(taskText(t, "femme")))), "le mot barbe dans un plan de femme");
   }
 });

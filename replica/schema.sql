@@ -35,6 +35,13 @@ CREATE TABLE IF NOT EXISTS scans (
 );
 CREATE INDEX IF NOT EXISTS scans_delete ON scans(delete_after);
 
+-- Forme du visage lue par l'analyse (28/11/2026), pour conseiller la coupe. Effacée avec les notes.
+CREATE TABLE IF NOT EXISTS scan_extras (
+  quiz_id TEXT PRIMARY KEY REFERENCES quizzes(id) ON DELETE CASCADE,
+  face_shape TEXT NOT NULL CHECK (face_shape IN ('ovale','rond','carre','long','coeur','losange')),
+  created_at INTEGER NOT NULL
+);
+
 -- L'e-mail laissé à l'écran S25
 CREATE TABLE IF NOT EXISTS leads (
   quiz_id TEXT PRIMARY KEY REFERENCES quizzes(id) ON DELETE CASCADE,

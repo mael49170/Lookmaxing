@@ -428,10 +428,12 @@ const VIEWS = {
       ${cta("Obtenir mon rapport complet")}` : ""}
       <section class="block"><h2 class="block__title">Ton programme de 28 jours</h2><p class="block__lead">Fait pour toi, dans l'ordre de ce qui te fera gagner le plus. Le détail se débloque avec ton accès.</p>
         ${(t.modules || []).map((m, i) => `<div class="module${i === 0 ? " module--first" : ""}">
-          <div class="module__head"><span class="module__name">${esc(MODULES[m.domain] || m.domain)}</span><span class="module__count">${m.count} action${m.count > 1 ? "s" : ""}</span></div>
-          ${m.keys.length ? `<ul class="module__keys">${m.keys.map((k) => `<li><b>${esc(k.title)}</b><span class="blurline" aria-hidden="true">${blurText(k.len)}</span><span class="sr-only">Détail caché jusqu'au paiement.</span></li>`).join("")}</ul>` : ""}
+          <div class="module__head"><span class="module__name">${esc(m.title)}</span><span class="module__count">4 semaines</span></div>
+          <p class="module__why">${esc(m.why)}</p>
+          <ul class="module__keys">${m.steps.map((len, k) => `<li><b>Semaine ${k + 1}</b><span class="blurline" aria-hidden="true">${blurText(len)}</span><span class="sr-only">Détail caché jusqu'au paiement.</span></li>`).join("")}</ul>
+          ${m.daily ? `<p class="module__daily">${lock}<span>+ ${m.daily} geste${m.daily > 1 ? "s" : ""} au quotidien</span></p>` : ""}
         </div>`).join("")}
-        ${t.habits ? `<p class="module__habits">${lock}<span>Et chaque jour, ${t.habits} habitude${t.habits > 1 ? "s" : ""} à cocher, avec un rappel le matin si tu veux.</span></p>` : ""}
+        <p class="module__habits">${lock}<span>Chaque jour, tes actions à cocher dans ton espace, avec un rappel le matin si tu veux.</span></p>
       </section>
       ${cta("Obtenir mon plan")}
       <section class="block block--guarantee" id="garantie">

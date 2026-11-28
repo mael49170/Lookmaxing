@@ -30,6 +30,7 @@ export const onRequestPost = handle(async ({ request, env }) => {
   await d.prepare(`INSERT INTO scans (id, quiz_id, score_now, score_max, factors, model, cost_microusd, delete_after, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(quiz_id) DO NOTHING`)
     .bind(uuid(), quiz.id, r.now, r.max, JSON.stringify(r.factors), r.model, r.cost, now() + 30 * DAY, now()).run();
+  if (r.faceShape) await d.prepare("INSERT INTO scan_extras (quiz_id, face_shape, created_at) VALUES (?, ?, ?) ON CONFLICT(quiz_id) DO UPDATE SET face_shape = excluded.face_shape").bind(quiz.id, r.faceShape, now()).run();
   await track(d, "scan_ok", { variant: quiz.variant, source: quiz.utm_source });
   return json({ ok: true });
 });

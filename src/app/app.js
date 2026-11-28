@@ -39,8 +39,42 @@ function reportView(r) {
     <h2 class="section-title">Tes points forts</h2>
     ${r.strengths.map((f) => `<div class="factor"><span>${esc(f.label)}</span><b>${f.note}</b></div>`).join("")}
     <h2 class="section-title">Ce qui se travaille en premier</h2>
-    ${r.weaknesses.map((f) => `<div class="factor"><span>${esc(f.label)}<small>${esc(f.phrase)}</small></span><b>${f.note}</b></div>`).join("")}
+    ${r.weaknesses.map((f) => `<div class="factor"><span>${esc(f.label)}<small>${esc(f.phrase)}</small>${f.protocol ? `<button class="factor__proto" data-goplan>Ton protocole : ${esc(f.protocol)} →</button>` : ""}</span><b>${f.note}</b></div>`).join("")}
+    ${r.faceShape ? faceShapeView(r.faceShape) : ""}
     ${groups}`;
+}
+
+// La forme du visage lue par l'analyse : un dessin de la forme, et les coupes qui vont / à éviter
+const SHAPES = {
+  ovale: '<ellipse cx="50" cy="65" rx="34" ry="50"/>',
+  rond: '<ellipse cx="50" cy="65" rx="42" ry="46"/>',
+  carre: '<path d="M14 24 Q14 14 24 14 H76 Q86 14 86 24 V96 Q86 116 64 116 H36 Q14 116 14 96 Z"/>',
+  long: '<ellipse cx="50" cy="65" rx="28" ry="58"/>',
+  coeur: '<path d="M10 30 Q10 12 30 12 H70 Q90 12 90 30 Q90 70 50 118 Q10 70 10 30 Z"/>',
+  losange: '<path d="M50 8 Q72 30 90 60 Q72 96 50 120 Q28 96 10 60 Q28 30 50 8 Z"/>',
+};
+function faceShapeView(fs) {
+  return `<h2 class="section-title">Ta forme de visage</h2>
+    <div class="faceshape">
+      <svg class="faceshape__art" viewBox="0 0 100 130" aria-hidden="true">${SHAPES[fs.id] || SHAPES.ovale}</svg>
+      <div class="faceshape__txt"><b>${esc(fs.label)}</b><span>${esc(fs.why)}</span></div>
+    </div>
+    <div class="cuts"><div class="cuts__col cuts__col--yes"><b>Les coupes qui te vont</b><ul>${fs.yes.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+      <div class="cuts__col cuts__col--no"><b>À éviter</b><ul>${fs.no.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div></div>
+    <p class="note">Montre cette liste à ton coiffeur, avec 3 photos de coupes sur des visages proches du tien.</p>`;
+}
+
+// Ses protocoles en entier : pourquoi, les 4 semaines (la semaine en cours en avant), les gestes du jour, l'astuce
+function programsView(list, week) {
+  if (!list?.length) return "";
+  return `<h2 class="section-title">Mes programmes</h2>
+    ${list.map((p, i) => `<details class="program"${i === 0 ? " open" : ""}><summary><span>${esc(p.title)}</span><small>Semaine ${week} sur 4</small></summary>
+      <p class="program__why">${esc(p.why)}</p>
+      ${p.daily.length ? `<b class="program__h">Tous les jours</b><ul>${p.daily.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+      <b class="program__h">Semaine par semaine</b>
+      <ol class="program__weeks">${p.weeks.map((x, k) => `<li class="${k + 1 === week ? "now" : k + 1 < week ? "past" : ""}">${esc(x)}</li>`).join("")}</ol>
+      ${p.tip ? `<p class="program__tip"><b>L'astuce :</b> ${esc(p.tip)}</p>` : ""}
+    </details>`).join("")}`;
 }
 
 function planView(p) {
@@ -50,7 +84,8 @@ function planView(p) {
     <span class="eyebrow">Jour ${p.day} sur ${p.total}</span>
     <h1 class="title" tabindex="-1">${done === p.tasks.length ? "Journée faite." : "Aujourd'hui"}</h1>
     <p class="lead">${done} sur ${p.tasks.length} fait${done > 1 ? "s" : ""}. ${p.doneDays} jour${p.doneDays > 1 ? "s" : ""} suivi${p.doneDays > 1 ? "s" : ""} depuis le début.</p>
-    <div class="stack">${p.tasks.map((t) => `<label class="task"><input type="checkbox" data-task="${esc(t.id)}" ${t.done ? "checked" : ""}><span><b>${esc(DOMAINS[t.domain] || "")}</b> · ${esc(t.text)}</span></label>`).join("")}</div>`;
+    <div class="stack">${p.tasks.map((t) => `<label class="task"><input type="checkbox" data-task="${esc(t.id)}" ${t.done ? "checked" : ""}><span><b>${esc(DOMAINS[t.domain] || t.domain || "")}</b>${esc(t.text)}</span></label>`).join("")}</div>
+    ${programsView(me.protocols, p.week || 1)}`;
 }
 
 function accountView(m) {
@@ -131,6 +166,7 @@ app.addEventListener("click", async (e) => {
   const b = e.target.closest("button");
   if (!b) return;
   if (b.dataset.tab) { tab = b.dataset.tab; render(); return; }
+  if (b.hasAttribute("data-goplan")) { tab = "plan"; render(); app.querySelector(".program")?.scrollIntoView({ block: "start" }); return; }
   if (b.hasAttribute("data-welcome")) { if (me.report) reveal(me.report); else render(); return; }
   if (b.hasAttribute("data-logout") || b.hasAttribute("data-logout-all")) { await api("logout", { partout: b.hasAttribute("data-logout-all") }).catch(() => {}); location.href = "/connexion/"; }
   if (b.hasAttribute("data-portal")) { try { location.href = (await api("portal", {})).url; } catch (err) { alert(err.message); } }
