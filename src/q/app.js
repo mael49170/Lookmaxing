@@ -151,7 +151,6 @@ const VIEWS = {
           <span class="gcard__frame" aria-hidden="true"></span>
           <span class="gcard__foot"><span class="gcard__label">${label}</span><span class="gcard__go" aria-hidden="true">${ICON_GO}</span></span></label>`).join("")}
       </fieldset>
-      <nav class="mini-legal" aria-label="Informations"><a href="/infos/">Prix et infos</a><a href="/connexion/">Mon espace</a><a href="/cgv/">CGV</a><a href="/mentions-legales/">Mentions légales</a>${consentEnabled() ? '<button type="button" class="linklike" data-cookies>Cookies</button>' : ""}</nav>
     </main>`;
   },
 
@@ -451,6 +450,7 @@ const VIEWS = {
         <p class="block__lead">Écris-nous, une vraie personne te répond.</p>
         <a class="btn btn--secondary" href="mailto:${esc(pw.support)}">Écrire à ${esc(pw.support)}</a>
       </section>` : ""}
+      <nav class="mini-legal" aria-label="Informations"><a href="/infos/">Prix et infos</a><a href="/connexion/">Mon espace</a><a href="/cgv/">CGV</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a>${consentEnabled() ? '<button type="button" class="linklike" data-cookies>Cookies</button>' : ""}</nav>
       <div class="sticky-pay" role="region" aria-label="Paiement">
         <div class="sticky-pay__info">${trial
           ? `<span class="sticky-pay__timer" id="timer" aria-live="off">--:--</span><span class="sticky-pay__sub">essai à ${esc(euros(o.intro))} réservé</span>`
@@ -822,4 +822,4 @@ async function pay(btn) {
 if (S.scan === "running") { S.scan = "failed"; S.scanError = "La page a été rechargée pendant l'analyse."; }
 render();
 // Pixel Meta (seulement après accord) : réglé par META_PIXEL_ID dans wrangler.toml
-api("config", null, { method: "GET" }).then((c) => { initConsent(c.pixel); if (consentEnabled() && SCREENS[S.i].type === "landing") render(); }).catch(() => {});
+api("config", null, { method: "GET" }).then((c) => { initConsent(c.pixel); if (consentEnabled() && SCREENS[S.i].type === "paywall") render(); }).catch(() => {});

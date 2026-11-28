@@ -47,7 +47,7 @@ function show() {
   box.className = "cookie-bar";
   box.setAttribute("role", "dialog");
   box.setAttribute("aria-label", "Cookies");
-  box.innerHTML = `<p><b>Cookies de mesure</b><br>Avec ton accord, Meta (Facebook, Instagram) nous dit si tu viens de nos pubs, pour les améliorer. Rien n'est envoyé si tu refuses. Tu peux changer d'avis à tout moment (lien « Cookies » en bas de l'accueil). <a href="/confidentialite/#cookies">En savoir plus</a></p>
+  box.innerHTML = `<p><b>Cookies de mesure</b><br>Avec ton accord, Meta (Facebook, Instagram) nous dit si tu viens de nos pubs, pour les améliorer. Rien n'est envoyé si tu refuses. Tu peux changer d'avis à tout moment (lien « Cookies » en bas de la page de paiement et dans ton espace). <a href="/confidentialite/#cookies">En savoir plus</a></p>
     <div class="cookie-bar__btns"><button type="button" class="btn btn--secondary" data-c="no">Refuser</button><button type="button" class="btn btn--secondary" data-c="yes">Accepter</button></div>`;
   box.addEventListener("click", (e) => { const b = e.target.closest("[data-c]"); if (b) choose(b.dataset.c); });
   document.body.append(box);

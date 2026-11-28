@@ -1,7 +1,7 @@
 // Espace membre : le rapport (S28) et le plan du jour (S29).
 import { GROUPS } from "/shared/factors.js";
 import { euros, OFFERS } from "/shared/plans.js";
-import { initConsent, track } from "/shared/consent.js";
+import { initConsent, track, reopenConsent } from "/shared/consent.js";
 
 const app = document.getElementById("app");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -104,7 +104,7 @@ function accountView(m) {
     <button data-logout>Me déconnecter</button>
     <button data-logout-all>Me déconnecter de tous mes appareils</button>
     <button data-delete>Supprimer mon compte et mes données</button>
-    <a href="/cgv/">Conditions générales de vente</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a></div>`;
+    <a href="/cgv/">Conditions générales de vente</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a><button data-cookies>Cookies</button></div>`;
 }
 
 // Garantie « satisfait ou remboursé » : où il en est, et le bouton quand c'est gagné
@@ -166,6 +166,7 @@ app.addEventListener("click", async (e) => {
   const b = e.target.closest("button");
   if (!b) return;
   if (b.dataset.tab) { tab = b.dataset.tab; render(); return; }
+  if (b.hasAttribute("data-cookies")) { reopenConsent(); return; }
   if (b.hasAttribute("data-goplan")) { tab = "plan"; render(); app.querySelector(".program")?.scrollIntoView({ block: "start" }); return; }
   if (b.hasAttribute("data-welcome")) { if (me.report) reveal(me.report); else render(); return; }
   if (b.hasAttribute("data-logout") || b.hasAttribute("data-logout-all")) { await api("logout", { partout: b.hasAttribute("data-logout-all") }).catch(() => {}); location.href = "/connexion/"; }
@@ -194,6 +195,8 @@ app.addEventListener("change", async (e) => {
   render();
 });
 
+// pixel Meta (seulement après accord) : le lien « Cookies » du compte permet de changer d'avis
+const cfgReady = fetch("/api/config").then((r) => r.json()).then((c) => initConsent(c.pixel)).catch(() => {});
 try {
   me = await api("me");
   if (new URLSearchParams(location.search).get("analyse") && me.report) { history.replaceState(null, "", "/app/"); reveal(me.report); }
@@ -201,8 +204,7 @@ try {
     history.replaceState(null, "", "/app/");
     welcome();
     // pour les pubs Meta : l'achat, avec le vrai montant payé aujourd'hui (seulement si la personne a accepté les cookies)
-    const cfg = await fetch("/api/config").then((r) => r.json()).catch(() => ({}));
-    initConsent(cfg.pixel);
+    await cfgReady;
     const sub = me.subscription;
     if (sub) {
       const value = (sub.in_trial ? OFFERS[sub.offer]?.intro ?? 0 : sub.renew_cents) / 100;
