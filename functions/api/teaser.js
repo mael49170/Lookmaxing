@@ -1,6 +1,6 @@
 import { json, handle } from "../../lib/http.js";
 import { currentQuiz } from "../../lib/identity.js";
-import { FACTORS, quickGain } from "../../src/shared/factors.js";
+import { FACTORS, earlyGains } from "../../src/shared/factors.js";
 import { buildPlan } from "../../lib/plan.js";
 import { PROTOCOL_BY_ID, protocolFor } from "../../lib/protocols.js";
 
@@ -31,7 +31,7 @@ export const onRequestGet = handle(async ({ request, env }) => {
     ...out,
     max: scan.score_max, // sur 100 (décidé par Maël le 28/11/2026)
     gain,
-    quick: Math.min(gain, quickGain(scores)), // le premier palier, dès 4 semaines (coupe, barbe, posture, vêtements)
+    early: earlyGains(scores).map((g) => Math.min(gain, g)), // semaines 1, 2, 3 (cumulé)
     strength: { label: label(sorted[0].id), note: sorted[0].note },
     strengths: sorted.slice(0, 3).map(hidden),
     weaknesses: sorted.slice(-3).reverse().map(hidden),

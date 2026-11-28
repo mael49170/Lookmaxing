@@ -28,7 +28,7 @@ export function overall(scores) {
   return w ? Math.round(s / w) : 0;
 }
 
-// Potentiel : ce que donnerait chaque critère après 12 semaines d'efforts réguliers (calcul affiché comme une estimation).
+// Potentiel : ce que donnerait chaque critère en suivant le plan dans la durée (calcul affiché comme une estimation).
 // On ne compte un gain que sur ce qui se travaille (changeable), jamais sur l'ossature :
 // chaque critère peut monter jusqu'à 90 en proportion de ce qui se travaille (28/11/2026 : l'ancien calcul, 85 et 0,7, sous-estimait).
 const CEILING = 90;
@@ -45,12 +45,28 @@ export function potential(scores) {
   return Math.max(overall(scores), Math.min(95, overall(raised(scores))));
 }
 
-// Ce qui change vite (coupe, barbe ou sourcils, posture, vêtements) : le premier palier, visible dès 4 semaines.
-export const QUICK_IDS = FACTORS.filter((f) => f.changeable >= 0.9).map((f) => f.id);
-export function quickGain(scores) {
-  const now = overall(scores);
-  const quick = Math.min(95, overall(raised(scores, (f) => QUICK_IDS.includes(f.id))));
-  return Math.max(0, Math.min(quick, potential(scores)) - now);
+// Les 3 premiers paliers (décidé par Maël le 28/11/2026 : des résultats dès les premières semaines), cumulés :
+// semaine 1 : vêtements et posture (ça change tout de suite) ;
+// semaine 2 : + coupe, barbe ou sourcils (un passage chez le coiffeur, une taille) ;
+// semaine 3 : + la moitié de ce que la peau et le teint peuvent gagner (les premiers effets de la routine).
+const STEPS = [
+  { tenue: 1, posture: 1 },
+  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1 },
+  { tenue: 1, posture: 1, coiffure: 1, pilosite: 1, peau_qualite: 0.5, peau_teint: 0.5 },
+];
+export function earlyGains(scores) {
+  const now = overall(scores), max = potential(scores);
+  let prev = 0;
+  return STEPS.map((share) => {
+    const t = {};
+    for (const f of FACTORS) {
+      const v = scores[f.id];
+      if (!Number.isFinite(v)) continue;
+      t[f.id] = share[f.id] ? Math.round(v + (Math.max(v, CEILING) - v) * f.changeable * share[f.id]) : v;
+    }
+    prev = Math.max(prev, Math.min(overall(t), max) - now);
+    return Math.max(0, prev);
+  });
 }
 
 // Note sur 10 avec une décimale, pour l'affichage
