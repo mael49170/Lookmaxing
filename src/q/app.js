@@ -291,10 +291,10 @@ const VIEWS = {
     </main>`;
     if (S.scan === "done" && t?.scanned && Number(t.gain) > 0) return `<main class="screen screen--ember">${topbar()}
       <p class="eyebrow">D'après ton scan et tes réponses</p>
-      <h1 class="title title--hero" tabindex="-1"><span class="big-gain">+${esc(t.gain)}</span> point${t.gain > 1 ? "s" : ""} à gagner.${earlyOk(t) ? " Les premiers dès la 1re semaine." : ""}</h1>
+      <h1 class="title title--hero" tabindex="-1">${earlyOk(t) ? `<span class="big-gain">+${esc(t.early[0])}</span> point${t.early[0] > 1 ? "s" : ""} dès ta 1re semaine.` : `<span class="big-gain">+${esc(t.gain)}</span> point${t.gain > 1 ? "s" : ""} à gagner.`}</h1>
       ${earlyOk(t) ? `<ol class="climb" aria-label="Ta progression estimée">
-        ${[["Semaine 1", "Style, posture"], ["Semaine 2", `Coupe, ${S.answers.genre === "femme" ? "sourcils" : "barbe"}`], ["Semaine 3", "Premiers effets sur la peau"]].map(([when, what], k) => `<li class="climb__step"><span class="climb__when">${when}</span><b class="climb__pts">+${esc(t.early[k])}</b><span class="climb__what">${what}</span><i class="climb__bar" style="--w:${Math.max(12, Math.round((100 * t.early[k]) / t.gain))}%;--d:${k * 0.25}s"></i></li>`).join("")}
-        <li class="climb__step climb__step--max"><span class="climb__when">Ensuite</span><b class="climb__pts">+${esc(t.gain)}</b><span class="climb__what">Ton max, en continuant ton plan</span><i class="climb__bar" style="--w:100%;--d:.75s"></i></li>
+        ${[["Semaine 1", `Coupe, ${S.answers.genre === "femme" ? "sourcils" : "barbe"}, style, posture`], ["Semaine 2", "Peau, teint, cernes"], ["Semaine 3", "Visage plus net, silhouette"]].map(([when, what], k) => `<li class="climb__step"><span class="climb__when">${when}</span><b class="climb__pts">+${esc(t.early[k])}</b><span class="climb__what">${what}</span><i class="climb__bar" style="--w:${Math.max(12, Math.round((100 * t.early[k]) / t.gain))}%;--d:${k * 0.25}s"></i></li>`).join("")}
+        <li class="climb__step climb__step--max"><span class="climb__when">Ensuite</span><b class="climb__pts">+${esc(t.gain)}</b><span class="climb__what">Jusqu'à ton max, en continuant</span><i class="climb__bar" style="--w:100%;--d:.75s"></i></li>
       </ol>` : ""}
       <p class="lead">5 à 10 minutes par jour. Ta note de départ reste cachée jusqu'au résultat.</p>
       <p class="legal">Une estimation calculée seulement sur ce qui se travaille (peau, coupe, posture, style…), jamais sur l'ossature. Pas une promesse : ça dépend de toi.</p>
