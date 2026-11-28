@@ -178,7 +178,7 @@ test("webhook Stripe : signature, une seule fois par événement, membre créé,
 
 test("tâches du jour : secret, nettoyage, rappel une fois par jour, relances limitées, désinscription", async () => {
   const { calls, fetchImpl } = fakeStripe();
-  const env = { DB: localD1(), LEADS_ENABLED: "1", CRON_SECRET: "s3cret", RESEND_API_KEY: "re_x", UNSUB_SECRET: "u", FETCH: fetchImpl };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", REMINDERS_ENABLED: "1", CRON_SECRET: "s3cret", RESEND_API_KEY: "re_x", UNSUB_SECRET: "u", FETCH: fetchImpl };
   const d = await db(env);
   const C = client(env);
   assert.equal((await C(cron, "cron", { headers: { authorization: "Bearer faux" } })).status, 401);
@@ -257,7 +257,7 @@ test("signature Stripe trop vieille refusée", async () => {
 });
 
 test("durées de conservation promises : e-mail sans achat et vieux comptes effacés après 3 ans", async () => {
-  const env = { DB: localD1(), LEADS_ENABLED: "1", CRON_SECRET: "s" };
+  const env = { DB: localD1(), LEADS_ENABLED: "1", REMINDERS_ENABLED: "1", CRON_SECRET: "s" };
   const d = await db(env);
   const old = now() - 3 * 365 * DAY - DAY;
   await d.prepare("INSERT INTO quizzes (id, answers, created_at, updated_at) VALUES ('vieux', '{}', ?, ?), ('recent', '{}', ?, ?)").bind(old, old, now(), now()).run();

@@ -34,9 +34,9 @@ export const onRequestPost = handle(async ({ request, env }) => {
   await d.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(t).run();
 
   let budget = MAX_MAILS;
-  // 2. Rappel du jour : membres actifs qui l'ont demandé, un par jour au plus
+  // 2. Rappel du jour : coupé par Maël le 28/11/2026 (pas de rappel). Le code reste en place, inactif : rouvert seulement avec REMINDERS_ENABLED=1.
   const today = parisDay(t);
-  const members = (await d.prepare(`SELECT c.* FROM customers c WHERE c.reminder_optin = 1 AND c.unsubscribed_at IS NULL AND c.last_reminder_day <> ?
+  const members = env.REMINDERS_ENABLED !== "1" ? [] : (await d.prepare(`SELECT c.* FROM customers c WHERE c.reminder_optin = 1 AND c.unsubscribed_at IS NULL AND c.last_reminder_day <> ?
     AND EXISTS (SELECT 1 FROM subscriptions s WHERE s.customer_id = c.id AND s.status = 'active' AND s.current_period_end > ?) LIMIT ?`).bind(today, t, budget).all()).results;
   for (const c of members) {
     try {

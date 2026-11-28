@@ -144,7 +144,7 @@ export const SCREENS = _SCREENS.map((s, i) => ({ ...s, sid: "S" + String(i + 1).
 
 export const SCREEN_IDS = SCREENS.map((s) => s.id);
 export const QUESTION_SCREENS = SCREENS.filter((s) => s.type === "single" || s.type === "multi");
-export const SHEET_IDS = ["temps", "finir"]; // « rappel » retiré par Maël le 28/11/2026 : le rappel du matin est en marche par défaut
+export const SHEET_IDS = ["temps", "finir"]; // « rappel » retiré par Maël le 28/11/2026 : pas de rappel du matin
 
 // Contrôle côté serveur : ne garde que des réponses connues
 export function cleanAnswers(raw) {

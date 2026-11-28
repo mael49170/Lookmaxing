@@ -78,7 +78,6 @@ page("cgv", "Conditions générales de vente", `
   <li>un questionnaire et, si tu l'acceptes, l'analyse automatique de deux photos de ton visage ;</li>
   <li>un rapport : une note, une estimation de ton potentiel et le détail de 15 critères ;</li>
   <li>un plan de 28 jours, des tâches quotidiennes et un suivi dans ton espace membre ;</li>
-  <li>un rappel de tes actions du jour par e-mail, chaque matin (tu l'arrêtes en un clic, avec le lien en bas de chaque e-mail).</li>
 </ul>
 <p>Le service est réservé aux personnes majeures (18 ans et plus).</p>
 <p>Les notes sont l'avis d'un logiciel sur deux photos, avec une lumière et un angle donnés. Ce n'est ni une mesure, ni un diagnostic, ni un avis médical, psychologique ou esthétique professionnel. Une autre photo peut donner une autre note. Le plan propose des habitudes non médicales (soins, coupe, style, sport, posture, assurance). MOGX ne garantit aucun résultat physique, ni aucun effet sur ta vie sentimentale ou sociale : le résultat dépend notamment de ta régularité.</p>
@@ -106,7 +105,7 @@ page("cgv", "Conditions générales de vente", `
 <h2 id="retractation">6. Droit de rétractation</h2>
 <p>En principe, tu disposes de 14 jours pour te rétracter d'un achat à distance (article L221-18 du Code de la consommation).</p>
 <p><b>Ton rapport est un contenu numérique</b> fourni immédiatement. En cochant la case prévue avant le paiement, tu demandes qu'il te soit fourni tout de suite et tu reconnais perdre ton droit de rétractation sur ce rapport dès son ouverture (article L221-28, 13°).</p>
-<p><b>Pour le reste du service</b> (plan, suivi, rappels), si tu te rétractes dans les 14 jours alors que tu as demandé à en profiter tout de suite, tu paies seulement la part du service déjà fournie jusqu'à ta rétractation (article L221-25). Le reste t'est remboursé dans les 14 jours.</p>
+<p><b>Pour le reste du service</b> (plan, suivi), si tu te rétractes dans les 14 jours alors que tu as demandé à en profiter tout de suite, tu paies seulement la part du service déjà fournie jusqu'à ta rétractation (article L221-25). Le reste t'est remboursé dans les 14 jours.</p>
 <p>Pour te rétracter, envoie ta décision sans ambiguïté à ${E.email}, par exemple avec le modèle ci-dessous.</p>
 <div class="box">
   <p><b>Modèle de formulaire de rétractation</b></p>
@@ -164,7 +163,6 @@ page("confidentialite", "Politique de confidentialité", `
   <tr><td>Deux photos de ton visage, et les mesures qui en sont tirées</td><td>Calculer tes notes. Détail dans la <a href="/biometrie/">politique sur les données du visage</a>.</td><td>Ton consentement explicite (article 9 du RGPD)</td></tr>
   <tr><td>Tes notes (15 critères, note, potentiel)</td><td>Ton rapport, ton plan</td><td>Exécution du contrat</td></tr>
   <tr><td>Ton adresse e-mail</td><td>Ton compte, la connexion par code, les e-mails liés au service</td><td>Exécution du contrat</td></tr>
-  <tr><td>Ton adresse e-mail</td><td>Le rappel de tes actions du jour, chaque matin</td><td>L'exécution du contrat (le rappel fait partie de ton plan), arrêtable en un clic</td></tr>
   <tr><td>Tes tâches cochées</td><td>Le suivi, la garantie « satisfait ou remboursé »</td><td>Exécution du contrat</td></tr>
   <tr><td>Paiements (gérés par Stripe ; nous ne voyons jamais ton numéro de carte)</td><td>Encaisser, rembourser, facturer</td><td>Exécution du contrat et obligations comptables</td></tr>
   <tr><td>Adresse IP sous forme chiffrée, identifiant de l'appareil (cookie)</td><td>Limiter les abus, réserver l'essai une seule fois, sécurité</td><td>Intérêt légitime (lutte contre la fraude)</td></tr>
@@ -211,7 +209,6 @@ page("confidentialite", "Politique de confidentialité", `
 <p>Tu peux à tout moment accéder à tes données, les corriger, les faire effacer, les récupérer (portabilité), t'opposer à un traitement, en limiter l'usage, retirer ton consentement et donner des directives pour après ton décès.</p>
 <ul>
   <li>Effacer ton compte : depuis ton espace, « Supprimer mon compte et mes données » (après la fin de ton abonnement).</li>
-  <li>Ne plus recevoir les rappels : le lien en bas de chaque e-mail.</li>
   <li>Tout le reste : écris à ${E.email}. Nous répondons sous un mois.</li>
 </ul>
 <p>Si tu estimes que tes droits ne sont pas respectés, tu peux saisir la CNIL (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).</p>
