@@ -28,16 +28,29 @@ export function overall(scores) {
   return w ? Math.round(s / w) : 0;
 }
 
-// Potentiel : ce que donnerait chaque critère après 12 semaines d'efforts réguliers.
-// On ne promet un gain que sur ce qui se travaille (changeable), jamais sur l'ossature.
-export function potential(scores) {
+// Potentiel : ce que donnerait chaque critère après 12 semaines d'efforts réguliers (calcul affiché comme une estimation).
+// On ne compte un gain que sur ce qui se travaille (changeable), jamais sur l'ossature :
+// chaque critère peut monter jusqu'à 90 en proportion de ce qui se travaille (28/11/2026 : l'ancien calcul, 85 et 0,7, sous-estimait).
+const CEILING = 90;
+function raised(scores, keep = () => true) {
   const target = {};
   for (const f of FACTORS) {
     const v = scores[f.id];
     if (!Number.isFinite(v)) continue;
-    target[f.id] = Math.round(v + (Math.max(v, 85) - v) * f.changeable * 0.7);
+    target[f.id] = keep(f) ? Math.round(v + (Math.max(v, CEILING) - v) * f.changeable) : v;
   }
-  return Math.max(overall(scores), Math.min(95, overall(target)));
+  return target;
+}
+export function potential(scores) {
+  return Math.max(overall(scores), Math.min(95, overall(raised(scores))));
+}
+
+// Ce qui change vite (coupe, barbe ou sourcils, posture, vêtements) : le premier palier, visible dès 4 semaines.
+export const QUICK_IDS = FACTORS.filter((f) => f.changeable >= 0.9).map((f) => f.id);
+export function quickGain(scores) {
+  const now = overall(scores);
+  const quick = Math.min(95, overall(raised(scores, (f) => QUICK_IDS.includes(f.id))));
+  return Math.max(0, Math.min(quick, potential(scores)) - now);
 }
 
 // Note sur 10 avec une décimale, pour l'affichage

@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFileSync, readdirSync } from "node:fs";
-import { FACTORS, overall, potential } from "../src/shared/factors.js";
+import { FACTORS, overall, potential, quickGain } from "../src/shared/factors.js";
 import { SCREENS, cleanAnswers } from "../src/shared/questions.js";
 import { toResult, costMicroUsd, parseImage } from "../lib/scan.js";
 import { buildPlan, PLAN_DAYS } from "../lib/plan.js";
@@ -17,6 +17,10 @@ test("note globale et potentiel", () => {
   // seuls les critères qui se travaillent font monter le max
   const s = all(60); const bone = { ...s, symetrie: 20, nez: 20 };
   assert.ok(Math.abs((potential(bone) - overall(bone)) - (potential(s) - overall(s))) <= 1);
+  // premier palier (4 semaines) : réel, plus petit que le gain total
+  const q = quickGain(all(50)), g = potential(all(50)) - 50;
+  assert.ok(q > 0 && q < g, `palier ${q} / gain ${g}`);
+  assert.equal(quickGain(all(99)), 0);
 });
 
 test("résultat de l'IA : bornes, critères manquants, problèmes", async () => {

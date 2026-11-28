@@ -1,6 +1,6 @@
 import { json, handle } from "../../lib/http.js";
 import { currentQuiz } from "../../lib/identity.js";
-import { FACTORS } from "../../src/shared/factors.js";
+import { FACTORS, quickGain } from "../../src/shared/factors.js";
 import { buildPlan } from "../../lib/plan.js";
 import { PROTOCOL_BY_ID, protocolFor } from "../../lib/protocols.js";
 
@@ -25,10 +25,13 @@ export const onRequestGet = handle(async ({ request, env }) => {
   const label = (id) => FACTORS.find((f) => f.id === id)?.label || id;
   const hidden = (f) => ({ note: f.note, len: label(f.id).length });
   const holding = factors.filter((f) => f.note < 55 && FACTORS.find((x) => x.id === f.id)?.changeable >= 0.5);
+  const gain = Math.max(0, scan.score_max - scan.score_now);
+  const scores = Object.fromEntries(factors.map((f) => [f.id, f.note]));
   return json({
     ...out,
     max: scan.score_max, // sur 100 (décidé par Maël le 28/11/2026)
-    gain: Math.max(0, scan.score_max - scan.score_now),
+    gain,
+    quick: Math.min(gain, quickGain(scores)), // le premier palier, dès 4 semaines (coupe, barbe, posture, vêtements)
     strength: { label: label(sorted[0].id), note: sorted[0].note },
     strengths: sorted.slice(0, 3).map(hidden),
     weaknesses: sorted.slice(-3).reverse().map(hidden),

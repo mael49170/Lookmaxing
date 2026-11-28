@@ -288,8 +288,12 @@ const VIEWS = {
     </main>`;
     if (S.scan === "done" && t?.scanned && Number(t.gain) > 0) return `<main class="screen screen--ember">${topbar()}
       <p class="eyebrow">D'après ton scan et tes réponses</p>
-      <h1 class="title title--hero" tabindex="-1">Jusqu'à <span class="big-gain">+${esc(t.gain)}</span> point${t.gain > 1 ? "s" : ""} en 12 semaines.</h1>
-      <p class="lead">En suivant ton plan 5 à 10 minutes par jour. Ta note de départ reste cachée jusqu'au résultat.</p>
+      <h1 class="title title--hero" tabindex="-1"><span class="big-gain">+${esc(t.gain)}</span> point${t.gain > 1 ? "s" : ""} à gagner.${Number(t.quick) > 0 ? " Les premiers dès 4 semaines." : ""}</h1>
+      ${Number(t.quick) > 0 ? `<ol class="climb" aria-label="Ta progression estimée">
+        <li class="climb__step"><span class="climb__when">Semaine 4</span><b class="climb__pts">+${esc(t.quick)}</b><span class="climb__what">${S.answers.genre === "femme" ? "Coupe, sourcils, posture, style" : "Coupe, barbe, posture, style"}</span><i class="climb__bar" style="--w:${Math.max(18, Math.round((100 * t.quick) / t.gain))}%"></i></li>
+        <li class="climb__step"><span class="climb__when">Semaine 12</span><b class="climb__pts">+${esc(t.gain)}</b><span class="climb__what">Peau, silhouette, tout ton plan</span><i class="climb__bar" style="--w:100%"></i></li>
+      </ol>` : ""}
+      <p class="lead">5 à 10 minutes par jour. Ta note de départ reste cachée jusqu'au résultat.</p>
       <p class="legal">Une estimation calculée seulement sur ce qui se travaille (peau, coupe, posture, style…), jamais sur l'ossature. Pas une promesse : ça dépend de toi.</p>
       ${footer(`<button class="btn btn--primary" data-next>Je veux ces points</button>`)}
     </main>`;
@@ -411,6 +415,7 @@ const VIEWS = {
           <div class="scanhero__row"><span>Ta note aujourd'hui</span><b class="scanhero__locked">${lock}<i aria-hidden="true">?,?</i><span class="sr-only">cachée jusqu'au paiement</span></b></div>
           <div class="scanhero__row"><span>Ton max</span><b class="scanhero__max">${esc(t.max)}<small>/100</small></b></div>
           <div class="scanhero__row"><span>À aller chercher</span><b class="scanhero__gain">+${esc(t.gain)}<small>points</small></b></div>
+          ${Number(t.quick) > 0 ? `<div class="scanhero__row"><span>Dont dès 4 semaines</span><b class="scanhero__gain">+${esc(t.quick)}<small>points</small></b></div>` : ""}
         </div>
       </section>` : ""}
       <section class="pitch">
