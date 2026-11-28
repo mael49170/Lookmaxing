@@ -14,9 +14,9 @@ const DIR = dirname(fileURLToPath(import.meta.url));
 const SRC = "../../../../src";
 const o = OFFERS.semaine;
 const FPS = 30, DURATION = 17;
-const NOTE = 41, TASKS = [
-  ["La coupe qui te va", 8], ["Peau nette", 7], ["Mâchoire plus nette", 6],
-  ["Une posture qui en impose", 5], ["Barbe et sourcils nets", 5], ["Un style qui te met en valeur", 7],
+const NOTE = 38, TASKS = [
+  ["La coupe qui te va", 8], ["Peau nette", 8], ["Teint frais et cernes", 6],
+  ["Mâchoire plus nette", 6], ["Une posture qui en impose", 5], ["Un style qui te met en valeur", 8],
 ];
 const POTENTIEL = NOTE + TASKS.reduce((s, [, p]) => s + p, 0); // 79
 
@@ -36,7 +36,10 @@ html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; backgro
 #status { right: 72px; top: 156px; font-size: 24px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--c-accent-strong); font-variant-numeric: tabular-nums; }
 #photo { left: 0; top: 0; width: 900px; height: 1200px; transform-origin: 0 0; border-radius: 40px; overflow: hidden; background: #000; }
 #photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-#photo .mesh { position: absolute; left: 26%; top: 20%; width: 48%; height: 45%; overflow: visible; }
+#photo .mesh { position: absolute; left: 13.6%; top: 20.5%; width: 79.7%; height: 64.1%; overflow: visible; z-index: 2; }
+#photo img { filter: brightness(.82) contrast(1.08) saturate(.9); }
+#vig { position: absolute; inset: 0; z-index: 1; background: radial-gradient(75% 65% at 50% 52%, transparent 40%, rgba(9,9,10,.75) 100%), linear-gradient(to top, rgba(9,9,10,.6), transparent 30%); }
+#scan, .corner, .tag { z-index: 3; }
 .mesh__links line { stroke: color-mix(in srgb, var(--c-accent) 75%, transparent); stroke-width: .3; vector-effect: non-scaling-stroke; }
 .mesh__dots circle { filter: drop-shadow(0 0 1.4px var(--c-glow)); transform-box: fill-box; transform-origin: center; }
 #scan { left: 0; right: 0; height: 160px; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--c-glow) 30%, transparent)); }
@@ -54,7 +57,7 @@ html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; backgro
 .tag--l { flex-direction: row-reverse; transform: translate(-100%, -50%); }
 #scores { left: 470px; top: 270px; width: 540px; }
 .lbl { font-size: 26px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--c-text-muted); }
-#num { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: 240px; line-height: .9; font-variant-numeric: tabular-nums; }
+#num { text-shadow: 0 0 60px color-mix(in srgb, currentColor 45%, transparent); font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: 240px; line-height: .9; font-variant-numeric: tabular-nums; }
 #num small { font-size: 56px; color: var(--c-text-muted); margin-left: 6px; }
 #pot { margin-top: 18px; display: flex; align-items: baseline; gap: 16px; }
 #pot b { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: 96px; line-height: 1; background: linear-gradient(90deg, var(--c-warning), var(--c-gold)); -webkit-background-clip: text; background-clip: text; color: transparent; font-variant-numeric: tabular-nums; }
@@ -80,9 +83,9 @@ html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; backgro
 #caption em { font-style: normal; background: var(--heat); -webkit-background-clip: text; background-clip: text; color: transparent; }
 </style></head><body><div id="stage">
 <div id="brand" class="abs">MOGX</div><div id="status" class="abs"></div>
-<div id="photo" class="abs"><img src="${SRC}/img/carte-homme.webp" alt="">${mesh}<div id="scan" class="abs"></div>
+<div id="photo" class="abs"><img src="../photos-ia/visage-scan.jpg" alt=""><div id="vig"></div>${mesh}<div id="scan" class="abs"></div>
   <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
-  ${[["Regard", 40, 37, "l"], ["Qualité de peau", 62, 47, "r"], ["Mâchoire", 39, 58, "l"], ["Coiffure", 66, 24, "r"]].map(([l, x, y, s], i) => `<div class="tag tag--${s}" id="tag${i}" style="left:${x}%;top:${y}%"><i></i><span>${l}</span></div>`).join("")}
+  ${[["Regard", 33, 45, "l"], ["Peau", 70, 60, "r"], ["Mâchoire", 27, 74, "l"], ["Coiffure", 66, 14, "r"]].map(([l, x, y, s], i) => `<div class="tag tag--${s}" id="tag${i}" style="left:${x}%;top:${y}%"><i></i><span>${l}</span></div>`).join("")}
 </div>
 <div id="scores" class="abs"><div class="lbl" id="numlbl">Ta note aujourd'hui</div><div id="num"><span id="numv">0</span><small>/100</small></div>
   <div id="pot"><span class="lbl">Ton potentiel</span><b id="potv">${POTENTIEL}</b></div>
@@ -90,7 +93,7 @@ html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; backgro
 <div id="list" class="abs">${TASKS.map(([t, p], i) => `<div class="row" id="row${i}"><div class="box"></div><div class="t">${t}</div><div class="p">+${p}</div></div>`).join("")}</div>
 <div id="caption" class="abs"></div>
 <div id="end" class="abs"><div class="cta">Fais ton scan →</div><div class="url">mogx.fr</div><div class="price">${euros(o.intro)} les ${o.trialDays} premiers jours, puis ${euros(o.renew)} / semaine</div></div>
-<div id="fine" class="abs">Image virtuelle créée par IA · exemple d'écran · points estimés, pas une promesse</div>
+<div id="fine" class="abs">Exemple d'écran · points estimés, pas une promesse</div>
 </div>
 <script>
 const NOTE = ${NOTE}, POT = ${POTENTIEL}, TASKS = ${JSON.stringify(TASKS)};
@@ -104,7 +107,7 @@ const lerp = (a, b, x) => a + (b - a) * x;
 const dots = [...document.querySelectorAll(".mesh__dots circle")];
 const links = [...document.querySelectorAll(".mesh__links line")];
 // position verticale de chaque point dans la photo (0..1)
-const dotY = dots.map((c) => 0.20 + ((+c.getAttribute("cy") - 6) / 128) * 0.45);
+const dotY = dots.map((c) => 0.205 + ((+c.getAttribute("cy") - 6) / 128) * 0.641);
 const A = { x: 90, y: 250, s: 1 }, B = { x: 72, y: 260, s: 360 / 900 };
 const heat = (v) => { // couleur de la note : rouge → orange → or
   const k = cl((v - NOTE) / (POT - NOTE));
@@ -133,8 +136,9 @@ window.render = (t) => {
     const hit = t < 2.7 ? (dotY[i] <= down ? 1 : 0) : 1;
     const when = .6 + 2.1 * dotY[i];
     const k = hit ? back(seg(t, when, when + .35)) : 0;
-    d.style.opacity = Math.min(1, k); d.style.transform = \`scale(\${k})\`;
+    d.style.opacity = Math.min(1, k); d.style.transform = \`scale(\${k * .72})\`;
   });
+  document.querySelector("#photo .mesh ellipse").style.opacity = seg(t, .8, 2.4) * .8;
   links.forEach((l, i) => { l.style.opacity = seg(t, 1.4 + (i % 20) * .05, 2.6 + (i % 20) * .05) * .9; });
   for (let i = 0; i < 4; i++) { const a = 1.3 + i * .55; const k = back(seg(t, a, a + .4)); const e = $("tag" + i); e.style.opacity = cl(k) * (1 - seg(t, 4.3, 4.7)); e.style.scale = lerp(.6, 1, cl(k)); }
   const pct = Math.round(100 * seg(t, .6, 4.3));
@@ -143,7 +147,9 @@ window.render = (t) => {
   // 3. la note, puis le potentiel
   const sco = $("scores");
   sco.style.opacity = out(seg(t, 5.2, 5.7));
-  sco.style.transform = \`translateY(\${lerp(40, 0, out(seg(t, 5.2, 5.8)))}px)\`;
+  const up2 = ease(seg(t, 8.5, 9.2));
+  sco.style.transformOrigin = "0 0";
+  sco.style.transform = \`translate(\${lerp(-398, 0, up2)}px, \${lerp(500, 0, up2) + lerp(40, 0, out(seg(t, 5.2, 5.8)))}px) scale(\${lerp(1.6, 1, up2)})\`;
   let v = Math.round(NOTE * out(seg(t, 5.4, 7.0)));
   // 4. la liste : chaque case cochée ajoute ses points
   let add = 0;
@@ -183,7 +189,7 @@ window.render = (t) => {
   $("gain").textContent = t < 9.3 ? (g > 0 ? \`+\${g} points à gagner\` : "") : "";
   // 5. légendes et fin
   const cap = $("caption");
-  const caps = [[.4, 4.5, "On lit ton visage<br>comme <em>les autres le lisent.</em>"], [5.4, 8.6, "Ta note. <em>Ton potentiel.</em>"], [9.2, 14.6, "Coche. <em>Ta note monte.</em>"]];
+  const caps = [[.4, 4.5, "On lit ton visage<br>comme <em>les autres le lisent.</em>"], [9.2, 14.6, "Coche. <em>Ta note monte.</em>"]];
   const c = caps.find(([a, b]) => t >= a && t < b);
   cap.innerHTML = c ? c[2] : "";
   cap.style.opacity = c ? Math.min(seg(t, c[0], c[0] + .35), 1 - seg(t, c[1] - .3, c[1])) : 0;
