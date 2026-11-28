@@ -1,0 +1,220 @@
+// Vidéo de la 1re pub MOGX (Reels / Stories, 1080×1920, 30 i/s, ~17 s).
+// Scan du visage (image créée par IA du projet) → note basse → potentiel → liste de choses à faire,
+// chaque case cochée ajoute ses points (+8, +7…) jusqu'au potentiel. Aucune photo « après ».
+// Lancer : node replica/launch/pub-1/video/video.mjs   (il faut ffmpeg)
+import { writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { createRequire } from "node:module";
+import { faceMesh } from "../../../../src/q/mesh.js";
+import { OFFERS, euros } from "../../../../src/shared/plans.js";
+
+const DIR = dirname(fileURLToPath(import.meta.url));
+const SRC = "../../../../src";
+const o = OFFERS.semaine;
+const FPS = 30, DURATION = 17;
+const NOTE = 41, TASKS = [
+  ["La coupe qui te va", 8], ["Peau nette", 7], ["Mâchoire plus nette", 6],
+  ["Une posture qui en impose", 5], ["Barbe et sourcils nets", 5], ["Un style qui te met en valeur", 7],
+];
+const POTENTIEL = NOTE + TASKS.reduce((s, [, p]) => s + p, 0); // 79
+
+const mesh = faceMesh({ className: "mesh" }).replace("<svg ", '<svg preserveAspectRatio="none" ');
+
+const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>MOGX vidéo</title>
+<link rel="stylesheet" href="${SRC}/styles/tokens.css">
+<style>
+@font-face { font-family: "Inter"; src: url("${SRC}/fonts/inter.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Archivo"; src: url("${SRC}/fonts/archivo.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--c-bg); color: var(--c-text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+#stage { position: absolute; inset: 0; background: radial-gradient(70% 40% at 50% 40%, color-mix(in srgb, var(--c-glow) 22%, transparent), transparent 70%), var(--c-bg); }
+.abs { position: absolute; }
+#brand { left: 72px; top: 150px; font-family: var(--font-display); font-stretch: 112%; font-weight: 800; font-size: 44px; display: flex; align-items: center; gap: 14px; }
+#brand::before { content: ""; width: 18px; height: 18px; border-radius: 50%; background: var(--c-accent); box-shadow: 0 0 22px var(--c-glow); }
+#status { right: 72px; top: 156px; font-size: 24px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--c-accent-strong); font-variant-numeric: tabular-nums; }
+#photo { left: 0; top: 0; width: 900px; height: 1200px; transform-origin: 0 0; border-radius: 40px; overflow: hidden; background: #000; }
+#photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#photo .mesh { position: absolute; left: 26%; top: 20%; width: 48%; height: 45%; overflow: visible; }
+.mesh__links line { stroke: color-mix(in srgb, var(--c-accent) 75%, transparent); stroke-width: .3; vector-effect: non-scaling-stroke; }
+.mesh__dots circle { filter: drop-shadow(0 0 1.4px var(--c-glow)); transform-box: fill-box; transform-origin: center; }
+#scan { left: 0; right: 0; height: 160px; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--c-glow) 30%, transparent)); }
+#scan::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--c-gold); box-shadow: 0 0 24px 6px var(--c-glow); }
+#scan.up { background: linear-gradient(to top, transparent, color-mix(in srgb, var(--c-glow) 30%, transparent)); }
+#scan.up::after { top: 0; bottom: auto; }
+.corner { position: absolute; width: 90px; height: 90px; border: 6px solid var(--c-text); }
+.c1 { left: 28px; top: 28px; border-right: 0; border-bottom: 0; border-radius: 22px 0 0 0; }
+.c2 { right: 28px; top: 28px; border-left: 0; border-bottom: 0; border-radius: 0 22px 0 0; }
+.c3 { left: 28px; bottom: 28px; border-right: 0; border-top: 0; border-radius: 0 0 0 22px; }
+.c4 { right: 28px; bottom: 28px; border-left: 0; border-top: 0; border-radius: 0 0 22px 0; }
+.tag { position: absolute; display: flex; align-items: center; gap: 12px; transform: translateY(-50%); }
+.tag i { width: 20px; height: 20px; border-radius: 50%; background: var(--c-gold); box-shadow: 0 0 0 6px color-mix(in srgb, var(--c-gold) 30%, transparent), 0 0 22px var(--c-glow); flex: none; }
+.tag span { font-size: 30px; font-weight: 800; padding: 10px 20px; border-radius: 999px; background: color-mix(in srgb, var(--c-bg) 80%, transparent); border: 2px solid var(--c-accent-line); white-space: nowrap; }
+.tag--l { flex-direction: row-reverse; transform: translate(-100%, -50%); }
+#scores { left: 470px; top: 270px; width: 540px; }
+.lbl { font-size: 26px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--c-text-muted); }
+#num { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: 240px; line-height: .9; font-variant-numeric: tabular-nums; }
+#num small { font-size: 56px; color: var(--c-text-muted); margin-left: 6px; }
+#pot { margin-top: 18px; display: flex; align-items: baseline; gap: 16px; }
+#pot b { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: 96px; line-height: 1; background: linear-gradient(90deg, var(--c-warning), var(--c-gold)); -webkit-background-clip: text; background-clip: text; color: transparent; font-variant-numeric: tabular-nums; }
+#gauge { margin-top: 22px; height: 16px; border-radius: 99px; background: var(--c-track); position: relative; }
+#gauge .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: inherit; background: var(--heat); background-size: 540px 100%; box-shadow: 0 0 14px color-mix(in srgb, var(--c-glow) 70%, transparent); }
+#gauge .ghost { position: absolute; top: -6px; bottom: -6px; width: 6px; border-radius: 3px; background: var(--c-gold); box-shadow: 0 0 14px var(--c-gold); }
+#gain { margin-top: 20px; font-size: 34px; font-weight: 800; color: var(--c-success); }
+#list { left: 72px; top: 790px; width: 936px; display: grid; gap: 14px; }
+.row { position: relative; display: flex; align-items: center; gap: 24px; height: 96px; padding: 0 28px; border-radius: 26px; background: var(--c-surface); border: 2px solid var(--c-border); }
+.row .box { width: 50px; height: 50px; border-radius: 14px; border: 3px solid var(--c-border-input); display: grid; place-items: center; flex: none; font-size: 34px; font-weight: 900; color: var(--c-on-accent); }
+.row .t { flex: 1; font-size: 34px; font-weight: 700; color: var(--c-text-muted); }
+.row .p { font-family: var(--font-display); font-weight: 800; font-size: 40px; color: var(--c-success); }
+.row.on { border-color: var(--c-accent); background: linear-gradient(90deg, var(--c-accent-soft), var(--c-surface)); }
+.row.on .box { background: var(--c-accent); border-color: var(--c-accent); box-shadow: 0 0 20px var(--c-glow); }
+.row.on .t { color: var(--c-text); }
+.fly { position: absolute; font-family: var(--font-display); font-weight: 800; font-size: 64px; color: var(--c-success); text-shadow: 0 0 20px color-mix(in srgb, var(--c-success) 60%, transparent); pointer-events: none; }
+#end { left: 72px; right: 72px; top: 1240px; text-align: center; display: grid; gap: 22px; justify-items: center; }
+#end .cta { font-family: var(--font-display); font-weight: 800; font-size: 50px; padding: 30px 60px; border-radius: 999px; background: var(--c-accent); color: var(--c-on-accent); box-shadow: 0 18px 60px -10px rgba(255,90,31,.85); }
+#end .url { font-size: 40px; font-weight: 800; }
+#end .price { font-size: 28px; color: var(--c-text-muted); font-weight: 600; }
+#fine { left: 72px; right: 72px; top: 1625px; text-align: center; font-size: 22px; color: var(--c-text-muted); }
+#caption { left: 72px; right: 72px; top: 1478px; text-align: center; font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: 60px; line-height: 1.05; text-transform: uppercase; }
+#caption em { font-style: normal; background: var(--heat); -webkit-background-clip: text; background-clip: text; color: transparent; }
+</style></head><body><div id="stage">
+<div id="brand" class="abs">MOGX</div><div id="status" class="abs"></div>
+<div id="photo" class="abs"><img src="${SRC}/img/carte-homme.webp" alt="">${mesh}<div id="scan" class="abs"></div>
+  <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
+  ${[["Regard", 40, 37, "l"], ["Qualité de peau", 62, 47, "r"], ["Mâchoire", 39, 58, "l"], ["Coiffure", 66, 24, "r"]].map(([l, x, y, s], i) => `<div class="tag tag--${s}" id="tag${i}" style="left:${x}%;top:${y}%"><i></i><span>${l}</span></div>`).join("")}
+</div>
+<div id="scores" class="abs"><div class="lbl" id="numlbl">Ta note aujourd'hui</div><div id="num"><span id="numv">0</span><small>/100</small></div>
+  <div id="pot"><span class="lbl">Ton potentiel</span><b id="potv">${POTENTIEL}</b></div>
+  <div id="gauge"><div class="fill"></div><div class="ghost"></div></div><div id="gain"></div></div>
+<div id="list" class="abs">${TASKS.map(([t, p], i) => `<div class="row" id="row${i}"><div class="box"></div><div class="t">${t}</div><div class="p">+${p}</div></div>`).join("")}</div>
+<div id="caption" class="abs"></div>
+<div id="end" class="abs"><div class="cta">Fais ton scan →</div><div class="url">mogx.fr</div><div class="price">${euros(o.intro)} les ${o.trialDays} premiers jours, puis ${euros(o.renew)} / semaine</div></div>
+<div id="fine" class="abs">Image virtuelle créée par IA · exemple d'écran · points estimés, pas une promesse</div>
+</div>
+<script>
+const NOTE = ${NOTE}, POT = ${POTENTIEL}, TASKS = ${JSON.stringify(TASKS)};
+const $ = (id) => document.getElementById(id);
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const seg = (t, a, b) => cl((t - a) / (b - a));
+const ease = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const out = (x) => 1 - Math.pow(1 - x, 3);
+const back = (x) => { const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+const dots = [...document.querySelectorAll(".mesh__dots circle")];
+const links = [...document.querySelectorAll(".mesh__links line")];
+// position verticale de chaque point dans la photo (0..1)
+const dotY = dots.map((c) => 0.20 + ((+c.getAttribute("cy") - 6) / 128) * 0.45);
+const A = { x: 90, y: 250, s: 1 }, B = { x: 72, y: 260, s: 360 / 900 };
+const heat = (v) => { // couleur de la note : rouge → orange → or
+  const k = cl((v - NOTE) / (POT - NOTE));
+  return k < .5 ? \`color-mix(in srgb, var(--c-score-low) \${100 - k * 200}%, var(--c-accent))\` : \`color-mix(in srgb, var(--c-accent) \${200 - k * 200}%, var(--c-gold))\`;
+};
+const flies = TASKS.map(() => { const f = document.createElement("div"); f.className = "fly"; document.getElementById("stage").appendChild(f); return f; });
+const T0 = 9.3, STEP = 0.9;
+
+window.render = (t) => {
+  // 1. photo + cadre
+  const shrink = ease(seg(t, 4.6, 5.6));
+  const ph = $("photo");
+  ph.style.opacity = out(seg(t, 0, .6));
+  ph.style.transform = \`translate(\${lerp(A.x, B.x, shrink)}px, \${lerp(A.y, B.y, shrink)}px) scale(\${lerp(A.s, B.s, shrink)})\`;
+  ph.style.borderRadius = lerp(40, 70, shrink) + "px";
+  ph.style.boxShadow = \`0 0 \${lerp(0, 80, shrink)}px -10px var(--c-glow)\`;
+  document.querySelectorAll(".corner").forEach((c, i) => { const k = out(seg(t, .2 + i * .08, .8 + i * .08)); c.style.opacity = k * (1 - shrink); c.style.transform = \`scale(\${lerp(1.4, 1, k)})\`; });
+  // 2. le scan : descente puis remontée
+  const down = ease(seg(t, .6, 2.7)), up = ease(seg(t, 2.7, 4.2));
+  const sy = t < 2.7 ? down : 1 - up;
+  const sc = $("scan");
+  sc.classList.toggle("up", t >= 2.7);
+  sc.style.top = (sy * 1200 - (t < 2.7 ? 160 : 0)) + "px";
+  sc.style.opacity = (seg(t, .6, .8) - seg(t, 4.1, 4.4));
+  dots.forEach((d, i) => {
+    const hit = t < 2.7 ? (dotY[i] <= down ? 1 : 0) : 1;
+    const when = .6 + 2.1 * dotY[i];
+    const k = hit ? back(seg(t, when, when + .35)) : 0;
+    d.style.opacity = Math.min(1, k); d.style.transform = \`scale(\${k})\`;
+  });
+  links.forEach((l, i) => { l.style.opacity = seg(t, 1.4 + (i % 20) * .05, 2.6 + (i % 20) * .05) * .9; });
+  for (let i = 0; i < 4; i++) { const a = 1.3 + i * .55; const k = back(seg(t, a, a + .4)); const e = $("tag" + i); e.style.opacity = cl(k) * (1 - seg(t, 4.3, 4.7)); e.style.scale = lerp(.6, 1, cl(k)); }
+  const pct = Math.round(100 * seg(t, .6, 4.3));
+  $("status").textContent = t < 4.5 ? \`Analyse · \${pct} %\` : (t < 9.3 ? "Analyse terminée" : "Ton plan");
+  $("status").style.opacity = 1 - seg(t, 14.6, 15);
+  // 3. la note, puis le potentiel
+  const sco = $("scores");
+  sco.style.opacity = out(seg(t, 5.2, 5.7));
+  sco.style.transform = \`translateY(\${lerp(40, 0, out(seg(t, 5.2, 5.8)))}px)\`;
+  let v = Math.round(NOTE * out(seg(t, 5.4, 7.0)));
+  // 4. la liste : chaque case cochée ajoute ses points
+  let add = 0;
+  TASKS.forEach(([, p], i) => {
+    const a = T0 + i * STEP, row = $("row" + i), f = flies[i];
+    const appear = out(seg(t, 8.6 + i * .08, 9.1 + i * .08));
+    row.style.opacity = appear * (1 - seg(t, 14.6, 15.1));
+    row.style.transform = \`translateX(\${lerp(60, 0, appear)}px)\`;
+    const on = t >= a;
+    row.classList.toggle("on", on);
+    row.querySelector(".box").textContent = on ? "✓" : "";
+    row.querySelector(".box").style.transform = \`scale(\${on ? lerp(1.35, 1, out(seg(t, a, a + .25))) : 1})\`;
+    row.querySelector(".p").style.opacity = on ? .35 : 1;
+    // le « +p » s'envole de la ligne vers la note
+    const k = seg(t, a + .05, a + .6);
+    const r = row.getBoundingClientRect();
+    const sx = r.right - 120, sy0 = r.top + 20, tx = 600, ty = 330;
+    f.textContent = "+" + p;
+    f.style.left = lerp(sx, tx, ease(k)) + "px"; f.style.top = lerp(sy0, ty, ease(k)) - Math.sin(k * Math.PI) * 60 + "px";
+    f.style.opacity = k > 0 && k < 1 ? Math.min(1, k * 6, (1 - k) * 4) : 0;
+    f.style.transform = \`scale(\${lerp(1, 1.5, Math.sin(k * Math.PI))})\`;
+    add += p * ease(seg(t, a + .5, a + .85));
+  });
+  if (t >= T0) v = Math.round(NOTE + add);
+  $("numv").textContent = v;
+  $("num").style.color = t < 8 ? "var(--c-score-low)" : heat(v);
+  const bump = TASKS.reduce((m, _, i) => Math.max(m, Math.sin(Math.PI * seg(t, T0 + i * STEP + .5, T0 + i * STEP + .85))), 0);
+  $("num").style.transform = \`scale(\${1 + .08 * bump})\`; $("num").style.transformOrigin = "left center";
+  $("numlbl").textContent = t < 9.3 ? "Ta note aujourd'hui" : (v >= POT ? "Ton potentiel" : "Ta note, case après case");
+  const pk = out(seg(t, 7.0, 7.6));
+  $("pot").style.opacity = pk * (1 - seg(t, 14.6, 15)); $("pot").style.transform = \`translateY(\${lerp(30, 0, pk)}px)\`;
+  $("potv").textContent = Math.round(lerp(NOTE, POT, out(seg(t, 7.1, 8.4))));
+  $(\"gauge\").style.opacity = pk;
+  $(\"gauge\").querySelector(".fill").style.width = v + "%";
+  $(\"gauge\").querySelector(".ghost").style.left = \`calc(\${lerp(NOTE, POT, out(seg(t, 7.1, 8.4)))}% - 3px)\`;
+  const g = Math.round(lerp(0, POT - NOTE, out(seg(t, 7.4, 8.4))));
+  $("gain").textContent = t < 9.3 ? (g > 0 ? \`+\${g} points à gagner\` : "") : "";
+  // 5. légendes et fin
+  const cap = $("caption");
+  const caps = [[.4, 4.5, "On lit ton visage<br>comme <em>les autres le lisent.</em>"], [5.4, 8.6, "Ta note. <em>Ton potentiel.</em>"], [9.2, 14.6, "Coche. <em>Ta note monte.</em>"]];
+  const c = caps.find(([a, b]) => t >= a && t < b);
+  cap.innerHTML = c ? c[2] : "";
+  cap.style.opacity = c ? Math.min(seg(t, c[0], c[0] + .35), 1 - seg(t, c[1] - .3, c[1])) : 0;
+  const ek = out(seg(t, 15, 15.6));
+  $("end").style.opacity = ek; $("end").style.transform = \`translateY(\${lerp(-200 + 40, -200, ek)}px)\`;
+  sco.style.left = lerp(470, 470, 0) + "px";
+  const fk = ease(seg(t, 14.8, 15.6));
+  sco.style.transform += \` translateY(\${lerp(0, 260, fk)}px)\`;
+  ph.style.opacity = Math.min(+ph.style.opacity, 1);
+};
+</script></body></html>`;
+
+writeFileSync(join(DIR, "video.html"), html);
+
+const { chromium } = createRequire(import.meta.url)("playwright");
+const FR = join(DIR, ".frames");
+rmSync(FR, { recursive: true, force: true }); mkdirSync(FR);
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
+await page.goto("file://" + join(DIR, "video.html"));
+await page.evaluate(() => document.fonts.ready);
+await page.waitForTimeout(300);
+const only = process.argv[2] ? process.argv[2].split(",").map(Number) : null; // aperçu : node video.mjs 2,6,12
+const times = only || Array.from({ length: FPS * DURATION }, (_, i) => i / FPS);
+for (const [i, t] of times.entries()) {
+  await page.evaluate((t) => window.render(t), t);
+  await page.screenshot({ path: join(only ? DIR : FR, only ? `apercu-${t}s.png` : `f${String(i).padStart(4, "0")}.jpg`), type: only ? "png" : "jpeg", quality: only ? undefined : 92 });
+}
+await browser.close();
+if (!only) {
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-framerate", String(FPS), "-i", join(FR, "f%04d.jpg"), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-preset", "slow", "-movflags", "+faststart", join(DIR, "mogx-pub-scan-9x16.mp4")]);
+  rmSync(FR, { recursive: true, force: true });
+  console.log("✓ mogx-pub-scan-9x16.mp4");
+}
