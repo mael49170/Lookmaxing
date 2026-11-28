@@ -131,13 +131,28 @@
 /* Paiement dans la page, en sombre (28/11/2026) */
 .cpay { display: flex; flex-direction: column; gap: var(--sp-3); transition: opacity .2s; }
 .cpay--locked .cpay__express { opacity: .45; pointer-events: none; filter: grayscale(.4); }
-.cpay__express:empty { display: none; }
 .cpay__or { display: flex; align-items: center; gap: var(--sp-3); margin: 0; color: var(--c-text-muted); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .08em; }
 .cpay__or::before, .cpay__or::after { content: ""; flex: 1; height: 1px; background: var(--c-border); }
 .cpay__field { display: flex; flex-direction: column; gap: 6px; color: var(--c-text-muted); font-size: 15px; font-weight: 500; }
 .cpay__field input { width: 100%; min-height: 50px; padding: 14px; border-radius: var(--r-md); border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-text); font: inherit; font-size: 16px; }
 .cpay__field input:focus { outline: none; border-color: var(--c-accent); box-shadow: 0 0 0 3px rgba(255, 90, 31, .25); }
 .cpay__card { min-height: 160px; }
+.cpay__title { margin: var(--sp-2) 0 0; font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: var(--fs-lg); }
+/* Les moyens de paiement en cartes à cocher, comme le concurrent (28/11/2026) */
+.pm { border: 1px solid var(--c-border); border-radius: var(--r-lg); background: var(--c-surface); overflow: hidden; transition: border-color .2s, background .2s; }
+.pm__head { display: flex; align-items: center; gap: var(--sp-3); min-height: 60px; padding: var(--sp-3) var(--sp-4); cursor: pointer; }
+.pm__head input { width: 22px; height: 22px; margin: 0; accent-color: var(--c-success); flex: none; }
+.pm__name { flex: 1; font-weight: 600; font-size: 17px; }
+.pm__badge { padding: 3px 9px; border-radius: 6px; background: #fff; color: #000; font-weight: 700; font-size: 14px; }
+.pm__logos { display: flex; gap: 4px; }
+.pm__logos i { font-style: normal; padding: 3px 6px; border-radius: 5px; background: #fff; color: #1a1f71; font-size: 10px; font-weight: 800; letter-spacing: .02em; }
+.pm__body { display: none; flex-direction: column; gap: var(--sp-3); padding: 0 var(--sp-4) var(--sp-4); }
+.pm__total { display: flex; justify-content: space-between; align-items: baseline; font-size: 18px; font-weight: 600; }
+.pm__total b { font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums; }
+.pm__secure { display: flex; align-items: center; gap: var(--sp-2); margin: 0; padding: var(--sp-2) var(--sp-3); border-radius: 999px; background: rgba(61, 220, 132, .12); color: var(--c-text-muted); font-size: var(--fs-xs); }
+.pm__secure .lock { flex: none; color: var(--c-success); }
+.cpay[data-pm="wallet"] .pm--wallet, .cpay[data-pm="card"] .pm--card { border: 2px solid var(--c-success); background: rgba(61, 220, 132, .08); }
+.cpay[data-pm="wallet"] .pm--wallet .pm__body, .cpay[data-pm="card"] .pm--card .pm__body { display: flex; }
 .sticky-pay { position: fixed; z-index: 6; left: var(--sp-2); right: var(--sp-2); bottom: calc(var(--sp-2) + env(safe-area-inset-bottom)); max-width: calc(var(--size-content-max) - var(--sp-4)); margin: 0 auto; display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4); border-radius: var(--r-xl); background: var(--c-surface-alt); border: 1px solid var(--c-border); box-shadow: var(--shadow-sheet); }
 .sticky-pay { transition: transform .25s, opacity .25s; }
 .sticky-pay--away { transform: translateY(130%); opacity: 0; pointer-events: none; }

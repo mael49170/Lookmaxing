@@ -404,13 +404,25 @@ const VIEWS = {
         ${pw.stripeKey ? `
           <p class="terms-line">${esc(lines.full)}</p>
           <label class="check"><input type="checkbox" id="waiver"${S.waiver ? " checked" : ""}><span>${esc(WAIVER_TEXT).replace("les CGV", '<a href="/cgv/" target="_blank" rel="noopener">CGV</a>').replace("<a ", "les <a ")}</span></label>
-          <div class="cpay${S.waiver ? "" : " cpay--locked"}" id="cpay">
-            <div id="xpay" class="cpay__express"></div>
-            <p class="cpay__or" id="xpay-or" hidden><span>ou par carte</span></p>
-            <label class="cpay__field"><span>Ton e-mail (ton accès arrive dessus)</span><input id="pay-email" type="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.fr" value="${esc(S.payEmail || "")}"></label>
-            <div id="payel" class="cpay__card"><div class="skel"></div></div>
+          <div class="cpay${S.waiver ? "" : " cpay--locked"}" id="cpay" data-pm="${S.pm || "card"}">
+            <h3 class="cpay__title">Moyen de paiement</h3>
+            <div class="pm pm--wallet" id="pm-wallet" hidden>
+              <label class="pm__head"><input type="radio" name="pm" value="wallet"${S.pm === "wallet" ? " checked" : ""}><span class="pm__name" id="pm-wallet-name">Apple Pay</span><span class="pm__badge" id="pm-wallet-badge">Pay</span></label>
+              <div class="pm__body">
+                <div class="pm__total"><span>Total aujourd'hui :</span><b>${esc(euros(trial ? o.intro : o.renew))}</b></div>
+                <div id="xpay" class="cpay__express"></div>
+                <p class="pm__secure">${lock}<span>Paiement sécurisé et chiffré, par Stripe</span></p>
+              </div>
+            </div>
+            <div class="pm pm--card">
+              <label class="pm__head"><input type="radio" name="pm" value="card"${S.pm === "wallet" ? "" : " checked"}><span class="pm__name">Carte bancaire</span><span class="pm__logos" aria-hidden="true"><i>VISA</i><i>Mastercard</i><i>CB</i></span></label>
+              <div class="pm__body">
+                <label class="cpay__field"><span>Ton e-mail (ton accès arrive dessus)</span><input id="pay-email" type="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.fr" value="${esc(S.payEmail || "")}"></label>
+                <div id="payel" class="cpay__card"><div class="skel"></div></div>
+                <button class="btn btn--primary" data-cpay>Débloquer mon résultat, ${esc(euros(trial ? o.intro : o.renew))}</button>
+              </div>
+            </div>
           </div>
-          <button class="btn btn--primary" data-cpay>Débloquer mon résultat, ${esc(euros(trial ? o.intro : o.renew))}</button>
           <div id="checkout" class="checkout" hidden></div>` : `
           ${pw.waiverOnSite ? `<label class="check"><input type="checkbox" id="waiver"><span>Je veux mon résultat tout de suite et je renonce à mon droit de rétractation de 14 jours une fois le résultat ouvert.</span></label>` : ""}
           <p class="terms-line">${esc(lines.full)}</p>
@@ -696,6 +708,7 @@ app.addEventListener("change", async (e) => {
   const s = SCREENS[S.i];
   if (input.id === "waiver") { S.waiver = input.checked; document.getElementById("cpay")?.classList.toggle("cpay--locked", !input.checked); if (input.checked) payErr(""); return; }
   if (input.id === "pay-email") { S.payEmail = input.value.trim(); return; }
+  if (input.name === "pm") { S.pm = input.value; S.pmChosen = true; const cp = document.getElementById("cpay"); if (cp) cp.dataset.pm = input.value; return; }
   if (input.dataset.shot) {
     const file = input.files?.[0];
     if (!file) return;
@@ -866,19 +879,23 @@ async function mountCheckout() {
       });
       const card = checkout.createPaymentElement({ layout: "tabs", fields: { billingDetails: { email: "never", address: "if_required" } } });
       const express = checkout.createExpressCheckoutElement({ buttonHeight: 50, buttonType: { applePay: "plain", googlePay: "plain" }, buttonTheme: { applePay: "white", googlePay: "white" }, paymentMethods: { link: "never", amazonPay: "never", paypal: "never", klarna: "never" } });
-      express.on("ready", ({ availablePaymentMethods }) => { const has = availablePaymentMethods && Object.values(availablePaymentMethods).some(Boolean); const or = document.getElementById("xpay-or"); if (or) or.hidden = !has; cpay.hasExpress = has; });
+      express.on("ready", ({ availablePaymentMethods: m }) => {
+        cpay.wallet = m?.applePay ? "Apple Pay" : m?.googlePay ? "Google Pay" : "";
+        if (cpay.wallet && !S.pmChosen) S.pm = "wallet"; // comme le concurrent : Apple Pay / Google Pay choisi d'office quand le téléphone l'a
+        showWallet();
+      });
       express.on("confirm", async (ev) => {
         if (!waiverOk()) return ev.paymentFailed?.({ reason: "fail" });
         try { await keepWaiver(); } catch (e) { payErr(e.message); return ev.paymentFailed?.({ reason: "fail" }); }
         const r = await checkout.confirm({ expressCheckoutConfirmEvent: ev });
         if (r.type === "error") payErr(r.error.message);
       });
-      cpay = { checkout, card, express, hasExpress: false };
+      cpay = { checkout, card, express, wallet: "" };
     }
     host.innerHTML = "";
     cpay.card.mount("#payel");
     if (document.getElementById("xpay")) cpay.express.mount("#xpay");
-    const or = document.getElementById("xpay-or"); if (or) or.hidden = !cpay.hasExpress;
+    showWallet();
   } catch (e) {
     console.error("Paiement dans la page", e);
     cpay = null;
@@ -900,6 +917,17 @@ async function mountEmbedded(fallback = false) {
   } catch (e) {
     payErr("Le paiement ne s'affiche pas. Recharge la page.");
   }
+}
+// le bloc Apple Pay / Google Pay n'apparaît que si le téléphone sait payer comme ça ; sinon la carte seule, ouverte
+function showWallet() {
+  const box = document.getElementById("pm-wallet"), cp = document.getElementById("cpay");
+  if (!box || !cp || !cpay) return;
+  box.hidden = !cpay.wallet;
+  if (!cpay.wallet) S.pm = "card";
+  document.getElementById("pm-wallet-name").textContent = cpay.wallet || "Apple Pay";
+  document.getElementById("pm-wallet-badge").textContent = cpay.wallet === "Google Pay" ? "G Pay" : "Pay";
+  cp.dataset.pm = S.pm || "card";
+  const r = cp.querySelector(`input[name="pm"][value="${cp.dataset.pm}"]`); if (r) r.checked = true;
 }
 const waiverOk = () => {
   if (document.getElementById("waiver")?.checked) return true;
