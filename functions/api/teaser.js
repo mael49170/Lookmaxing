@@ -1,6 +1,6 @@
 import { json, handle } from "../../lib/http.js";
 import { currentQuiz } from "../../lib/identity.js";
-import { FACTORS, outOf10 } from "../../src/shared/factors.js";
+import { FACTORS } from "../../src/shared/factors.js";
 import { buildPlan } from "../../lib/plan.js";
 import { PROTOCOL_BY_ID, protocolFor } from "../../lib/protocols.js";
 
@@ -27,8 +27,8 @@ export const onRequestGet = handle(async ({ request, env }) => {
   const holding = factors.filter((f) => f.note < 55 && FACTORS.find((x) => x.id === f.id)?.changeable >= 0.5);
   return json({
     ...out,
-    max: outOf10(scan.score_max),
-    gain: outOf10(scan.score_max - scan.score_now),
+    max: scan.score_max, // sur 100 (décidé par Maël le 28/11/2026)
+    gain: Math.max(0, scan.score_max - scan.score_now),
     strength: { label: label(sorted[0].id), note: sorted[0].note },
     strengths: sorted.slice(0, 3).map(hidden),
     weaknesses: sorted.slice(-3).reverse().map(hidden),

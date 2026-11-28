@@ -62,7 +62,16 @@ const _SCREENS = [
     options: [o("jamais", "", "Jamais, je ne sais pas par où commencer"), o("abandon", "", "J'ai essayé, mais je ne tiens pas"), o("mieux", "", "J'en ai une, je veux de meilleurs résultats"), o("solide", "", "Ma routine est solide")] },
   { id: "cheveux", type: "multi", title: "Cheveux, barbe : qu'est-ce qui coince ?", lead: "Plusieurs réponses possibles.",
     options: [o("ligne", "", "Ma ligne recule, ou mes cheveux s'affinent"), o("coupe", "", "Je ne sais pas quelle coupe me va"), o("texture", "", "Cheveux secs ou gras"), o("barbe", "", "Ma barbe pousse mal"), o("rien", "", "Rien de spécial, je veux progresser")] },
-  { id: "fait_coupe", type: "ember", title: "La bonne coupe change ta tête dès le lendemain.",
+  { id: "fait_coupe", type: "ember",
+    variant: (a) => {
+      const c = a.cheveux || [];
+      if (c.includes("barbe") && c.includes("coupe")) return { title: "Ta coupe et ta barbe, on s'en occupe.", lead: "Une coupe pensée pour ton visage et une barbe bien dessinée changent toute ta tête, dès le lendemain. Ton plan te dit lesquelles, et comment les entretenir." };
+      if (c.includes("barbe")) return { title: "Une barbe qui pousse mal, ça se rattrape.", lead: "Une barbe courte et bien dessinée fait plus d'effet qu'une barbe longue pleine de trous. Ton plan te montre où tracer les lignes pour structurer ta mâchoire, dès cette semaine." };
+      if (c.includes("ligne")) return { title: "Des cheveux qui paraissent plus épais, c'est possible.", lead: "La bonne coupe et le bon produit donnent de la densité à l'œil, dès le lendemain. Ton plan te dit lesquels, pour la forme de ton visage." };
+      if (c.includes("texture")) return { title: "Des cheveux qui tiennent toute la journée.", lead: "Secs ou gras, ça se règle avec 2 ou 3 bons gestes et le bon produit. Ton plan te dit lesquels, et ta coupe idéale en prime." };
+      return null;
+    },
+    title: "La bonne coupe change ta tête dès le lendemain.",
     lead: "Une coupe pensée pour la forme de ton visage change toute ton allure. Le problème : presque personne ne sait laquelle lui va. Ton plan, lui, te le dit.", cta: "Continuer" },
   { id: "morpho", type: "single", grid: true, title: "Ta silhouette, c'est plutôt…", lead: "Ça sert seulement à régler ton plan.",
     options: [o("musclee", "", "Musclée"), o("mince", "", "Mince"), o("moyenne", "", "Moyenne"), o("enrobee", "", "Enrobée")] },
@@ -105,7 +114,7 @@ const _SCREENS = [
     sources: [
       ["En 30 secondes, sans un mot, ton attitude a déjà été jugée.", "Harvard", "Ambady et Rosenthal, 1993"],
       ["Un visage est jugé en un dixième de seconde.", "Princeton", "Willis et Todorov, 2006"],
-      ["En 6 semaines, de petits changements de tes habitudes rendent ton visage plus séduisant aux yeux des autres.", "St Andrews", "Whitehead et al., 2012"]],
+      ["6 semaines suffisent : changer ce que tu manges rend ton visage visiblement plus séduisant aux yeux des autres.", "St Andrews", "Whitehead et al., 2012"]],
     cta: "Continuer" },
   { id: "mal_a_l_aise", type: "single", title: "Tu te sens souvent mal à l'aise quand tu parles aux autres ?",
     options: [o("oui", "", "Oui"), o("non", "", "Non"), o("sais_pas", "", "Je ne sais pas")] },

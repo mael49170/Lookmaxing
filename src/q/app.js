@@ -120,6 +120,9 @@ const fr = (n) => String(n).replace(".", ",");
 // Noms des parties du plan (page de paiement)
 const MODULES = { peau: "Peau nette", cheveux: "Coupe et cheveux", corps: "Corps et énergie", style: "Style", presence: "Assurance et présence" };
 
+// Le maillage étiré sur la zone de l'ovale de la caméra (voir .mesh--onface)
+const onFace = (svg) => svg.replace("<svg ", '<svg preserveAspectRatio="none" ');
+
 // ---------- Accords au féminin ----------
 // Les textes sont écrits au masculin ; pour une femme on accorde, et on retire ce qui ne la concerne pas (barbe).
 const FEM = [[/Je suis prêt\b/g, "Je suis prête"], [/senti mis de côté/g, "sentie mise de côté"], [/inquiet ou débordé/g, "inquiète ou débordée"],
@@ -285,7 +288,7 @@ const VIEWS = {
     </main>`;
     if (S.scan === "done" && t?.scanned && Number(t.gain) > 0) return `<main class="screen screen--ember">${topbar()}
       <p class="eyebrow">D'après ton scan et tes réponses</p>
-      <h1 class="title title--hero" tabindex="-1">Jusqu'à <span class="big-gain">+${esc(fr(t.gain))}</span> point en 12 semaines.</h1>
+      <h1 class="title title--hero" tabindex="-1">Jusqu'à <span class="big-gain">+${esc(t.gain)}</span> point${t.gain > 1 ? "s" : ""} en 12 semaines.</h1>
       <p class="lead">En suivant ton plan 5 à 10 minutes par jour. Ta note de départ reste cachée jusqu'au résultat.</p>
       <p class="legal">Une estimation calculée seulement sur ce qui se travaille (peau, coupe, posture, style…), jamais sur l'ossature. Pas une promesse : ça dépend de toi.</p>
       ${footer(`<button class="btn btn--primary" data-next>Je veux ces points</button>`)}
@@ -403,15 +406,15 @@ const VIEWS = {
       ${t.scanned ? `
       <section class="scanhero">
         <h2 class="scanhero__title">Ton analyse est prête</h2>
-        <div class="scanhero__photo">${scanPreview ? `<img src="${scanPreview}" alt="Ta photo analysée">` : ""}${faceMesh({ className: "mesh scanhero__mesh" })}</div>
+        <div class="scanhero__photo">${scanPreview ? `<img src="${scanPreview}" alt="Ta photo analysée">${onFace(faceMesh({ className: "mesh mesh--onface" }))}` : faceMesh({ className: "mesh scanhero__mesh" })}</div>
         <div class="scanhero__rows">
           <div class="scanhero__row"><span>Ta note aujourd'hui</span><b class="scanhero__locked">${lock}<i aria-hidden="true">?,?</i><span class="sr-only">cachée jusqu'au paiement</span></b></div>
-          <div class="scanhero__row"><span>Ton max</span><b class="scanhero__max">${esc(fr(t.max))}<small>/10</small></b></div>
-          <div class="scanhero__row"><span>À aller chercher</span><b class="scanhero__gain">+${esc(fr(t.gain))}</b></div>
+          <div class="scanhero__row"><span>Ton max</span><b class="scanhero__max">${esc(t.max)}<small>/100</small></b></div>
+          <div class="scanhero__row"><span>À aller chercher</span><b class="scanhero__gain">+${esc(t.gain)}<small>points</small></b></div>
         </div>
       </section>` : ""}
       <section class="pitch">
-        <h1 class="title title--hero" tabindex="-1">${t.scanned ? `Tu peux monter jusqu'à ${esc(fr(t.max))}.` : "Ton plan de 28 jours est prêt."}</h1>
+        <h1 class="title title--hero" tabindex="-1">${t.scanned ? `Tu peux monter jusqu'à ${esc(t.max)}/100.` : "Ton plan de 28 jours est prêt."}</h1>
         <ul class="pitch__list">
           ${t.scanned ? "<li>Ta note et tes 15 critères, expliqués un par un</li><li>Tes forces, et ce qui te freine vraiment</li>" : "<li>Ton analyse de visage sur 15 critères, à faire dans ton espace</li><li>Ton bilan d'après tes réponses</li>"}
           <li>Ton plan de 28 jours, fait pour ${t.scanned ? "ton visage" : "toi"}, 5 à 10 minutes par jour</li>
@@ -463,7 +466,7 @@ const VIEWS = {
   scanning() {
     const p = scanPhotos;
     const art = p.face
-      ? `<div class="tilted"><div class="tilted__card tilted__card--a"><img src="${p.face}" alt="Ton selfie de face">${faceMesh({ animated: true, className: "mesh mesh--live" })}</div>${p.profil ? `<div class="tilted__card tilted__card--b"><img src="${p.profil}" alt="Ton selfie de profil"></div>` : ""}</div>`
+      ? `<div class="tilted"><div class="tilted__card tilted__card--a"><img src="${p.face}" alt="Ton selfie de face">${onFace(faceMesh({ animated: true, className: "mesh mesh--live mesh--onface" }))}</div>${p.profil ? `<div class="tilted__card tilted__card--b"><img src="${p.profil}" alt="Ton selfie de profil"></div>` : ""}</div>`
       : `<div class="scanner">${faceMesh({ animated: true, className: "mesh mesh--live" })}</div>`;
     return `<main class="screen">${topbar()}
       <h1 class="title" tabindex="-1">On lit ton visage.</h1>
@@ -482,7 +485,7 @@ const VIEWS = {
       <h1 class="title" tabindex="-1">Tu as plus de marge que tu ne crois.</h1>
       <div class="teaser">
         <div class="teaser__row"><span>Ton point fort</span><b>${esc(t.strength?.label || "")}</b></div>
-        <div class="teaser__row teaser__row--hot"><span>Points que tu peux gagner</span><b>+${fr(t.gain || "0.0")}</b></div>
+        <div class="teaser__row teaser__row--hot"><span>Points que tu peux gagner</span><b>+${esc(t.gain || 0)}</b></div>
         <div class="teaser__row"><span>Critères qui te freinent</span><b>${t.holding ?? "?"}</b></div>
         ${(t.holdingLabels || []).length ? `<div class="teaser__row"><span class="blurred" aria-hidden="true">${esc(t.holdingLabels.join(", "))}</span><span class="sr-only">Le détail s'affiche avec ton résultat</span></div>` : ""}
       </div>
@@ -547,10 +550,18 @@ async function startCam() {
 function snap() {
   const v = document.getElementById("cam-video");
   if (!v || !v.videoWidth) return;
-  const k = Math.min(1, 1024 / Math.max(v.videoWidth, v.videoHeight));
+  // on garde exactement le cadre 3:4 où se trouve l'ovale (ce que la personne voyait) : le visage y est placé,
+  // ce qui permet ensuite de poser le maillage pile sur le visage
+  const box = v.getBoundingClientRect(), vw = v.videoWidth, vh = v.videoHeight;
+  const sc = Math.max(box.width / vw, box.height / vh), ox = (box.width - vw * sc) / 2, oy = (box.height - vh * sc) / 2;
+  const m = Math.min(box.width / 100, box.height / 133), rw = 100 * m, rh = 133 * m;
+  let sx = ((box.width - rw) / 2 - ox) / sc, sy = ((box.height - rh) / 2 - oy) / sc, sw = rw / sc, sh = rh / sc;
+  sx = vw - (sx + sw); // l'image affichée est en miroir
+  sx = Math.max(0, Math.min(vw - sw, sx)); sy = Math.max(0, Math.min(vh - sh, sy));
+  const k = Math.min(1, 1024 / Math.max(sw, sh));
   const c = document.createElement("canvas");
-  c.width = Math.round(v.videoWidth * k); c.height = Math.round(v.videoHeight * k);
-  c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+  c.width = Math.round(sw * k); c.height = Math.round(sh * k);
+  c.getContext("2d").drawImage(v, sx, sy, sw, sh, 0, 0, c.width, c.height);
   shots[cam.step] = c.toDataURL("image/jpeg", 0.85);
   cam.phase = "review"; stopCam(); render();
 }
@@ -608,7 +619,8 @@ async function runProjection() {
 // ---------- Rendu et événements ----------
 function render() {
   const s = SCREENS[S.i];
-  const view = s.id === "age" && S.answers.age === "-18" ? VIEWS.stop() : (VIEWS[s.type] || VIEWS.info)(genderize(s));
+  const sv = s.variant ? { ...s, ...(s.variant(S.answers) || {}) } : s; // message qui reprend ses réponses
+  const view = s.id === "age" && S.answers.age === "-18" ? VIEWS.stop() : (VIEWS[sv.type] || VIEWS.info)(genderize(sv));
   app.innerHTML = view;
   history.replaceState(null, "", location.pathname + location.search);
   if (S.history.length) history.pushState({ i: S.i }, "");

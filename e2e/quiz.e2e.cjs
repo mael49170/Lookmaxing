@@ -228,7 +228,7 @@ const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
     const timer = await p.textContent("#timer");
     expect(/^1[45]:\d\d$/.test(timer), "minuteur absent ou faux : " + timer);
     const text = (await p.textContent("main")).replace(/\s+/g, " ");
-    expect(/Tu peux monter jusqu'à \d,\d/.test(text), "le max n'est pas affiché");
+    expect(/Tu peux monter jusqu'à \d+\/100/.test(text), "le max n'est pas affiché (sur 100)");
     expect(/Satisfait ou remboursé/.test(text) && /5 jours sur les 7/.test(text), "garantie absente");
     expect(/17,98 €/.test(text) && /16,99 € par semaine/.test(text), "prix pas écrit en clair");
     expect(!/(Mâchoire|Symétrie|Peau|Posture)\b.*\/100/.test(text), "un nom de critère est visible à côté de sa note");

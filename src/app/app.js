@@ -30,8 +30,8 @@ function reportView(r) {
   return `
     <h1 class="title" tabindex="-1">Ton détail, critère par critère.</h1>
     <div class="scores">
-      <div class="score"><div class="score__label">Aujourd'hui</div><div class="score__value">${esc(r.now)}</div></div>
-      <div class="score"><div class="score__label">Ton max</div><div class="score__value score__value--high">${esc(r.max)}</div></div>
+      <div class="score"><div class="score__label">Aujourd'hui</div><div class="score__value">${esc(r.now)}<small>/100</small></div></div>
+      <div class="score"><div class="score__label">Ton max</div><div class="score__value score__value--high">${esc(r.max)}<small>/100</small></div></div>
     </div>
     <div class="gauge" role="img" aria-label="${r.nowRaw} sur 100"><i style="left:${r.nowRaw}%"></i></div>
     ${r.bet ? `<div class="verdict"><b>Ton pronostic : ${esc(BETS[r.bet])}.</b> ${esc(verdict || "")}</div>` : ""}
@@ -136,16 +136,16 @@ function reveal(r) {
   app.innerHTML = `<div class="brand">MOGX</div>
     <section class="reveal" aria-live="polite">
       <p class="eyebrow">Ta note</p>
-      <div class="reveal__num" id="num">0,0</div>
+      <div class="reveal__num" id="num">0<small>/100</small></div>
       <div class="gauge" role="img" aria-label="${r.nowRaw} sur 100"><i id="mark" style="left:0%"></i></div>
-      <p class="reveal__max" id="max">Ton max : ${esc(fr(r.max))}, soit +${esc(fr((Number(r.max) - Number(r.now)).toFixed(1)))} à aller chercher.</p>
+      <p class="reveal__max" id="max">Ton max : ${esc(r.max)}/100, soit +${esc(Math.max(0, r.max - r.now))} points à aller chercher.</p>
       <button class="btn btn--primary" data-tab="rapport">Voir mon détail</button>
     </section>`;
   const target = Number(r.now), t0 = performance.now(), ms = matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 1600;
   requestAnimationFrame(() => { document.getElementById("mark").style.left = r.nowRaw + "%"; });
   const step = (t) => {
     const p = Math.min(1, (t - t0) / ms), v = target * (1 - Math.pow(1 - p, 3));
-    document.getElementById("num").textContent = fr(v.toFixed(1));
+    document.getElementById("num").innerHTML = `${Math.round(v)}<small>/100</small>`;
     if (p < 1) requestAnimationFrame(step); else document.getElementById("max").classList.add("on");
   };
   requestAnimationFrame(step);

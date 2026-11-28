@@ -288,7 +288,7 @@
 /* Page de paiement : l'analyse en grand, le pitch, l'essai réservé */
 .scanhero { display: grid; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--c-border); border-radius: var(--r-xl); background: var(--c-surface); }
 .scanhero__title { margin: 0; text-align: center; font-family: var(--font-display); font-size: var(--fs-xl); line-height: 1.1; }
-.scanhero__photo { position: relative; aspect-ratio: 4 / 5; border-radius: var(--r-lg); overflow: hidden; background: var(--c-bg); display: grid; place-items: center; }
+.scanhero__photo { position: relative; aspect-ratio: 3 / 4; border-radius: var(--r-lg); overflow: hidden; background: var(--c-bg); display: grid; place-items: center; }
 .scanhero__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.9) contrast(1.05); }
 .scanhero__photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, color-mix(in srgb, var(--c-bg) 55%, transparent), transparent 45%); }
 .scanhero__mesh { position: relative; z-index: 1; width: 62%; opacity: .9; }
@@ -352,3 +352,6 @@
 .cuts__col ul { margin: var(--sp-2) 0 0; padding-left: var(--sp-4); display: grid; gap: 4px; }
 .cuts__col--yes b { color: var(--c-success); }
 .cuts__col--no b { color: var(--c-danger); }
+/* Maillage posé sur le visage : la photo est le cadre 3:4 de la caméra, le visage est dans l'ovale (x 21-79 %, y 18-102 sur 133) */
+.mesh.mesh--onface, .tilted__card .mesh.mesh--onface { position: absolute; inset: auto; left: 8.8%; top: 12.4%; width: 82.4%; height: 72.2%; z-index: 1; }
+.scanhero__gain small, .reveal__num small, .score__value small { font-size: .42em; color: var(--c-text-muted); margin-left: 3px; font-weight: 700; }
